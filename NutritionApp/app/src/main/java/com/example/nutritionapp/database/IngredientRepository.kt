@@ -9,30 +9,25 @@ import com.example.nutritionapp.Result
 class IngredientRepository (private val database: IngredientDatabase) : IngredientDataSourceInterface {
 
     override suspend fun getIngredients(): Result<LiveData<List<IngredientDataClass>>> {
-        val resultGetIngredients = database.IngredientDatabaseDao.getAllIngredients()
+        val resultGetIngredients : LiveData<List<IngredientDataClassDTO>> = database.IngredientDatabaseDao.getAllIngredients()
 
-            if (resultGetIngredients.value?.size != 0)
+            if (resultGetIngredients?.size != 0)
             {
-                val ingredientList = ArrayList<IngredientDataClassDTO>()
-                resultGetIngredients.value?.let {
-                    ingredientList.addAll(it).apply { reminder ->
-                        //map the reminder data from the DB to the be ready to be displayed on the UI
-                        IngredientDataClass(
-                           name = it.name
-                        )
-                    }
+                /* val mList = ArrayList<IngredientDataClass>()
+                Transformations.map(resultGetIngredients){
+                    mList.addAll(IngredientDataClass(name = it[0].name,it))
+                }*/
+                val dataList = LiveData<ArrayList<IngredientDataClass>>
+                dataList.addAll((resultGetIngredients as List<IngredientDataClassDTO>).map { ingredient ->
+                    //map the ingredient data from the DB to the be ready to be displayed on the UI
+                    IngredientDataClass(
+                        name = ingredient.name,
+                        quantity = ingredient.quantity,
+                        id = ingredient.id
+                    )
                 })
+                return dataList//Result.Success<data>
             }
-            is kotlin.Result.Success<*> -> {
-                val dataList = ArrayList<ReminderDataItem>()
-
-                remindersList.value = dataList
-                println("ReminderList value: " + remindersList.value)
-            }
-            is kotlin.Result.Error -> {
-                remindersList.value = null
-                showSnackBar.value = result.message
-        }
     }
 
     override suspend fun saveIngredient(reminder: IngredientDataClass) {
