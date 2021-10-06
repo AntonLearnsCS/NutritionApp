@@ -17,8 +17,8 @@ class IngredientRepository (private val database: IngredientDatabase) : Ingredie
                 Transformations.map(resultGetIngredients){
                     mList.addAll(IngredientDataClass(name = it[0].name,it))
                 }*/
-                val dataList = LiveData<ArrayList<IngredientDataClass>>
-                dataList.addAll((resultGetIngredients as List<IngredientDataClassDTO>).map { ingredient ->
+                val dataList = List<IngredientDataClass>() as LiveData
+                dataList.value.addAll((resultGetIngredients as List<IngredientDataClassDTO>).map { ingredient ->
                     //map the ingredient data from the DB to the be ready to be displayed on the UI
                     IngredientDataClass(
                         name = ingredient.name,
@@ -26,7 +26,8 @@ class IngredientRepository (private val database: IngredientDatabase) : Ingredie
                         id = ingredient.id
                     )
                 })
-                return dataList//Result.Success<data>
+
+                return Result.Success(dataList)//Result.Success<data>
             }
     }
 
