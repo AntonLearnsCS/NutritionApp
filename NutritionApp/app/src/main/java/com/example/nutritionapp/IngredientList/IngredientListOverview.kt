@@ -35,7 +35,7 @@ class IngredientListOverview : Fragment ()
         binding.recyclerView.adapter = ingredientAdapter
 
         //updates recyclerView
-        viewModel.listOfIngredients.observe(viewLifecycleOwner, Observer {
+        viewModel.listOfIngredients?.observe(viewLifecycleOwner, Observer {
             ingredientAdapter.listIngredients = it
         })
 

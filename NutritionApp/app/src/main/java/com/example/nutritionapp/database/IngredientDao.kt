@@ -11,7 +11,7 @@ import com.example.nutritionapp.database.dto.IngredientDataClassDTO
 interface IngredientDao {
 
     @Insert
-    suspend fun insert(ingredient: IngredientDataClass)
+    suspend fun insert(ingredient: IngredientDataClassDTO)
 
     /**
      * When updating a row with a value already set in a column,
@@ -20,7 +20,7 @@ interface IngredientDao {
      * @param ingredient new value to write
      */
     @Update
-    suspend fun update(ingredient: IngredientDataClass)
+    suspend fun update(ingredient: IngredientDataClassDTO)
 
     /**
      * Selects and returns the row that matches the supplied start time, which is our key.

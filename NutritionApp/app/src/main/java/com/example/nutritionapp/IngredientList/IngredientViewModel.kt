@@ -1,39 +1,63 @@
 package com.example.nutritionapp.IngredientList
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.Transformations
-import androidx.lifecycle.ViewModel
+import android.widget.Toast
+import androidx.lifecycle.*
+import androidx.test.core.app.ApplicationProvider
 import com.example.nutritionapp.database.IngredientDao
 import com.example.nutritionapp.database.IngredientDataClass
+import com.example.nutritionapp.database.IngredientRepository
 import com.example.nutritionapp.database.dto.IngredientDataClassDTO
+import kotlinx.coroutines.launch
+import com.example.nutritionapp.Result
+import com.example.nutritionapp.database.IngredientDataSourceInterface
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.MainCoroutineDispatcher
 
-class IngredientViewModel (val dao : IngredientDao) : ViewModel() {
-    var listOfIngredients : LiveData<List<IngredientDataClass>> = getIngredientList().value.apply {
+class IngredientViewModel (val ingredientRepository : IngredientDataSourceInterface) : ViewModel() {
+    var listOfIngredients : LiveData<List<IngredientDataClass>>? = getIngredientList()
 
-    }
-
-    fun getIngredientList() : LiveData<List<IngredientDataClassDTO>>
+    fun getIngredientList() : LiveData<List<IngredientDataClass>>?
     {
+        var result : LiveData<List<IngredientDataClass>>? = null
         //need DAO and repository
-        Transformations.map(dao.getAllIngredients()) {
-            //var hello : Int = database.videoDao.getVideos()
-
-        //it.asDomainModel()
+        viewModelScope.launch {
+            val ingredientResult = ingredientRepository.getIngredients()
+             when(ingredientResult)
+             {
+                 is Result.Success<LiveData<List<IngredientDataClass>>> ->
+                 {
+                     result = ingredientResult.data
+                 }
+                is Result.Error ->
+                {
+                    Toast.makeText(ApplicationProvider.getApplicationContext(),"${ingredientResult.message}",Toast.LENGTH_SHORT).show()
+                }
+             }
         }
-        return dao.getAllIngredients()
+    return result
     }
-    fun getIngredientById(id : String) : LiveData<IngredientDataClass>
+
+    fun getIngredientById(id : String) : LiveData<IngredientDataClass>?
     {
-        val value = Transformations.map( dao.getIngredientById(id)
-        )
-        {
-             IngredientDataClass(
-                name = it.name,
-                quantity = it.quantity,
-                id = it.id
-            )
+        var result : LiveData<IngredientDataClass>? = null
+        viewModelScope.launch {
+            val ingredientResult : Result<LiveData<IngredientDataClass>> = ingredientRepository.getIngredient(id)
+
+            when(ingredientResult)
+            {
+                is Result.Success<LiveData<IngredientDataClass>> ->
+                {
+                result = ingredientResult.data
+                //result = ingredientResult.data
+                }
+                is Result.Error ->
+                {
+                    Toast.makeText(ApplicationProvider.getApplicationContext(),"${ingredientResult.message}",Toast.LENGTH_SHORT).show()
+                }
+            }
         }
-       return value
+        return result
     }
 
     @Override

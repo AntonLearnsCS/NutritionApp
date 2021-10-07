@@ -41,11 +41,8 @@ class IngredientAdapter : RecyclerView.Adapter<IngredientAdapter.ViewHolder>() {
 
         fun bind(item : IngredientDataClass)
         {
-            binding.ingredientItem= item
+            binding.ingredientItem = item
         }
         //val sleepLength: TextView = itemView.findViewById(R.id.sleep_length)
     }
-
-
-
 }
