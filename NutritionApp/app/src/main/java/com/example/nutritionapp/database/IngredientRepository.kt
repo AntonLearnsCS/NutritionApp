@@ -12,7 +12,8 @@ class IngredientRepository(private val database: IngredientDatabase,
                            private val IOdispatcher: CoroutineDispatcher = Dispatchers.IO) : IngredientDataSourceInterface {
 
     override suspend fun getIngredients(): Result<LiveData<List<IngredientDataClass>>> {
-        //make the function main-safe by switching thread to IO thread
+        //make the function main-safe by switching thread to IO thread; also we maintain structured concurrency by not declaring a new
+        //coroutine scope
         return withContext(IOdispatcher)
         {
             val resultGetIngredients: LiveData<List<IngredientDataClassDTO>>? =
@@ -53,21 +54,21 @@ class IngredientRepository(private val database: IngredientDatabase,
     }
 
     override suspend fun getIngredient(id: String): Result<LiveData<IngredientDataClass>>{
-        //return Result.Success(database.IngredientDatabaseDao.getIngredientById(id))
-        val resultGetIngredients = database.IngredientDatabaseDao.getIngredientById(id)
-        if (resultGetIngredients.value != null)
+        return withContext(IOdispatcher)
         {
-            return Result.Error("Could not find ingredient")
-        }
-        else
-        {
-            return Result.Success(Transformations.map(resultGetIngredients) {
-                IngredientDataClass(
-                    name = it.name,
-                    quantity = it.quantity,
-                    id = it.id
-                )
-            })
+            //return Result.Success(database.IngredientDatabaseDao.getIngredientById(id))
+            val resultGetIngredients = database.IngredientDatabaseDao.getIngredientById(id)
+            if (resultGetIngredients.value != null) {
+                return@withContext Result.Error("Could not find ingredient")
+            } else {
+                return@withContext Result.Success(Transformations.map(resultGetIngredients) {
+                    IngredientDataClass(
+                        name = it.name,
+                        quantity = it.quantity,
+                        id = it.id
+                    )
+                })
+            }
         }
     }
 
