@@ -10,14 +10,16 @@ import kotlinx.coroutines.withContext
 
 class IngredientRepository(private val database: IngredientDatabase,
                            private val IOdispatcher: CoroutineDispatcher = Dispatchers.IO) : IngredientDataSourceInterface {
+    //will get ingredient searches directly from network and not the repository
 
     override suspend fun getIngredients(): Result<LiveData<List<IngredientDataClass>>> {
         //make the function main-safe by switching thread to IO thread; also we maintain structured concurrency by not declaring a new
         //coroutine scope
+        val resultGetIngredients: LiveData<List<IngredientDataClassDTO>>? =
+            null
         return withContext(IOdispatcher)
         {
-            val resultGetIngredients: LiveData<List<IngredientDataClassDTO>>? =
-                null// = database.IngredientDatabaseDao.getAllIngredients()
+            // = database.IngredientDatabaseDao.getAllIngredients()
             val convertedIngredients: LiveData<List<IngredientDataClass>>
 
             if (!resultGetIngredients?.value.isNullOrEmpty()) {
@@ -31,26 +33,33 @@ class IngredientRepository(private val database: IngredientDatabase,
                             IngredientDataClass(
                                 name = item.name,
                                 quantity = item.quantity,
-                                id = item.id
+                                id = item.id,
+                                imageUrl = item.image,
+                                imageType = item.imageType
                             )
                         )
                     }
                     tempList //by restating tempList here we are saying that convertedIngredients equals tempList and
                     //since we are in Transformations.map, we are wrapping the resulting "tempList" in a LiveData<>
                 }
-                return@withContext Result.Success(convertedIngredients)
+            //resultGetIngredients = Result.Success(convertedIngredients)
+            return@withContext Result.Success(convertedIngredients)
             } else {
                 return@withContext Result.Error("No ingredients found")
             }
         }
     }
 
-    override suspend fun saveNewIngredient(reminder: IngredientDataClass) {
-        database.IngredientDatabaseDao.insert(IngredientDataClassDTO(name = reminder.name,quantity = reminder.quantity,id = reminder.id))
+    override suspend fun saveNewIngredient(ingredient: IngredientDataClass) {
+        database.IngredientDatabaseDao.insert(IngredientDataClassDTO(
+            name = ingredient.name,quantity = ingredient.quantity,id = ingredient.id,image = ingredient.imageUrl,
+            imageType = ingredient.imageType))
     }
 
     override suspend fun update(ingredient: IngredientDataClass) {
-        database.IngredientDatabaseDao.update(IngredientDataClassDTO(name = ingredient.name,quantity = ingredient.quantity,id = ingredient.id))
+        database.IngredientDatabaseDao.update(IngredientDataClassDTO(
+            name = ingredient.name,quantity = ingredient.quantity,id = ingredient.id,image = ingredient.imageUrl,
+            imageType = ingredient.imageType))
     }
 
     override suspend fun getIngredient(id: String): Result<LiveData<IngredientDataClass>>{
@@ -65,7 +74,9 @@ class IngredientRepository(private val database: IngredientDatabase,
                     IngredientDataClass(
                         name = it.name,
                         quantity = it.quantity,
-                        id = it.id
+                        id = it.id,
+                        imageUrl = it.image,
+                        imageType = it.imageType
                     )
                 })
             }

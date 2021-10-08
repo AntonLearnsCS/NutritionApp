@@ -9,9 +9,12 @@ import java.util.*
 @Entity(tableName = "Ingredient_Entity")
 data class IngredientDataClassDTO(
                                 @PrimaryKey //PrimaryKey is mandatory
-                                val id: String = UUID.randomUUID().toString(),
+                                val id: Double = 0.0,
                                 @ColumnInfo(name = "name")
                                var name : String = "ingredient name",
                                 @ColumnInfo(name = "quantity")
-                               var quantity : Int = 0) {
+                               var quantity : Int = 0,
+                               val image : String,
+                                val imageType : String){
 }
+//    val id : Double, val title : String, val image : String, val imageType : String

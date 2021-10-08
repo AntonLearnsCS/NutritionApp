@@ -3,6 +3,7 @@ package com.example.nutritionapp.IngredientList
 import android.widget.Toast
 import androidx.lifecycle.*
 import androidx.test.core.app.ApplicationProvider
+import com.example.nutritionapp.Network.NutritionAPI
 import com.example.nutritionapp.database.IngredientDao
 import com.example.nutritionapp.database.IngredientDataClass
 import com.example.nutritionapp.database.IngredientRepository
@@ -15,7 +16,34 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.MainCoroutineDispatcher
 
 class IngredientViewModel (val ingredientRepository : IngredientDataSourceInterface) : ViewModel() {
-    var listOfIngredients : LiveData<List<IngredientDataClass>>? = getIngredientList()
+
+    var listOfNetworkRequestedIngredients : List<IngredientDataClass>? = null //getIngredientListByNetwork()
+
+    var listOfSavedIngredients : LiveData<List<IngredientDataClass>>? = getIngredientList()
+
+     private val _searchFilter : MutableLiveData<String> = MutableLiveData("/food/products/search?query=Apple")
+    val searchFilter : LiveData<String>
+    get() = _searchFilter
+
+    fun updateFilter(value : String)
+    {
+        _searchFilter.value = value
+    }
+
+    fun loadIngredientListByNetwork()
+    {
+        viewModelScope.launch {
+            if (searchFilter.value != null) {
+                val result = NutritionAPI.nutritionService.getProperties(searchFilter.value!!)
+                listOfNetworkRequestedIngredients = result.map { IngredientDataClass(name = it.name,quantity = 1,id = it.id,
+                imageUrl = it.imageUrl,imageType = it.imageType) }
+            }
+            else
+            {
+                Toast.makeText(ApplicationProvider.getApplicationContext(),"Missing search parameter",Toast.LENGTH_SHORT).show()
+            }
+        }
+    }
 
     fun getIngredientList() : LiveData<List<IngredientDataClass>>?
     {
