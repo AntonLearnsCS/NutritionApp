@@ -4,16 +4,10 @@ import android.widget.Toast
 import androidx.lifecycle.*
 import androidx.test.core.app.ApplicationProvider
 import com.example.nutritionapp.Network.NutritionAPI
-import com.example.nutritionapp.database.IngredientDao
 import com.example.nutritionapp.database.IngredientDataClass
-import com.example.nutritionapp.database.IngredientRepository
-import com.example.nutritionapp.database.dto.IngredientDataClassDTO
 import kotlinx.coroutines.launch
 import com.example.nutritionapp.Result
 import com.example.nutritionapp.database.IngredientDataSourceInterface
-import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.MainCoroutineDispatcher
 
 class IngredientViewModel (val ingredientRepository : IngredientDataSourceInterface) : ViewModel() {
 
@@ -37,6 +31,9 @@ class IngredientViewModel (val ingredientRepository : IngredientDataSourceInterf
                 val result = NutritionAPI.nutritionService.getProperties(searchFilter.value!!)
                 listOfNetworkRequestedIngredients = result.map { IngredientDataClass(name = it.name,quantity = 1,id = it.id,
                 imageUrl = it.imageUrl,imageType = it.imageType) }
+                val networkRequestSuccess = listOfNetworkRequestedIngredients!!.size != 0
+
+                Toast.makeText(ApplicationProvider.getApplicationContext(),"$networkRequestSuccess",Toast.LENGTH_SHORT).show()
             }
             else
             {

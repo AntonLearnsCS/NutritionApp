@@ -47,6 +47,7 @@ class IngredientListOverview : Fragment ()
             }
         })
 
+
     return binding.root
     }
 }

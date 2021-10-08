@@ -5,7 +5,7 @@
 
     <data>
             <variable
-                name="ingredient_viewModel"
+                name="ingredientViewModel"
                 type="com.example.nutritionapp.IngredientList.IngredientViewModel" />
         <!-- Create adapter for recycler view to use variable -->
     </data>
@@ -67,7 +67,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="92dp"
-            app:testSize="@{ingredientViewModel.listOfNetworkRequestedIngredients.value.size}"
+            app:testSize="@{ingredientViewModel.listOfNetworkRequestedIngredients.size()}"
             app:layout_constraintEnd_toStartOf="@+id/search_view"
             app:layout_constraintHorizontal_bias="0.41"
             app:layout_constraintStart_toStartOf="parent"
