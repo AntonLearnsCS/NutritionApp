@@ -62,7 +62,7 @@ abstract class IngredientDatabase : RoomDatabase() {
                     instance = Room.databaseBuilder(
                         context.applicationContext,
                         IngredientDatabase::class.java,
-                        "sleep_history_database"
+                        "saved_ingredient_database"
                     )
                         // Wipes and rebuilds instead of migrating if no Migration object.
                         // Migration is not part of this lesson. You can learn more about

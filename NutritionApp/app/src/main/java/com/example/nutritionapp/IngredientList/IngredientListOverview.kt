@@ -41,6 +41,7 @@ class IngredientListOverview : Fragment ()
                 return false
             }
             override fun onQueryTextChange(p0: String?): Boolean {
+
                 //Start filtering the list as user start entering the characters; get from local database
                 //adapter.filter.filter(p0)
                 return false

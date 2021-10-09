@@ -47,6 +47,6 @@
 
 <!-- Set placeholders for the String resource values-->
 <string name="location">%1$s, %2$s</string>
-    <string name="null">null</string>
+    <string name="nullValue">null</string>
 
 </resources>

@@ -27,15 +27,15 @@ interface IngredientDao {
      *
      * @param key startTimeMilli to match
      */
-    @Query("SELECT * from ingredient_entity WHERE id = :key")
-    suspend fun get(key: Long): LiveData<IngredientDataClassDTO?>
+    @Query("SELECT * from Ingredient_Entity WHERE id = :key")
+    suspend fun get(key: Double): LiveData<IngredientDataClassDTO?>
 
     /**
      * Deletes all values from the table.
      *
      * This does not delete the table, only its contents.
      */
-    @Query("DELETE FROM ingredient_entity")
+    @Query("DELETE FROM Ingredient_Entity")
     suspend fun clear()
 
     /**
@@ -56,9 +56,9 @@ interface IngredientDao {
      * Selects and returns the ingredient with given nightId.
      */
     @Query("SELECT * from Ingredient_Entity WHERE id = :key")
-    fun getIngredientById(key: String): LiveData<IngredientDataClassDTO>
+    fun getIngredientById(key: Double): LiveData<IngredientDataClassDTO>
 
     //delete ingredient
     @Query("DELETE from Ingredient_Entity WHERE id = :key")
-    fun deleteIngredientById(key: String): LiveData<IngredientDataClassDTO>
+    fun deleteIngredientById(key: Double): LiveData<IngredientDataClassDTO>
 }
