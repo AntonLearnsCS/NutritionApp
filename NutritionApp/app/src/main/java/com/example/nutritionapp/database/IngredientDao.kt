@@ -27,8 +27,10 @@ interface IngredientDao {
      *
      * @param key startTimeMilli to match
      */
+    //Note: When returning a LiveData from a DAO function, you do not need to call suspend on said function as suspend and LiveData
+    //are incompatible (source:https://stackoverflow.com/questions/46445964/room-not-sure-how-to-convert-a-cursor-to-this-methods-return-type-which-meth)
     @Query("SELECT * from Ingredient_Entity WHERE id = :key")
-    suspend fun get(key: Double): LiveData<IngredientDataClassDTO?>
+     fun get(key: Double): LiveData<IngredientDataClassDTO?>
 
     /**
      * Deletes all values from the table.
@@ -50,15 +52,15 @@ interface IngredientDao {
      * Selects and returns the latest ingredient.
      */
     @Query("SELECT * FROM Ingredient_Entity ORDER BY id DESC LIMIT 1")
-    suspend fun getLastIngredient(): LiveData<IngredientDataClassDTO?>
+     fun getLastIngredient(): LiveData<IngredientDataClassDTO?>
 
     /**
      * Selects and returns the ingredient with given nightId.
      */
     @Query("SELECT * from Ingredient_Entity WHERE id = :key")
-    fun getIngredientById(key: Double): LiveData<IngredientDataClassDTO>
+    fun getIngredientById(key: Int): LiveData<IngredientDataClassDTO>
 
     //delete ingredient
     @Query("DELETE from Ingredient_Entity WHERE id = :key")
-    fun deleteIngredientById(key: Double): LiveData<IngredientDataClassDTO>
+    fun deleteIngredientById(key: Int)
 }

@@ -6,7 +6,7 @@ import com.squareup.moshi.Json
 data class IngredientListNetworkDataClassContainer(val ingredientList : List<IngredientListNetworkDataClass>)
 
 data class IngredientListNetworkDataClass (
-    val id : Double,
+    val id : Int,
     @Json(name = "title")val name : String,
     @Json(name = "image") val imageUrl : String,
     val imageType : String

@@ -63,7 +63,7 @@ class IngredientViewModel (val ingredientRepository : IngredientDataSourceInterf
     return result
     }
 
-    fun getIngredientById(id : String) : LiveData<IngredientDataClass>?
+    fun getIngredientById(id : Int) : LiveData<IngredientDataClass>?
     {
         var result : LiveData<IngredientDataClass>? = null
         viewModelScope.launch {

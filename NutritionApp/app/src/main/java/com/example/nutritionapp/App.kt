@@ -36,7 +36,7 @@ class App : Application() {
                     get() as IngredientDataSourceInterface
                 )
             }
-            single { IngredientRepository(get()) }
+            single { IngredientRepository(get()) as IngredientDataSourceInterface }
             //Declare singleton definitions to be later injected using by inject()
             //"single" is in contrast to "factory", which creates a new instance every time
 

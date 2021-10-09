@@ -9,7 +9,7 @@ import java.util.*
 @Entity(tableName = "Ingredient_Entity")
 data class IngredientDataClassDTO(
                                 @PrimaryKey //PrimaryKey is mandatory
-                                val id: Double = 0.0,
+                                val id: Int,
                                 @ColumnInfo(name = "name")
                                var name : String = "ingredient name",
                                 @ColumnInfo(name = "quantity")

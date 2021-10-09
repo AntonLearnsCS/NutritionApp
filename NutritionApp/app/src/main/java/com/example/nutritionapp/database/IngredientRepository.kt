@@ -62,7 +62,7 @@ class IngredientRepository(private val database: IngredientDatabase,
             imageType = ingredient.imageType))
     }
 
-    override suspend fun getIngredient(id: Double): Result<LiveData<IngredientDataClass>>{
+    override suspend fun getIngredient(id: Int): Result<LiveData<IngredientDataClass>>{
         return withContext(IOdispatcher)
         {
             //return Result.Success(database.IngredientDatabaseDao.getIngredientById(id))
@@ -90,7 +90,7 @@ class IngredientRepository(private val database: IngredientDatabase,
         }
     }
 
-    override suspend fun deleteTaskIngredient(id: Double) {
+    override suspend fun deleteTaskIngredient(id: Int) {
         withContext(IOdispatcher)
         {
             database.IngredientDatabaseDao.deleteIngredientById(id)
