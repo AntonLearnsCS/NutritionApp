@@ -9,7 +9,7 @@ interface IngredientDataSourceInterface {
     suspend fun getIngredients(): Result<LiveData<List<IngredientDataClass>>>
     suspend fun saveNewIngredient(ingredient: IngredientDataClass)
     suspend fun update(ingredient : IngredientDataClass)
-    suspend fun getIngredient(id: String): Result<LiveData<IngredientDataClass>>
+    suspend fun getIngredient(id: Double): Result<LiveData<IngredientDataClass>>
     suspend fun deleteAllIngredients()
-    suspend fun deleteTaskIngredient(id: String)
+    suspend fun deleteTaskIngredient(id: Double)
 }
