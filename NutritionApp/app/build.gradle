@@ -5,7 +5,7 @@ apply plugin: "androidx.navigation.safeargs.kotlin"
 apply plugin: 'com.google.gms.google-services'
 android {
     compileSdkVersion 29
-    buildToolsVersion "29.0.2"
+    buildToolsVersion "29.0.3"
 
     defaultConfig {
         applicationId "com.example.nutritionapp"
@@ -28,9 +28,9 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
-    kotlinOptions {
+  /*  kotlinOptions {
         jvmTarget = "1.8"
-    }
+    }*/
     testOptions.unitTests {
         includeAndroidResources = true
         returnDefaultValues = true
@@ -46,11 +46,13 @@ android {
     buildFeatures {
         dataBinding true
     }
-
 }
 
 dependencies {
+    //include all JARs in the local repository.
     implementation fileTree(dir: 'libs', include: ['*.jar'])
+//    implementation files(sdkDir+'/platforms/android-29/android.jar')
+
     // App dependencies
     implementation "androidx.appcompat:appcompat:$appCompatVersion"
     implementation "androidx.legacy:legacy-support-v4:$androidXLegacySupport"
@@ -159,8 +161,8 @@ dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
 
     //firebase
-    implementation platform('com.google.firebase:firebase-bom:28.4.1')
-    implementation 'com.google.firebase:firebase-analytics-ktx'
+    //implementation platform('com.google.firebase:firebase-bom:28.4.1')
+    //implementation 'com.google.firebase:firebase-analytics-ktx'
 
     // Retrofit Coroutines Support
     implementation "com.jakewharton.retrofit:retrofit2-kotlin-coroutines-adapter:$version_retrofit_coroutines_adapter"
