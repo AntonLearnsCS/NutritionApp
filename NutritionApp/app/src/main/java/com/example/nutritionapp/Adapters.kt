@@ -8,7 +8,8 @@ import androidx.databinding.BindingAdapter
 import androidx.test.core.app.ApplicationProvider
 import org.w3c.dom.Text
 
-class Adapters {
+object Adapters {
+    @JvmStatic
     @BindingAdapter("testSize")
     fun bindStatus(textView: TextView, sizeString: Int) {
         if (sizeString > 0)

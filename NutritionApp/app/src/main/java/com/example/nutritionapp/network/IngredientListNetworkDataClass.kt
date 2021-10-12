@@ -1,4 +1,4 @@
-package com.example.nutritionapp.Network
+package com.example.nutritionapp.network
 import com.example.nutritionapp.database.IngredientDataClass
 import com.squareup.moshi.Json
 

@@ -1,8 +1,9 @@
 package com.example.nutritionapp
 
 import android.app.Application
-import com.example.nutritionapp.IngredientList.IngredientViewModel
+import com.example.nutritionapp.ingredientlist.IngredientViewModel
 import com.example.nutritionapp.database.IngredientDataSourceInterface
+import com.example.nutritionapp.database.IngredientDatabase
 import com.example.nutritionapp.database.IngredientRepository
 import org.koin.android.ext.koin.androidContext
 import org.koin.androidx.viewmodel.dsl.viewModel
@@ -37,7 +38,7 @@ class App : Application() {
                 )
             }
             single { IngredientRepository(get()) as IngredientDataSourceInterface }
-            //Declare singleton definitions to be later injected using by inject()
+            single { IngredientDatabase.getInstance(this@App) }            //Declare singleton definitions to be later injected using by inject()
             //"single" is in contrast to "factory", which creates a new instance every time
 
 /*            single {

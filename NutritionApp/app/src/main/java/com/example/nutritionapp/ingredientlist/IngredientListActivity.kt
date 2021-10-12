@@ -1,4 +1,4 @@
-package com.example.nutritionapp.IngredientList
+package com.example.nutritionapp.ingredientlist
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity

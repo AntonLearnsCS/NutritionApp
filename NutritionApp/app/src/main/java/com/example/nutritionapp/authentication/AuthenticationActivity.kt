@@ -1,4 +1,4 @@
-package com.example.nutritionapp.Authentication
+package com.example.nutritionapp.authentication
 
 import android.app.Activity
 import android.content.Intent
@@ -14,7 +14,7 @@ import com.firebase.ui.auth.AuthUI
 import com.firebase.ui.auth.IdpResponse
 import com.google.firebase.auth.FirebaseAuth
 import androidx.databinding.DataBindingUtil
-import com.example.nutritionapp.IngredientList.IngredientListActivity
+import com.example.nutritionapp.ingredientlist.IngredientListActivity
 import com.example.nutritionapp.databinding.ActivityAuthenticationLayoutBinding
 import com.example.nutritionapp.wrapEspressoIdlingResource
 
@@ -71,7 +71,7 @@ class AuthenticationActivity : AppCompatActivity() {
 
         viewModel = ViewModelProvider(this).get(AuthViewModel::class.java)
 
-        binding.button.setOnClickListener {
+        binding.loginButton.setOnClickListener {
 
             //Tip: Don't start activity from here, do it from onActivityResult
             wrapEspressoIdlingResource {

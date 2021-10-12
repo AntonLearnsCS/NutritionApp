@@ -1,4 +1,4 @@
-package com.example.nutritionapp.Authentication
+package com.example.nutritionapp.authentication
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.map

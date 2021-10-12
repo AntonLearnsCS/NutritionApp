@@ -1,9 +1,9 @@
-package com.example.nutritionapp.IngredientList
+package com.example.nutritionapp.ingredientlist
 
 import android.widget.Toast
 import androidx.lifecycle.*
 import androidx.test.core.app.ApplicationProvider
-import com.example.nutritionapp.Network.NutritionAPI
+import com.example.nutritionapp.network.NutritionAPI
 import com.example.nutritionapp.database.IngredientDataClass
 import kotlinx.coroutines.launch
 import com.example.nutritionapp.Result

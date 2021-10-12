@@ -1,4 +1,4 @@
-package com.example.nutritionapp.IngredientList
+package com.example.nutritionapp.ingredientlist
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -23,12 +23,12 @@ class IngredientListOverview : Fragment ()
     ): View
     {
         super.onCreate(savedInstanceState)
-         binding = DataBindingUtil.inflate(inflater, R.layout.ingredient_list_activity_layout,container,false)
+         binding = DataBindingUtil.inflate(inflater, R.layout.ingredient_list_recyclerview,container,false)
         //binding.ingredientList = viewModel.listOfIngredients.value
         binding.lifecycleOwner = this
 
         val ingredientAdapter = IngredientAdapter()
-        binding.recyclerView.adapter = ingredientAdapter
+        binding.recyclerViewLocal.adapter = ingredientAdapter
 
         //updates recyclerView
         viewModel.listOfSavedIngredients?.observe(viewLifecycleOwner, Observer {

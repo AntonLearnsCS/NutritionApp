@@ -1,4 +1,4 @@
-package com.example.nutritionapp.Authentication
+package com.example.nutritionapp.authentication
 
 
 import com.google.firebase.auth.FirebaseUser

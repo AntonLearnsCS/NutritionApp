@@ -6,7 +6,7 @@
     <data>
             <variable
                 name="ingredientViewModel"
-                type="com.example.nutritionapp.IngredientList.IngredientViewModel" />
+                type="com.example.nutritionapp.ingredientlist.IngredientViewModel" />
         <!-- Create adapter for recycler view to use variable -->
     </data>
 
@@ -14,21 +14,21 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <androidx.recyclerview.widget.RecyclerView
+       <!-- <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recycler_view_network"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:layout_constraintBottom_toTopOf="@+id/recycler_view"
+            app:layout_constraintBottom_toTopOf="@+id/recycler_view_local"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.501"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
 
 
-        </androidx.recyclerview.widget.RecyclerView>
+        </androidx.recyclerview.widget.RecyclerView>-->
 
         <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/recycler_view"
+            android:id="@+id/recycler_view_local"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -46,7 +46,7 @@
             android:layout_width="105dp"
             android:layout_height="49dp"
             android:queryHint="search ingredient"
-            app:layout_constraintBottom_toTopOf="@+id/recycler_view_network"
+
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
@@ -56,11 +56,12 @@
             android:id="@+id/Ingredients_at_Home"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="476dp"
             android:text="Ingredients at Home"
-            app:layout_constraintBottom_toTopOf="@+id/recycler_view"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/recycler_view_network" />
+            />
 
         <TextView
             android:id="@+id/test"

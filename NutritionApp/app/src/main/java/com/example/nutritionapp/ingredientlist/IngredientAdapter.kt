@@ -1,14 +1,10 @@
-package com.example.nutritionapp.IngredientList
+package com.example.nutritionapp.ingredientlist
 
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import com.example.nutritionapp.R
 import com.example.nutritionapp.database.IngredientDataClass
 import com.example.nutritionapp.databinding.IngredientItemBinding
-import java.util.zip.Inflater
 
 class IngredientAdapter : RecyclerView.Adapter<IngredientAdapter.ViewHolder>() {
     var listIngredients = listOf<IngredientDataClass>()

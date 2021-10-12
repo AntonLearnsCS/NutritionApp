@@ -17,7 +17,7 @@ object MockRepository : IngredientDataSourceInterface {
         TODO("Not yet implemented")
     }
 
-    override suspend fun getIngredient(id: String): Result<LiveData<IngredientDataClass>> {
+    override suspend fun getIngredient(id: Int): Result<LiveData<IngredientDataClass>> {
         TODO("Not yet implemented")
     }
 
@@ -25,7 +25,7 @@ object MockRepository : IngredientDataSourceInterface {
         TODO("Not yet implemented")
     }
 
-    override suspend fun deleteTaskIngredient(id: String) {
+    override suspend fun deleteTaskIngredient(id: Int) {
         TODO("Not yet implemented")
     }
 }
