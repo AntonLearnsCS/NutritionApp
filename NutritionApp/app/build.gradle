@@ -15,8 +15,8 @@ android {
         versionName "1.0"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         multiDexEnabled true
-
     }
+
     configurations.all {
         resolutionStrategy {
             exclude group: "org.jetbrains.kotlinx", module: "kotlinx-coroutines-debug"
@@ -28,9 +28,9 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
-  /*  kotlinOptions {
+    kotlinOptions {
         jvmTarget = "1.8"
-    }*/
+    }
     testOptions.unitTests {
         includeAndroidResources = true
         returnDefaultValues = true
