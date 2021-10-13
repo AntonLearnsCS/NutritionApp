@@ -1,12 +1,15 @@
 package com.example.nutritionapp.localdatatest
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.Observer
 import androidx.room.Room
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.core.app.ApplicationProvider.getApplicationContext
 import com.example.nutritionapp.database.IngredientDatabase
 import com.example.nutritionapp.database.dto.IngredientDataClassDTO
 import com.example.nutritionapp.endtoendtest.MainCoroutineRule
+import com.example.nutritionapp.getOrAwaitValue
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.asExecutor
 import kotlinx.coroutines.runBlocking
@@ -19,6 +22,8 @@ import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
+import java.util.concurrent.CountDownLatch
+import java.util.concurrent.TimeUnit
 
 @RunWith(JUnit4::class)
 class daoTest {
@@ -54,6 +59,21 @@ class daoTest {
     @After
     fun close() = database.close()
 
+    private fun <T> LiveData<T>.blockingObserve(): T? {
+        var value: T? = null
+        val latch = CountDownLatch(1)
+
+        val observer = Observer<T> { t ->
+            value = t
+            latch.countDown()
+        }
+
+        observeForever(observer)
+
+        latch.await(2, TimeUnit.SECONDS)
+        return value
+    }
+
     @ExperimentalCoroutinesApi
     @Test
     fun testDao() = mainCoroutineRule.runBlockingTest {
@@ -64,12 +84,16 @@ class daoTest {
         database.IngredientDatabaseDao.saveIngredient(ingredientItem)
 
         //then the item can be retrieved
-        database.IngredientDatabaseDao.deleteIngredientById(ingredientItem.id)
-        val returnedItem = database.IngredientDatabaseDao.getIngredientByIdTest(ingredientItem.id)
+        //database.IngredientDatabaseDao.deleteIngredientById(ingredientItem.id)
+
+        //Q: Test does not work if returning a livedata from the interface
+        //A: See answer by Christopher in: https://stackoverflow.com/questions/44270688/unit-testing-room-and-livedata
+        val returnedItem : IngredientDataClassDTO? =
+            database.IngredientDatabaseDao.getIngredientById(ingredientItem.id).getOrAwaitValue()
         val allItem = database.IngredientDatabaseDao.getAllIngredients()
 
         //TODO: returnedItem is null
-        assertThat(returnedItem, `is`(ingredientItem) )
+        assertThat(returnedItem, `is`(ingredientItem))
 
         println("name: ${returnedItem?.name}")
 

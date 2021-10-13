@@ -46,6 +46,10 @@ interface IngredientDao {
      *
      * sorted by start time in descending order.
      */
+    //Note: If your DAO function returns a live data then you cannot modify the DAO function with a suspend and as
+    //such you cannot expect the DAO function to run synchronously in testing by default.
+    // See: https://stackoverflow.com/questions/44270688/unit-testing-room-and-livedata for solution ; this is why
+    //we used the getOrAwait function in Udacity003 Project
     @Query("SELECT * FROM Ingredient_Entity ORDER BY id DESC")
     fun getAllIngredients(): LiveData<List<IngredientDataClassDTO>>
 
@@ -62,7 +66,7 @@ interface IngredientDao {
     fun getIngredientById(key: Int): LiveData<IngredientDataClassDTO>
 
     @Query("SELECT * from Ingredient_Entity WHERE id = :key")
-    fun getIngredientByIdTest(key: Int): IngredientDataClassDTO?
+    fun getIngredientByIdTest(key: Int): LiveData<IngredientDataClassDTO?>
 
     //delete ingredient
     @Query("DELETE from Ingredient_Entity WHERE id = :key")
