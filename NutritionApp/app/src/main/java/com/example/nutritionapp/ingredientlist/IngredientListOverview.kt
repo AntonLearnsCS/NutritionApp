@@ -29,7 +29,7 @@ class IngredientListOverview : Fragment ()
 
         val ingredientAdapter = IngredientAdapter()
         binding.recyclerViewLocal.adapter = ingredientAdapter
-
+        viewModel.getLocalIngredientList()
         //updates recyclerView
         viewModel.listOfSavedIngredients?.observe(viewLifecycleOwner, Observer {
             ingredientAdapter.listIngredients = it

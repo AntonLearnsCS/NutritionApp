@@ -25,6 +25,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import org.hamcrest.CoreMatchers.*
+import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -42,9 +43,13 @@ val instanceTaskExecutorRule = InstantTaskExecutorRule()
     fun init() = runBlocking{
      database = IngredientDatabase.getInstance(getApplicationContext())
 
-        database.IngredientDatabaseDao.clear()
+        //database.IngredientDatabaseDao.clear()
         repository = IngredientRepository(database)
         viewModel = IngredientViewModel(repository)
+    }
+    @After
+    fun close() = runBlocking {
+        database.IngredientDatabaseDao.clear()
     }
     @Test
     fun endToEndTest(): Unit = runBlocking {

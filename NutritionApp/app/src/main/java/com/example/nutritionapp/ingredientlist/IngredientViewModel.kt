@@ -9,12 +9,13 @@ import com.example.nutritionapp.database.IngredientDataClass
 import kotlinx.coroutines.launch
 import com.example.nutritionapp.Result
 import com.example.nutritionapp.database.IngredientDataSourceInterface
+import com.example.nutritionapp.database.dto.IngredientDataClassDTO
 
 class IngredientViewModel (val ingredientRepository : IngredientDataSourceInterface) : ViewModel() {
 
     var listOfNetworkRequestedIngredients : List<IngredientDataClass>? = null //getIngredientListByNetwork()
 
-    var listOfSavedIngredients : LiveData<List<IngredientDataClass>>? = getIngredientList()
+    var listOfSavedIngredients : MutableLiveData<List<IngredientDataClass>>? = null//getLocalIngredientList()
 
      private val _searchFilter : MutableLiveData<String> = MutableLiveData("/food/products/search?query=Apple")
     val searchFilter : LiveData<String>
@@ -23,6 +24,11 @@ class IngredientViewModel (val ingredientRepository : IngredientDataSourceInterf
     fun updateFilter(value : String)
     {
         _searchFilter.value = value
+    }
+
+    fun testFun()
+    {
+
     }
 
     fun loadIngredientListByNetwork()
@@ -43,38 +49,49 @@ class IngredientViewModel (val ingredientRepository : IngredientDataSourceInterf
         }
     }
 
-    fun getIngredientList() : LiveData<List<IngredientDataClass>>?
+    fun getLocalIngredientList()
     {
         var result : LiveData<List<IngredientDataClass>>? = null
         //need DAO and repository
         viewModelScope.launch {
-            val ingredientResult = ingredientRepository.getIngredients()
+            val ingredientResult : Result<List<IngredientDataClassDTO>> = ingredientRepository.getIngredients()
              when(ingredientResult)
              {
-                 is Result.Success<LiveData<List<IngredientDataClass>>> ->
+                 is Result.Success<*> ->
                  {
-                     result = ingredientResult.data
+                     val dataList = ArrayList<IngredientDataClass>()
+                     dataList.addAll((ingredientResult.data as List<IngredientDataClassDTO>).map { result ->
+                         //map the reminder data from the DB to the be ready to be displayed on the UI
+                         IngredientDataClass(
+                             id = result.id,
+                             name = result.name,
+                             quantity = result.quantity,
+                             imageUrl = result.image,
+                             imageType = result.imageType
+                         )
+                     })
+                     listOfSavedIngredients?.value = dataList
                  }
                 is Result.Error ->
                 {
                     Log.i("test","empty repository")
-                //Toast.makeText(ApplicationProvider.getApplicationContext(),"${ingredientResult.message}",Toast.LENGTH_SHORT).show()
+                Toast.makeText(ApplicationProvider.getApplicationContext(),"${ingredientResult.message}",Toast.LENGTH_SHORT).show()
                 }
              }
         }
-    return result
     }
 
-    fun getIngredientById(id : Int) : LiveData<IngredientDataClass>?
+   /* fun getIngredientById(id : Int)
     {
         var result : LiveData<IngredientDataClass>? = null
         viewModelScope.launch {
-            val ingredientResult : Result<LiveData<IngredientDataClass>> = ingredientRepository.getIngredient(id)
+            val ingredientResult : Result<IngredientDataClassDTO> = ingredientRepository.getIngredient(id)
 
             when(ingredientResult)
             {
-                is Result.Success<LiveData<IngredientDataClass>> ->
+                is Result.Success<*> ->
                 {
+
                 result = ingredientResult.data
                 //result = ingredientResult.data
                 }
@@ -85,7 +102,7 @@ class IngredientViewModel (val ingredientRepository : IngredientDataSourceInterf
             }
         }
         return result
-    }
+    }*/
 
     @Override
     override fun onCleared() {

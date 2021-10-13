@@ -31,7 +31,7 @@ interface IngredientDao {
     //Note: When returning a LiveData from a DAO function, you do not need to call suspend on said function as suspend and LiveData
     //are incompatible (source:https://stackoverflow.com/questions/46445964/room-not-sure-how-to-convert-a-cursor-to-this-methods-return-type-which-meth)
     @Query("SELECT * from Ingredient_Entity WHERE id = :key")
-     fun get(key: Double): LiveData<IngredientDataClassDTO?>
+    suspend fun get(key: Int): IngredientDataClassDTO?
 
     /**
      * Deletes all values from the table.
@@ -51,22 +51,22 @@ interface IngredientDao {
     // See: https://stackoverflow.com/questions/44270688/unit-testing-room-and-livedata for solution ; this is why
     //we used the getOrAwait function in Udacity003 Project
     @Query("SELECT * FROM Ingredient_Entity ORDER BY id DESC")
-    fun getAllIngredients(): LiveData<List<IngredientDataClassDTO>>
+    suspend fun getAllIngredients(): List<IngredientDataClassDTO>?
 
     /**
      * Selects and returns the latest ingredient.
      */
     @Query("SELECT * FROM Ingredient_Entity ORDER BY id DESC LIMIT 1")
-     fun getLastIngredient(): LiveData<IngredientDataClassDTO?>
+     suspend fun getLastIngredient(): IngredientDataClassDTO?
 
     /**
      * Selects and returns the ingredient with given nightId.
      */
     @Query("SELECT * from Ingredient_Entity WHERE id = :key")
-    fun getIngredientById(key: Int): LiveData<IngredientDataClassDTO>
+    suspend fun getIngredientById(key: Int): IngredientDataClassDTO?
 
-    @Query("SELECT * from Ingredient_Entity WHERE id = :key")
-    fun getIngredientByIdTest(key: Int): LiveData<IngredientDataClassDTO?>
+/*    @Query("SELECT * from Ingredient_Entity WHERE id = :key")
+     fun getIngredientByIdTest(key: Int): LiveData<IngredientDataClassDTO?>*/
 
     //delete ingredient
     @Query("DELETE from Ingredient_Entity WHERE id = :key")

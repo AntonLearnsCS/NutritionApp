@@ -59,20 +59,6 @@ class daoTest {
     @After
     fun close() = database.close()
 
-    private fun <T> LiveData<T>.blockingObserve(): T? {
-        var value: T? = null
-        val latch = CountDownLatch(1)
-
-        val observer = Observer<T> { t ->
-            value = t
-            latch.countDown()
-        }
-
-        observeForever(observer)
-
-        latch.await(2, TimeUnit.SECONDS)
-        return value
-    }
 
     @ExperimentalCoroutinesApi
     @Test
@@ -89,7 +75,7 @@ class daoTest {
         //Q: Test does not work if returning a livedata from the interface
         //A: See answer by Christopher in: https://stackoverflow.com/questions/44270688/unit-testing-room-and-livedata
         val returnedItem : IngredientDataClassDTO? =
-            database.IngredientDatabaseDao.getIngredientById(ingredientItem.id).getOrAwaitValue()
+            database.IngredientDatabaseDao.getIngredientById(ingredientItem.id)
         val allItem = database.IngredientDatabaseDao.getAllIngredients()
 
         //TODO: returnedItem is null
