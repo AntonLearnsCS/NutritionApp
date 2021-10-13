@@ -61,6 +61,9 @@ interface IngredientDao {
     @Query("SELECT * from Ingredient_Entity WHERE id = :key")
     fun getIngredientById(key: Int): LiveData<IngredientDataClassDTO>
 
+    @Query("SELECT * from Ingredient_Entity WHERE id = :key")
+    fun getIngredientByIdTest(key: Int): IngredientDataClassDTO?
+
     //delete ingredient
     @Query("DELETE from Ingredient_Entity WHERE id = :key")
     fun deleteIngredientById(key: Int)

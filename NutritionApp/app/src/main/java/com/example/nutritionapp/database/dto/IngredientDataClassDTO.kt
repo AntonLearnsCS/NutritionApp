@@ -8,13 +8,16 @@ import java.util.*
 //seperation of concern from database data and UI data
 @Entity(tableName = "Ingredient_Entity")
 data class IngredientDataClassDTO(
-                                @PrimaryKey //PrimaryKey is mandatory
+                                @PrimaryKey
+                                @ColumnInfo(name = "id")
                                 val id: Int,
                                 @ColumnInfo(name = "name")
                                var name : String,
                                 @ColumnInfo(name = "quantity")
                                var quantity : Int = 0,
-                               val image : String,
+                                @ColumnInfo(name = "imageUrl")
+                                val image : String,
+                                @ColumnInfo(name = "imageType")
                                 val imageType : String){
 }
 //    val id : Double, val title : String, val image : String, val imageType : String

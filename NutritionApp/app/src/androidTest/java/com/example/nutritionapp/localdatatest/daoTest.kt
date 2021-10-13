@@ -11,8 +11,7 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.asExecutor
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.runBlockingTest
-import org.hamcrest.CoreMatchers.`is`
-import org.hamcrest.CoreMatchers.notNullValue
+import org.hamcrest.CoreMatchers.*
 import org.hamcrest.MatcherAssert.assertThat
 import org.junit.After
 import org.junit.Before
@@ -47,6 +46,7 @@ class daoTest {
             IngredientDatabase::class.java
         ).setTransactionExecutor(mainCoroutineRule.dispatcher.asExecutor())
             .setQueryExecutor(mainCoroutineRule.dispatcher.asExecutor())
+            .fallbackToDestructiveMigration()
             .allowMainThreadQueries().build()
         database.clearAllTables()
     }
@@ -62,12 +62,19 @@ class daoTest {
 
         //when user saves an item
         database.IngredientDatabaseDao.saveIngredient(ingredientItem)
+
         //then the item can be retrieved
-        val returnedItem = database.IngredientDatabaseDao.getIngredientById(ingredientItem.id)
-        if (returnedItem.value == null)
-            println("returned null")
+        database.IngredientDatabaseDao.deleteIngredientById(ingredientItem.id)
+        val returnedItem = database.IngredientDatabaseDao.getIngredientByIdTest(ingredientItem.id)
+        val allItem = database.IngredientDatabaseDao.getAllIngredients()
+
+        //TODO: returnedItem is null
+        assertThat(returnedItem, `is`(ingredientItem) )
+
+        println("name: ${returnedItem?.name}")
 
         assertThat(database, notNullValue())
-        assertThat(returnedItem.value, notNullValue())
+        assertThat(allItem, notNullValue())
+        assertThat(returnedItem, notNullValue())
     }
 }
