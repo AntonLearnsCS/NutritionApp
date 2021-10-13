@@ -15,11 +15,11 @@ class IngredientRepository(private val database: IngredientDatabase,
     override suspend fun getIngredients(): Result<LiveData<List<IngredientDataClass>>> {
         //make the function main-safe by switching thread to IO thread; also we maintain structured concurrency by not declaring a new
         //coroutine scope
-        val resultGetIngredients: LiveData<List<IngredientDataClassDTO>>? =
-            null
+        var resultGetIngredients: LiveData<List<IngredientDataClassDTO>>? = null
+
         return withContext(IOdispatcher)
         {
-            // = database.IngredientDatabaseDao.getAllIngredients()
+            resultGetIngredients = database.IngredientDatabaseDao.getAllIngredients()
             val convertedIngredients: LiveData<List<IngredientDataClass>>
 
             if (!resultGetIngredients?.value.isNullOrEmpty()) {
@@ -51,7 +51,7 @@ class IngredientRepository(private val database: IngredientDatabase,
     }
 
     override suspend fun saveNewIngredient(ingredient: IngredientDataClass) {
-        database.IngredientDatabaseDao.insert(IngredientDataClassDTO(
+        database.IngredientDatabaseDao.saveIngredient(IngredientDataClassDTO(
             name = ingredient.name,quantity = ingredient.quantity,id = ingredient.id,image = ingredient.imageUrl,
             imageType = ingredient.imageType))
     }

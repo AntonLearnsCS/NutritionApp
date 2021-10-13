@@ -1,17 +1,18 @@
 package com.example.nutritionapp.database
 
 import androidx.lifecycle.LiveData
+import androidx.room.*
+import com.example.nutritionapp.database.dto.IngredientDataClassDTO
 import androidx.room.Dao
 import androidx.room.Insert
+import androidx.room.OnConflictStrategy
 import androidx.room.Query
-import androidx.room.Update
-import com.example.nutritionapp.database.dto.IngredientDataClassDTO
 
 @Dao
 interface IngredientDao {
 
-    @Insert
-    suspend fun insert(ingredient: IngredientDataClassDTO)
+/*    @Insert
+    suspend fun insert(ingredient: IngredientDataClassDTO)*/
 
     /**
      * When updating a row with a value already set in a column,
@@ -63,4 +64,7 @@ interface IngredientDao {
     //delete ingredient
     @Query("DELETE from Ingredient_Entity WHERE id = :key")
     fun deleteIngredientById(key: Int)
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun saveIngredient(ingredient: IngredientDataClassDTO)
 }

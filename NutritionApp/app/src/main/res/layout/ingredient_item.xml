@@ -6,7 +6,7 @@
 
 
     <data>
-        <variable name="ingredient_item"
+        <variable name="ingredientItem"
             type="com.example.nutritionapp.database.IngredientDataClass">
 
         </variable>
@@ -33,7 +33,7 @@
             android:layout_width="@dimen/ingredient_item_width_name"
             android:layout_height="@dimen/ingredient_item_height_name"
             android:layout_marginTop="8dp"
-            android:text="TextView"
+            android:text="@{ingredientItem.quantity}"
             app:layout_constraintEnd_toStartOf="@+id/ingredient_image"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/ingredient_name" />
@@ -45,7 +45,7 @@
             android:layout_marginStart="16dp"
             android:layout_marginLeft="16dp"
             android:layout_marginTop="16dp"
-            android:text="TextView"
+            android:text="@{ingredientItem.name}"
             app:layout_constraintEnd_toStartOf="@+id/ingredient_image"
             app:layout_constraintHorizontal_bias="0.317"
             app:layout_constraintStart_toStartOf="parent"

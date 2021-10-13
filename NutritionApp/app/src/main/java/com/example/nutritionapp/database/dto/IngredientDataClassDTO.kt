@@ -11,7 +11,7 @@ data class IngredientDataClassDTO(
                                 @PrimaryKey //PrimaryKey is mandatory
                                 val id: Int,
                                 @ColumnInfo(name = "name")
-                               var name : String = "ingredient name",
+                               var name : String,
                                 @ColumnInfo(name = "quantity")
                                var quantity : Int = 0,
                                val image : String,

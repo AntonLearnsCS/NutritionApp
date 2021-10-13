@@ -4,7 +4,7 @@ import java.io.Serializable
 import java.util.*
 
 data class IngredientDataClass(
-    var name : String = "ingredient name",
+    var name : String,
     var quantity : Int = 0,
     val id: Int,
     val imageUrl : String,

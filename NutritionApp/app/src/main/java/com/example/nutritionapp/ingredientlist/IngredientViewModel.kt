@@ -1,5 +1,6 @@
 package com.example.nutritionapp.ingredientlist
 
+import android.util.Log
 import android.widget.Toast
 import androidx.lifecycle.*
 import androidx.test.core.app.ApplicationProvider
@@ -56,7 +57,8 @@ class IngredientViewModel (val ingredientRepository : IngredientDataSourceInterf
                  }
                 is Result.Error ->
                 {
-                    Toast.makeText(ApplicationProvider.getApplicationContext(),"${ingredientResult.message}",Toast.LENGTH_SHORT).show()
+                    Log.i("test","empty repository")
+                //Toast.makeText(ApplicationProvider.getApplicationContext(),"${ingredientResult.message}",Toast.LENGTH_SHORT).show()
                 }
              }
         }

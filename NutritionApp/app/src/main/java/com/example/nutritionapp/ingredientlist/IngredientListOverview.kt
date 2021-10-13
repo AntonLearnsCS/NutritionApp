@@ -35,7 +35,8 @@ class IngredientListOverview : Fragment ()
             ingredientAdapter.listIngredients = it
         })
 
-        binding.searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+
+       /* binding.searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(selectedIngredient: String?): Boolean {
                viewModel.updateFilter("/food/products/search?query=$selectedIngredient")
                 return false
@@ -46,7 +47,7 @@ class IngredientListOverview : Fragment ()
                 //adapter.filter.filter(p0)
                 return false
             }
-        })
+        })*/
 
 
     return binding.root
