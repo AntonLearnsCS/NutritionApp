@@ -93,7 +93,7 @@ val instanceTaskExecutorRule = InstantTaskExecutorRule()
         val testIngredient = IngredientDataClassDTO(9,"name",2,"http/someUrl","JPEG")
         database.IngredientDatabaseDao.saveIngredient(testIngredient)
 
-        //TODO: Returns correctly when called directly from database or repository
+        //TODO: Returns correctly when called directly from database
         val returnedItemDatabase = database.IngredientDatabaseDao.getAllIngredients()
         assertThat(returnedItemDatabase?.size, `is`(1))
 
