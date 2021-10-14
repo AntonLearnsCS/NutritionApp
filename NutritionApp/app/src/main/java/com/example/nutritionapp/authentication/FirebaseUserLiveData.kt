@@ -4,7 +4,7 @@ package com.example.nutritionapp.authentication
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.FirebaseAuth
 import androidx.lifecycle.LiveData
-import com.example.nutritionapp.wrapEspressoIdlingResource
+import com.example.nutritionapp.util.wrapEspressoIdlingResource
 
 /**
  * This class observes the current FirebaseUser. If there is no logged in user, FirebaseUser will

@@ -9,7 +9,7 @@ import androidx.test.core.app.ApplicationProvider.getApplicationContext
 import com.example.nutritionapp.database.IngredientDatabase
 import com.example.nutritionapp.database.dto.IngredientDataClassDTO
 import com.example.nutritionapp.endtoendtest.MainCoroutineRule
-import com.example.nutritionapp.getOrAwaitValue
+import com.example.nutritionapp.util.getOrAwaitValue
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.asExecutor
 import kotlinx.coroutines.runBlocking
@@ -64,7 +64,7 @@ class daoTest {
     @Test
     fun testDao() = mainCoroutineRule.runBlockingTest {
         //given an ingredient item
-        val ingredientItem = IngredientDataClassDTO(5,"name",1,"url","JPEG")
+        val ingredientItem = IngredientDataClassDTO(5,"nameq",1,"url","JPEG")
 
         //when user saves an item
         database.IngredientDatabaseDao.saveIngredient(ingredientItem)

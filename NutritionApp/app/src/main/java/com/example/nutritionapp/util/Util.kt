@@ -1,4 +1,4 @@
-package com.example.nutritionapp
+package com.example.nutritionapp.util
 
 import androidx.annotation.VisibleForTesting
 import androidx.lifecycle.LiveData

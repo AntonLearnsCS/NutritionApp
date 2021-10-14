@@ -16,7 +16,7 @@ import com.google.firebase.auth.FirebaseAuth
 import androidx.databinding.DataBindingUtil
 import com.example.nutritionapp.ingredientlist.IngredientListActivity
 import com.example.nutritionapp.databinding.ActivityAuthenticationLayoutBinding
-import com.example.nutritionapp.wrapEspressoIdlingResource
+import com.example.nutritionapp.util.wrapEspressoIdlingResource
 
 /**
  * This class should be the starting point of the app, It asks the users to sign in / register, and redirects the

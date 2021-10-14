@@ -7,9 +7,10 @@ import androidx.test.core.app.ApplicationProvider
 import com.example.nutritionapp.network.NutritionAPI
 import com.example.nutritionapp.database.IngredientDataClass
 import kotlinx.coroutines.launch
-import com.example.nutritionapp.Result
+import com.example.nutritionapp.util.Result
 import com.example.nutritionapp.database.IngredientDataSourceInterface
 import com.example.nutritionapp.database.dto.IngredientDataClassDTO
+import com.example.nutritionapp.util.wrapEspressoIdlingResource
 
 class IngredientViewModel (val ingredientRepository : IngredientDataSourceInterface) : ViewModel() {
 
@@ -26,33 +27,41 @@ class IngredientViewModel (val ingredientRepository : IngredientDataSourceInterf
         _searchFilter.value = value
     }
 
-    fun testFun()
-    {
 
-    }
 
     fun loadIngredientListByNetwork()
     {
-        viewModelScope.launch {
-            if (searchFilter.value != null) {
-                val result = NutritionAPI.nutritionService.getProperties(searchFilter.value!!)
-                listOfNetworkRequestedIngredients = result.map { IngredientDataClass(name = it.name,quantity = 1,id = it.id,
-                imageUrl = it.imageUrl,imageType = it.imageType) }
-                val networkRequestSuccess = listOfNetworkRequestedIngredients!!.size != 0
+        wrapEspressoIdlingResource {
+            viewModelScope.launch {
+                if (searchFilter.value != null) {
+                    val result = NutritionAPI.nutritionService.getProperties(searchFilter.value!!)
+                    listOfNetworkRequestedIngredients = result.map {
+                        IngredientDataClass(
+                            name = it.name, quantity = 1, id = it.id,
+                            imageUrl = it.imageUrl, imageType = it.imageType
+                        )
+                    }
+                    val networkRequestSuccess = listOfNetworkRequestedIngredients!!.size != 0
 
-                Toast.makeText(ApplicationProvider.getApplicationContext(),"$networkRequestSuccess",Toast.LENGTH_SHORT).show()
-            }
-            else
-            {
-                Toast.makeText(ApplicationProvider.getApplicationContext(),"Missing search parameter",Toast.LENGTH_SHORT).show()
+                    Toast.makeText(
+                        ApplicationProvider.getApplicationContext(),
+                        "$networkRequestSuccess",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                } else {
+                    Toast.makeText(
+                        ApplicationProvider.getApplicationContext(),
+                        "Missing search parameter",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
             }
         }
     }
 
     fun getLocalIngredientList()
-    {
-        var result : LiveData<List<IngredientDataClass>>? = null
-        //need DAO and repository
+    { //need DAO and repository
+        wrapEspressoIdlingResource {
         viewModelScope.launch {
             val ingredientResult : Result<List<IngredientDataClassDTO>> = ingredientRepository.getIngredients()
              when(ingredientResult)
@@ -75,9 +84,10 @@ class IngredientViewModel (val ingredientRepository : IngredientDataSourceInterf
                 is Result.Error ->
                 {
                     Log.i("test","empty repository")
-                Toast.makeText(ApplicationProvider.getApplicationContext(),"${ingredientResult.message}",Toast.LENGTH_SHORT).show()
+//                Toast.makeText(ApplicationProvider.getApplicationContext(),"${ingredientResult.message}",Toast.LENGTH_SHORT).show()
                 }
              }
+        }
         }
     }
 

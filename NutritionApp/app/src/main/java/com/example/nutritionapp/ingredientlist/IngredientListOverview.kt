@@ -9,6 +9,7 @@ import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import com.example.nutritionapp.R
+import com.example.nutritionapp.database.dto.IngredientDataClassDTO
 import com.example.nutritionapp.databinding.IngredientListRecyclerviewBinding
 import org.koin.android.ext.android.inject
 
@@ -31,6 +32,7 @@ class IngredientListOverview : Fragment ()
         binding.recyclerViewLocal.adapter = ingredientAdapter
         viewModel.getLocalIngredientList()
         //updates recyclerView
+
         viewModel.listOfSavedIngredients?.observe(viewLifecycleOwner, Observer {
             ingredientAdapter.listIngredients = it
         })

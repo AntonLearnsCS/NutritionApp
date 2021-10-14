@@ -4,9 +4,9 @@ import java.io.Serializable
 import java.util.*
 
 data class IngredientDataClass(
+    val id: Int,
     var name : String,
     var quantity : Int = 0,
-    val id: Int,
     val imageUrl : String,
     val imageType : String
 ) : Serializable

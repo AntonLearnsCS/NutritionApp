@@ -1,6 +1,6 @@
 package com.example.nutritionapp.database
 import androidx.lifecycle.LiveData
-import com.example.nutritionapp.Result
+import com.example.nutritionapp.util.Result
 import com.example.nutritionapp.database.dto.IngredientDataClassDTO
 
 interface IngredientDataSourceInterface {
