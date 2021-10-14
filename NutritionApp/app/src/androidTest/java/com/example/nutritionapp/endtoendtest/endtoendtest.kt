@@ -16,7 +16,7 @@ import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.runners.AndroidJUnit4
 
 import androidx.test.filters.LargeTest
-import com.example.nutritionapp.DataBindingIdlingResource
+//import com.example.nutritionapp.DataBindingIdlingResource
 import com.example.nutritionapp.R
 import com.example.nutritionapp.authentication.AuthenticationActivity
 import com.example.nutritionapp.database.IngredientDatabase
@@ -24,7 +24,7 @@ import com.example.nutritionapp.database.IngredientRepository
 import com.example.nutritionapp.database.dto.IngredientDataClassDTO
 import com.example.nutritionapp.ingredientlist.IngredientListActivity
 import com.example.nutritionapp.ingredientlist.IngredientViewModel
-import com.example.nutritionapp.monitorActivity
+//import com.example.nutritionapp.monitorActivity
 import com.example.nutritionapp.util.EspressoIdleResource
 import kotlinx.coroutines.*
 import kotlinx.coroutines.test.runBlockingTest
@@ -44,7 +44,7 @@ val instanceTaskExecutorRule = InstantTaskExecutorRule()
     private lateinit var viewModel : IngredientViewModel
     private lateinit var database: IngredientDatabase
     private lateinit var repository: IngredientRepository
-    private val dataBindingIdlingResource = DataBindingIdlingResource()
+    //private val dataBindingIdlingResource = DataBindingIdlingResource()
 
     @ExperimentalCoroutinesApi
     @get:Rule
@@ -62,7 +62,7 @@ val instanceTaskExecutorRule = InstantTaskExecutorRule()
 
         database.clearAllTables()
         //database.IngredientDatabaseDao.clear()
-        repository = IngredientRepository(database,mainCoroutineRule.dispatcher)
+        repository = IngredientRepository(database,Dispatchers.Main)
         viewModel = IngredientViewModel(repository)
     }
 
@@ -75,7 +75,7 @@ val instanceTaskExecutorRule = InstantTaskExecutorRule()
         IdlingRegistry.getInstance().register(EspressoIdleResource.countingIdlingResource)
         //we register an IdlingResource class seperately for databinding since Espresso uses a different mechanism for
         //databinding (Choreographer class)
-        IdlingRegistry.getInstance().register(dataBindingIdlingResource)
+        //IdlingRegistry.getInstance().register(dataBindingIdlingResource)
     }
 
     /**
@@ -84,7 +84,7 @@ val instanceTaskExecutorRule = InstantTaskExecutorRule()
     @After
     fun unregisterIdlingResource() {
         IdlingRegistry.getInstance().unregister(EspressoIdleResource.countingIdlingResource)
-        IdlingRegistry.getInstance().unregister(dataBindingIdlingResource)
+        //IdlingRegistry.getInstance().unregister(dataBindingIdlingResource)
     }
     @ExperimentalCoroutinesApi
     @Test
@@ -93,23 +93,32 @@ val instanceTaskExecutorRule = InstantTaskExecutorRule()
         val testIngredient = IngredientDataClassDTO(9,"name",2,"http/someUrl","JPEG")
         database.IngredientDatabaseDao.saveIngredient(testIngredient)
 
-        val returnedItem = database.IngredientDatabaseDao.getAllIngredients()
-        assertThat(returnedItem?.size, `is`(1))
-        
+        //TODO: Returns correctly when called directly from database or repository
+        val returnedItemDatabase = database.IngredientDatabaseDao.getAllIngredients()
+        assertThat(returnedItemDatabase?.size, `is`(1))
+
+        /*
+         val activityScenario = ActivityScenario.launch(AuthenticationActivity::class.java)
+
+        //So espresso knows which activity to monitor
+        dataBindingIdlingResource.monitorActivity(activityScenario)
+         */
+
         val activityScenario = ActivityScenario.launch(AuthenticationActivity::class.java)
         onView(withId(R.id.loginButton)).check(matches(isDisplayed()))
         onView(withId(R.id.loginButton)).perform(click())
         delay(3000)
-        onView(withId(R.id.ingredient_list_constraint_layout)).check(matches(isDisplayed()))
+        //onView(withId(R.id.ingredient_list_constraint_layout)).check(matches(isDisplayed()))
 //        onView(withId(R.id.search_view)).check(matches(isDisplayed()))
         //recyclerview did not display b/c there was no data to display so the recyclerview collapsed on itself since height/width is
         //set to wrap_content
         val listActivityScenario = ActivityScenario.launch(IngredientListActivity::class.java)
-        dataBindingIdlingResource.monitorActivity(listActivityScenario)
+       // dataBindingIdlingResource.monitorActivity(listActivityScenario)
 
         viewModel.getLocalIngredientList()
         onView(withId(R.id.recycler_view_local)).check(matches(isDisplayed()))
 
+        //TODO: Why does "listOfSavedIngredients" have a null value?
         assertThat(viewModel.listOfSavedIngredients?.value?.size, `is`(1))
 
         //onView(withId(R.id.test)).check(matches(withText(not(containsString("NutritionApp")))))
