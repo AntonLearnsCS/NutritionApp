@@ -3,9 +3,12 @@ package com.example.nutritionapp
 import androidx.lifecycle.LiveData
 import com.example.nutritionapp.database.IngredientDataClass
 import com.example.nutritionapp.database.IngredientDataSourceInterface
+import com.example.nutritionapp.database.dto.IngredientDataClassDTO
+import com.example.nutritionapp.util.Result
+
 
 object MockRepository : IngredientDataSourceInterface {
-    override suspend fun getIngredients(): Result<LiveData<List<IngredientDataClass>>> {
+    override suspend fun getIngredients(): Result<List<IngredientDataClassDTO>> {
         TODO("Not yet implemented")
     }
 
@@ -17,7 +20,7 @@ object MockRepository : IngredientDataSourceInterface {
         TODO("Not yet implemented")
     }
 
-    override suspend fun getIngredient(id: Int): Result<LiveData<IngredientDataClass>> {
+    override suspend fun getIngredient(id: Int): Result<IngredientDataClassDTO> {
         TODO("Not yet implemented")
     }
 

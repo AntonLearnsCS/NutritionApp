@@ -11,6 +11,7 @@ import androidx.lifecycle.Observer
 import com.example.nutritionapp.R
 import com.example.nutritionapp.database.dto.IngredientDataClassDTO
 import com.example.nutritionapp.databinding.IngredientListRecyclerviewBinding
+import com.example.nutritionapp.network.NutritionAPI
 import org.koin.android.ext.android.inject
 
 class IngredientListOverview : Fragment ()
@@ -18,6 +19,7 @@ class IngredientListOverview : Fragment ()
     //Koin
     val viewModel : IngredientViewModel by inject()
     private lateinit var binding : IngredientListRecyclerviewBinding
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -37,20 +39,9 @@ class IngredientListOverview : Fragment ()
             ingredientAdapter.listIngredients = it
         })
 
-
-       /* binding.searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
-            override fun onQueryTextSubmit(selectedIngredient: String?): Boolean {
-               viewModel.updateFilter("/food/products/search?query=$selectedIngredient")
-                return false
+        binding.searchIngredientFAB.setOnClickListener {
+           viewModel.loadIngredientListByNetwork()
             }
-            override fun onQueryTextChange(p0: String?): Boolean {
-
-                //Start filtering the list as user start entering the characters; get from local database
-                //adapter.filter.filter(p0)
-                return false
-            }
-        })*/
-
 
     return binding.root
     }

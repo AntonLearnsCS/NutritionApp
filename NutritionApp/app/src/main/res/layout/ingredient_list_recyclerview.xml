@@ -40,17 +40,6 @@
             app:layout_constraintVertical_bias="0.703">
         </androidx.recyclerview.widget.RecyclerView>
 
-        <SearchView
-            android:id="@+id/search_view"
-            android:layout_width="105dp"
-            android:layout_height="49dp"
-            android:queryHint="search ingredient"
-
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            />
-
         <TextView
             android:id="@+id/Ingredients_at_Home"
             android:layout_width="wrap_content"
@@ -67,10 +56,32 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="92dp"
-            app:layout_constraintEnd_toStartOf="@+id/search_view"
-            app:layout_constraintHorizontal_bias="0.41"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:testSize="@{ingredientViewModel.listOfSavedIngredients.size()}" />
+
+        <TextView
+            android:id="@+id/searchIngredient"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:hint="search ingredient"
+            android:text="@={ingredientViewModel.searchItem}"
+            app:layout_constraintBottom_toTopOf="@+id/Ingredients_at_Home"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/searchIngredientFAB"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:clickable="true"
+            app:layout_constraintBottom_toTopOf="@+id/Ingredients_at_Home"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/searchIngredient"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@android:drawable/ic_input_add"
+            android:focusable="true" />
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

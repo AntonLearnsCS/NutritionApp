@@ -12,13 +12,14 @@ import retrofit2.http.GET
 import retrofit2.http.Query
 import java.io.IOException
 
-private const val BASE_URL = "https://spoonacular-recipe-food-nutrition-v1.p.rapidapi.com"
+private const val BASE_URL = "https://spoonacular-recipe-food-nutrition-v1.p.rapidapi.com/food/products/"
 
 
 /**
  * Build the Moshi object that Retrofit will be using, making sure to add the Kotlin adapter for
  * full Kotlin compatibility.
  */
+
 private val moshi = Moshi.Builder()
     .add(KotlinJsonAdapterFactory())
     .build()
@@ -55,7 +56,7 @@ private val retrofit = Retrofit.Builder()
     .build()
 
 /**
- * A public interface that exposes the [getProperties] method
+ * A public interface that exposes the [getIngredients] method
  */
 interface IngredientsApiInterface {
     /**
@@ -64,8 +65,9 @@ interface IngredientsApiInterface {
      * HTTP method
      */
 
+    //Note: "query" is what will be appended to the end point i.e http.somesite.com/search?query=
     @GET("search")
-    suspend fun getProperties(@Query("searchFilter") type: String): List<IngredientListNetworkDataClass>
+    suspend fun getIngredients(@Query("query") type: String): wrapperIngredientListNetworkDataClass
 }
 
 //we want to expose the retrofit instance because creating a Retrofit instance is expensive

@@ -1,6 +1,7 @@
 package com.example.nutritionapp.ingredientlist
 
 import android.util.Log
+import android.view.LayoutInflater
 import android.widget.Toast
 import androidx.lifecycle.*
 import androidx.test.core.app.ApplicationProvider
@@ -10,44 +11,53 @@ import kotlinx.coroutines.launch
 import com.example.nutritionapp.util.Result
 import com.example.nutritionapp.database.IngredientDataSourceInterface
 import com.example.nutritionapp.database.dto.IngredientDataClassDTO
+import com.example.nutritionapp.databinding.IngredientListRecyclerviewBinding
+import com.example.nutritionapp.network.IngredientListNetworkDataClass
+import com.example.nutritionapp.network.wrapperIngredientListNetworkDataClass
 import com.example.nutritionapp.util.wrapEspressoIdlingResource
 
 class IngredientViewModel (val ingredientRepository : IngredientDataSourceInterface) : ViewModel() {
 
+//    val binding = IngredientListRecyclerviewBinding.inflate(LayoutInflater.from(ApplicationProvider.getApplicationContext()))
     var listOfNetworkRequestedIngredients : List<IngredientDataClass>? = null //getIngredientListByNetwork()
 
     var listOfSavedIngredients : MutableLiveData<List<IngredientDataClass>>? = null//getLocalIngredientList()
 
-     private val _searchFilter : MutableLiveData<String> = MutableLiveData("/food/products/search?query=Apple")
-    val searchFilter : LiveData<String>
-    get() = _searchFilter
-
-    fun updateFilter(value : String)
-    {
-        _searchFilter.value = value
-    }
-
-
+    //two-way binding
+    //no need to add "?query=" since the getIngredients() of the IngredientsApiInterface will do that
+    var searchItem = MutableLiveData<String>("Apple")
 
     fun loadIngredientListByNetwork()
     {
         wrapEspressoIdlingResource {
             viewModelScope.launch {
-                if (searchFilter.value != null) {
-                    val result = NutritionAPI.nutritionService.getProperties(searchFilter.value!!)
-                    listOfNetworkRequestedIngredients = result.map {
-                        IngredientDataClass(
-                            name = it.name, quantity = 1, id = it.id,
-                            imageUrl = it.imageUrl, imageType = it.imageType
-                        )
-                    }
-                    val networkRequestSuccess = listOfNetworkRequestedIngredients!!.size != 0
+                if (searchItem.value != null) {
+                    try {
+                        val result :wrapperIngredientListNetworkDataClass =
+                            NutritionAPI.nutritionService.getIngredients(searchItem.value!!)
 
-                    Toast.makeText(
-                        ApplicationProvider.getApplicationContext(),
-                        "$networkRequestSuccess",
-                        Toast.LENGTH_SHORT
-                    ).show()
+                        println("Total products: ${result.totalProducts}")
+
+                        listOfNetworkRequestedIngredients = result.products.map {
+                            IngredientDataClass(
+                                name = it.name, quantity = 1, id = it.id,
+                                imageUrl = it.imageUrl, imageType = it.imageType
+                            )
+                        }
+                        println("Number of items: ${listOfNetworkRequestedIngredients!!.size}")
+
+                        val networkRequestSuccess = listOfNetworkRequestedIngredients!!.isNotEmpty()
+
+                        Toast.makeText(
+                            ApplicationProvider.getApplicationContext(),
+                            "$networkRequestSuccess",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
+                    catch (e: Exception) {
+                        println("Error: ${e.message}")
+                    }
+
                 } else {
                     Toast.makeText(
                         ApplicationProvider.getApplicationContext(),
