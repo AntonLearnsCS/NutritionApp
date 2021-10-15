@@ -58,8 +58,9 @@
             android:layout_marginTop="92dp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:testSize="@{ingredientViewModel.listOfSavedIngredients.size()}" />
-
+            app:testSize="@{ingredientViewModel.listOfNetworkRequestedIngredients.size()}"
+            />
+<!-- app:testSize="@{ingredientViewModel.listOfNetworkRequestedIngredients.size()}" -->
         <TextView
             android:id="@+id/searchIngredient"
             android:layout_width="wrap_content"

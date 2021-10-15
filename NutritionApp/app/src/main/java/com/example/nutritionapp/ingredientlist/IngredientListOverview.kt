@@ -42,7 +42,9 @@ class IngredientListOverview : Fragment ()
         binding.searchIngredientFAB.setOnClickListener {
            viewModel.loadIngredientListByNetwork()
             }
+        binding.test.text
 
     return binding.root
     }
+
 }

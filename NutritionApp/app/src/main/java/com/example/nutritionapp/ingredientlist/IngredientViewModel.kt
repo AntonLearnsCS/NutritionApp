@@ -46,11 +46,9 @@ class IngredientViewModel (val ingredientRepository : IngredientDataSourceInterf
                         }
                         println("Number of items: ${listOfNetworkRequestedIngredients!!.size}")
 
-                        val networkRequestSuccess = listOfNetworkRequestedIngredients!!.isNotEmpty()
-
                         Toast.makeText(
                             ApplicationProvider.getApplicationContext(),
-                            "$networkRequestSuccess",
+                            "networkRequestSuccess",
                             Toast.LENGTH_SHORT
                         ).show()
                     }
