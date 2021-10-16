@@ -4,14 +4,12 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.SearchView
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import com.example.nutritionapp.R
-import com.example.nutritionapp.database.dto.IngredientDataClassDTO
+import com.example.nutritionapp.database.IngredientDataClass
 import com.example.nutritionapp.databinding.IngredientListRecyclerviewBinding
-import com.example.nutritionapp.network.NutritionAPI
 import org.koin.android.ext.android.inject
 
 class IngredientListOverview : Fragment ()
@@ -28,15 +26,28 @@ class IngredientListOverview : Fragment ()
         super.onCreate(savedInstanceState)
          binding = DataBindingUtil.inflate(inflater, R.layout.ingredient_list_recyclerview,container,false)
         //binding.ingredientList = viewModel.listOfIngredients.value
-        binding.lifecycleOwner = this
+        binding.lifecycleOwner = viewLifecycleOwner
 
-        val ingredientAdapter = IngredientAdapter()
-        binding.recyclerViewLocal.adapter = ingredientAdapter
+        val localIngredientAdapter = localIngredientAdapter()
+        val networkIngredientAdapter = networkIngredientAdapter()
+
+        binding.recyclerViewLocal.adapter = localIngredientAdapter
+        binding.recyclerViewNetwork.adapter = networkIngredientAdapter
+
         viewModel.getLocalIngredientList()
         //updates recyclerView
 
+        val testList : MutableList<IngredientDataClass> = mutableListOf<IngredientDataClass>()
+        testList.add(IngredientDataClass(1,"name",2,"url","jpeg"))
+        testList.add(IngredientDataClass(3,"name3",5,"url3","jpeg3"))
+        networkIngredientAdapter.listIngredients = testList
+
         viewModel.listOfSavedIngredients?.observe(viewLifecycleOwner, Observer {
-            ingredientAdapter.listIngredients = it
+            localIngredientAdapter.listIngredients = it
+        })
+
+        viewModel.displayListInXml?.observe(viewLifecycleOwner, Observer {
+             networkIngredientAdapter.listIngredients = it
         })
 
         binding.searchIngredientFAB.setOnClickListener {
@@ -46,5 +57,4 @@ class IngredientListOverview : Fragment ()
 
     return binding.root
     }
-
 }

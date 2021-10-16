@@ -1,10 +1,12 @@
 package com.example.nutritionapp.ingredientlist
 
+import android.app.Application
 import android.util.Log
 import android.view.LayoutInflater
 import android.widget.Toast
 import androidx.lifecycle.*
-import androidx.test.core.app.ApplicationProvider
+//import androidx.test.core.app.ApplicationProvider
+import androidx.test.core.app.ApplicationProvider.getApplicationContext
 import com.example.nutritionapp.network.NutritionAPI
 import com.example.nutritionapp.database.IngredientDataClass
 import kotlinx.coroutines.launch
@@ -16,12 +18,21 @@ import com.example.nutritionapp.network.IngredientListNetworkDataClass
 import com.example.nutritionapp.network.wrapperIngredientListNetworkDataClass
 import com.example.nutritionapp.util.wrapEspressoIdlingResource
 
-class IngredientViewModel (val ingredientRepository : IngredientDataSourceInterface) : ViewModel() {
+/*
+To get context inside a ViewModel we can either extend AndroidViewModel. Do not use ApplicationProvider in production code, only in tests
+https://stackoverflow.com/questions/51451819/how-to-get-context-in-android-mvvm-viewmodel
+ */
+class IngredientViewModel (val app: Application, val ingredientRepository : IngredientDataSourceInterface)
+    : AndroidViewModel(app) {
 
 //    val binding = IngredientListRecyclerviewBinding.inflate(LayoutInflater.from(ApplicationProvider.getApplicationContext()))
     var listOfNetworkRequestedIngredients : List<IngredientDataClass>? = null //getIngredientListByNetwork()
 
+    var displayListInXml : MutableLiveData<List<IngredientDataClass>>? = null
+
     var listOfSavedIngredients : MutableLiveData<List<IngredientDataClass>>? = null//getLocalIngredientList()
+
+    val testDTO = IngredientDataClass(4,"nameTest",2,"url","jpeg")
 
     //two-way binding
     //no need to add "?query=" since the getIngredients() of the IngredientsApiInterface will do that
@@ -31,6 +42,7 @@ class IngredientViewModel (val ingredientRepository : IngredientDataSourceInterf
     {
         wrapEspressoIdlingResource {
             viewModelScope.launch {
+
                 if (searchItem.value != null) {
                     try {
                         val result :wrapperIngredientListNetworkDataClass =
@@ -44,10 +56,18 @@ class IngredientViewModel (val ingredientRepository : IngredientDataSourceInterf
                                 imageUrl = it.imageUrl, imageType = it.imageType
                             )
                         }
+                        displayListInXml?.value = listOfNetworkRequestedIngredients
+
                         println("Number of items: ${listOfNetworkRequestedIngredients!!.size}")
 
+                        for (i in listOfNetworkRequestedIngredients!!)
+                        {
+                            println("Ingredient name: ${i.name}")
+                        }
+
+                        //Note
                         Toast.makeText(
-                            ApplicationProvider.getApplicationContext(),
+                            app,
                             "networkRequestSuccess",
                             Toast.LENGTH_SHORT
                         ).show()
@@ -58,7 +78,7 @@ class IngredientViewModel (val ingredientRepository : IngredientDataSourceInterf
 
                 } else {
                     Toast.makeText(
-                        ApplicationProvider.getApplicationContext(),
+                        app,
                         "Missing search parameter",
                         Toast.LENGTH_SHORT
                     ).show()
@@ -71,6 +91,7 @@ class IngredientViewModel (val ingredientRepository : IngredientDataSourceInterf
     { //need DAO and repository
         wrapEspressoIdlingResource {
         viewModelScope.launch {
+
             val ingredientResult : Result<List<IngredientDataClassDTO>> = ingredientRepository.getIngredients()
              when(ingredientResult)
              {

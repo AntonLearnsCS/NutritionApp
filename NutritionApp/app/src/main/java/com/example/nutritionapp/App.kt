@@ -1,6 +1,7 @@
 package com.example.nutritionapp
 
 import android.app.Application
+import androidx.test.core.app.ApplicationProvider
 import com.example.nutritionapp.ingredientlist.IngredientViewModel
 import com.example.nutritionapp.database.IngredientDataSourceInterface
 import com.example.nutritionapp.database.IngredientDatabase
@@ -34,7 +35,7 @@ class App : Application() {
             //Declare a ViewModel - be later inject into Fragment with dedicated injector using by viewModel()
             viewModel {
                 IngredientViewModel(
-                    get() as IngredientDataSourceInterface
+                    get(),get() as IngredientDataSourceInterface
                 )
             }
             single { IngredientRepository(get()) as IngredientDataSourceInterface }
@@ -50,7 +51,7 @@ class App : Application() {
                 //  viewModel { SaveReminderViewModel(get(), get() as ReminderDataSource) }
             }*/
 
-            //single{ApplicationProvider.getApplicationContext()}
+            //single{ ApplicationProvider.getApplicationContext()}
           /*  single {ServiceLocator.provideTasksRepository(applicationContext)}
             //single { RemindersLocalRepository(get()) as ReminderDataSource } //replaced by ServiceLocator
             single { LocalDB.createRemindersDao(this@MyApp) }*/
