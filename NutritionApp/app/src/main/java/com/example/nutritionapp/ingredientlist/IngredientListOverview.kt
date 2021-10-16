@@ -42,6 +42,7 @@ class IngredientListOverview : Fragment ()
         testList.add(IngredientDataClass(3,"name3",5,"url3","jpeg3"))
         networkIngredientAdapter.listIngredients = testList
 
+        //TODO: Not observing properly or listOfSavedIngredients is not being passed in correctly?
         viewModel.listOfSavedIngredients?.observe(viewLifecycleOwner, Observer {
             localIngredientAdapter.listIngredients = it
         })
