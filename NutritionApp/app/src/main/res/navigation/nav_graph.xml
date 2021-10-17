@@ -6,9 +6,21 @@
     <fragment
         android:id="@+id/ingredientListOverview"
         android:name="com.example.nutritionapp.ingredientlist.IngredientListOverview"
-        android:label="IngredientListOverview" />
+        android:label="IngredientListOverview" >
+        <action
+            android:id="@+id/action_ingredientListOverview_to_ingredientDetail"
+            app:destination="@id/ingredientDetail" />
+    </fragment>
     <activity
         android:id="@+id/ingredientListActivity"
         android:name="com.example.nutritionapp.ingredientlist.IngredientListActivity"
         android:label="IngredientListActivity" />
+    <fragment
+        android:id="@+id/ingredientDetail"
+        android:name="com.example.nutritionapp.ingredientdetail.IngredientDetail"
+        android:label="IngredientDetail" >
+        <argument
+            android:name="IngredientItem"
+            app:argType="com.example.nutritionapp.database.IngredientDataClass" />
+    </fragment>
 </navigation>

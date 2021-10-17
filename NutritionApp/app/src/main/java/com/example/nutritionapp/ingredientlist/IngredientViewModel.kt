@@ -125,29 +125,18 @@ class IngredientViewModel (val app: Application, val ingredientRepository : Ingr
         }
         }
     }
+    private val _navigateToDetail = MutableLiveData<IngredientDataClass>()
+    val navigateToDetail : LiveData<IngredientDataClass>
+    get() = _navigateToDetail
 
-   /* fun getIngredientById(id : Int)
+    fun setNavigateToDetail(ingredientItem : IngredientDataClass)
     {
-        var result : LiveData<IngredientDataClass>? = null
-        viewModelScope.launch {
-            val ingredientResult : Result<IngredientDataClassDTO> = ingredientRepository.getIngredient(id)
-
-            when(ingredientResult)
-            {
-                is Result.Success<*> ->
-                {
-
-                result = ingredientResult.data
-                //result = ingredientResult.data
-                }
-                is Result.Error ->
-                {
-                    Toast.makeText(ApplicationProvider.getApplicationContext(),"${ingredientResult.message}",Toast.LENGTH_SHORT).show()
-                }
-            }
-        }
-        return result
-    }*/
+        _navigateToDetail.value = ingredientItem
+    }
+    fun setNavigateToDetailNull()
+    {
+        _navigateToDetail.value = null
+    }
 
     @Override
     override fun onCleared() {

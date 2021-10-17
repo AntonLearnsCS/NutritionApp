@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import com.example.nutritionapp.R
+import com.example.nutritionapp.database.IngredientDataClass
 import com.example.nutritionapp.databinding.IngredientDetailBinding
 
 class IngredientDetail : Fragment() {
@@ -16,7 +17,9 @@ class IngredientDetail : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+        val arg = IngredientDetailArgs.fromBundle(requireArguments())//arguments?.getSerializable("IngredientItem") as IngredientDataClass
         binding = DataBindingUtil.inflate(inflater, R.layout.ingredient_detail,container,false)
+        binding.ingredientItem = arg.IngredientItem
         binding.lifecycleOwner = this
 
         return binding.root

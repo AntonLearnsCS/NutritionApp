@@ -10,22 +10,28 @@
             type="com.example.nutritionapp.database.IngredientDataClass">
 
         </variable>
+
+        <variable
+            name="clickListener"
+            type="com.example.nutritionapp.ingredientlist.networkIngredientAdapter.NetworkIngredientListener" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="117dp"
+        android:onClick="@{() -> clickListener.onClick(ingredientItem)}"
+        >
 
 
         <ImageView
             android:id="@+id/ingredient_image"
-            android:layout_width="147dp"
-            android:layout_height="130dp"
+            android:layout_width="134dp"
+            android:layout_height="76dp"
             android:layout_marginEnd="16dp"
-            android:layout_marginRight="16dp"
             app:layout_constraintBottom_toBottomOf="@+id/quantity"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="@+id/ingredient_name"
+            app:layout_constraintVertical_bias="0.0"
             app:srcCompat="@drawable/fui_idp_button_background_anonymous" />
 
         <TextView

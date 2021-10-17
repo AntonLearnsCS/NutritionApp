@@ -4,19 +4,22 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.annotation.LayoutRes
 import androidx.databinding.DataBindingUtil
+import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.example.nutritionapp.R
 import com.example.nutritionapp.database.IngredientDataClass
 import com.example.nutritionapp.databinding.IngredientItemBinding
 
 
-class localIngredientAdapter : RecyclerView.Adapter<localIngredientAdapter.ViewHolder>() {
-    var listIngredients : List<IngredientDataClass> = emptyList()
+class localIngredientAdapter : ListAdapter<IngredientDataClass, localIngredientAdapter.ViewHolder>(LocalIngredienttDiffCallback())
+{
+ /*   var listIngredients : List<IngredientDataClass> = emptyList()
         set(value) {
             field = value
             //not very efficient, should use Diff check
             notifyDataSetChanged()
-        }
+        }*/
 /*
 Supplying the parent View lets the inflater know what layoutparams to use. Supplying the false parameter tells it to not
 attach it to the parent just yet. That is what the RecyclerView will do for you.
@@ -43,13 +46,10 @@ LayoutInflater.from(parent.getContext())
     }
 
     override fun onBindViewHolder(holder: localIngredientAdapter.ViewHolder, position: Int) {
-            val ingredientItem = listIngredients[position]
+            val ingredientItem = getItem(position)
             holder.bind(ingredientItem)
     }
 
-    override fun getItemCount(): Int {
-        return listIngredients.size
-    }
 
     //implement data binding to avoid using findViewById()
     class ViewHolder(val binding : IngredientItemBinding) : RecyclerView.ViewHolder(binding.root)
@@ -63,6 +63,22 @@ LayoutInflater.from(parent.getContext())
             val LAYOUT = R.layout.ingredient_item
         }
         //val sleepLength: TextView = itemView.findViewById(R.id.sleep_length)
+    }
+    class LocalIngredienttDiffCallback :
+        DiffUtil.ItemCallback<IngredientDataClass>() {
+        override fun areItemsTheSame(
+            oldItem: IngredientDataClass,
+            newItem: IngredientDataClass
+        ): Boolean {
+            return oldItem.id == newItem.id
+        }
+
+        override fun areContentsTheSame(
+            oldItem: IngredientDataClass,
+            newItem: IngredientDataClass
+        ): Boolean {
+            return oldItem == newItem
+        }
     }
 
 }
