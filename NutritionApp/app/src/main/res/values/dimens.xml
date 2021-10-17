@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <dimen name="ingredient_item_width_name">191</dimen>
-    <dimen name="ingredient_item_height_name">56</dimen>
+    <dimen name="ingredient_item_width_name">191dp</dimen>
+    <dimen name="ingredient_item_height_name">56dp</dimen>
 </resources>

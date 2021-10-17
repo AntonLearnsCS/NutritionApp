@@ -11,7 +11,7 @@ import com.example.nutritionapp.databinding.IngredientItemBinding
 
 
 class localIngredientAdapter : RecyclerView.Adapter<localIngredientAdapter.ViewHolder>() {
-    var listIngredients = listOf<IngredientDataClass>()
+    var listIngredients : List<IngredientDataClass> = emptyList()
         set(value) {
             field = value
             //not very efficient, should use Diff check
@@ -54,9 +54,6 @@ LayoutInflater.from(parent.getContext())
     //implement data binding to avoid using findViewById()
     class ViewHolder(val binding : IngredientItemBinding) : RecyclerView.ViewHolder(binding.root)
     {
-        val name = binding.ingredientName
-        val quantity = binding.quantity
-
         fun bind(item : IngredientDataClass)
         {
             binding.ingredientItem = item

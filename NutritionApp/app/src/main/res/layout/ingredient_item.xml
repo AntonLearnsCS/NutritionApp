@@ -33,7 +33,7 @@
             android:layout_width="@dimen/ingredient_item_width_name"
             android:layout_height="@dimen/ingredient_item_height_name"
             android:layout_marginTop="8dp"
-            android:text="@{ingredientItem.quantity}"
+            android:text="@{String.valueOf(ingredientItem.quantity)}"
             android:textColor="@color/black"
             app:layout_constraintEnd_toStartOf="@+id/ingredient_image"
             app:layout_constraintStart_toStartOf="parent"

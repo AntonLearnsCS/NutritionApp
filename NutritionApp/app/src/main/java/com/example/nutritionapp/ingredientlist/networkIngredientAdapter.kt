@@ -1,6 +1,7 @@
 package com.example.nutritionapp.ingredientlist
 
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.annotation.LayoutRes
@@ -28,6 +29,9 @@ class networkIngredientAdapter : RecyclerView.Adapter<networkIngredientAdapter.V
             ViewHolder.LAYOUT,
             parent,
             false)
+
+        Log.i("test","onCreateViewHolder called")
+
         /*  val inflater = LayoutInflater.from(parent.context)
         val view = IngredientItemBinding.inflate(inflater,parent,false)*/
         /*
@@ -44,11 +48,12 @@ LayoutInflater.from(parent.getContext())
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.binding.also {
+/*        holder.binding.also {
             it.ingredientItem = listIngredients[position]
-        }
-       // val ingredientItem = listIngredients[position]
-        //holder.bind(ingredientItem)
+        }*/
+        Log.i("test","onBindViewHolder called")
+        val ingredientItem = listIngredients[position]
+        holder.bind(ingredientItem)
     }
 
     override fun getItemCount() = listIngredients.size

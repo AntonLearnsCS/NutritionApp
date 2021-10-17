@@ -28,8 +28,8 @@ class IngredientViewModel (val app: Application, val ingredientRepository : Ingr
 //    val binding = IngredientListRecyclerviewBinding.inflate(LayoutInflater.from(ApplicationProvider.getApplicationContext()))
     var listOfNetworkRequestedIngredients : List<IngredientDataClass>? = null //getIngredientListByNetwork()
 
-    var displayListInXml : MutableLiveData<List<IngredientDataClass>>? = null
-
+    var displayListInXml = mutableListOf<IngredientDataClass>()//<IngredientDataClass>()// = null
+    var mutableLiveDataList : MutableLiveData<MutableList<IngredientDataClass>> = MutableLiveData()
     var listOfSavedIngredients : MutableLiveData<List<IngredientDataClass>>? = null//getLocalIngredientList()
 
     val testDTO = IngredientDataClass(4,"nameTest",2,"url","jpeg")
@@ -56,9 +56,15 @@ class IngredientViewModel (val app: Application, val ingredientRepository : Ingr
                                 imageUrl = it.imageUrl, imageType = it.imageType
                             )
                         }
-                        displayListInXml?.value = listOfNetworkRequestedIngredients
+                        //assignment not working
+                        displayListInXml.addAll(listOfNetworkRequestedIngredients!!)
+                        println("Number of items displayListInXml: ${displayListInXml.size}")
 
-                        println("Number of items: ${listOfNetworkRequestedIngredients!!.size}")
+                        mutableLiveDataList?.value = displayListInXml
+
+
+
+                        println("Number of items: ${mutableLiveDataList?.value!!.size}")
 
                         for (i in listOfNetworkRequestedIngredients!!)
                         {
