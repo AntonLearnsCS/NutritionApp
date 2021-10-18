@@ -19,8 +19,8 @@
         android:id="@+id/ingredientDetail"
         android:name="com.example.nutritionapp.ingredientdetail.IngredientDetail"
         android:label="IngredientDetail" >
-        <argument
-            android:name="IngredientItem"
-            app:argType="com.example.nutritionapp.database.IngredientDataClass" />
+        <action
+            android:id="@+id/action_ingredientDetail_to_ingredientListOverview"
+            app:destination="@id/ingredientListOverview" />
     </fragment>
 </navigation>

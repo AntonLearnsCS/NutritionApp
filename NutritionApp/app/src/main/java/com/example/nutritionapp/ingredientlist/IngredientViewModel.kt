@@ -25,18 +25,23 @@ https://stackoverflow.com/questions/51451819/how-to-get-context-in-android-mvvm-
 class IngredientViewModel (val app: Application, val ingredientRepository : IngredientDataSourceInterface)
     : AndroidViewModel(app) {
 
+    var navigatorFlag = MutableLiveData<Boolean>(false)
 //    val binding = IngredientListRecyclerviewBinding.inflate(LayoutInflater.from(ApplicationProvider.getApplicationContext()))
     var listOfNetworkRequestedIngredients : List<IngredientDataClass>? = null //getIngredientListByNetwork()
 
     var displayListInXml = mutableListOf<IngredientDataClass>()//<IngredientDataClass>()// = null
+    //Note: Don't set the MutableLiveData to null, b/c technically it is not initialized so any assignment will not change the null value
+    //and variable observing this MutableLiveData will return null
     var mutableLiveDataList : MutableLiveData<MutableList<IngredientDataClass>> = MutableLiveData()
-    var listOfSavedIngredients : MutableLiveData<List<IngredientDataClass>>? = null//getLocalIngredientList()
+    var listOfSavedIngredients : MutableLiveData<List<IngredientDataClass>> = MutableLiveData()//null//getLocalIngredientList()
 
     val testDTO = IngredientDataClass(4,"nameTest",2,"url","jpeg")
 
     //two-way binding
     //no need to add "?query=" since the getIngredients() of the IngredientsApiInterface will do that
     var searchItem = MutableLiveData<String>("Apple")
+
+    val selectedIngredient = MutableLiveData<IngredientDataClass>()
 
     fun loadIngredientListByNetwork()
     {
@@ -91,6 +96,18 @@ class IngredientViewModel (val app: Application, val ingredientRepository : Ingr
                 }
             }
         }
+    }
+    fun saveIngredientItem()
+    {
+        if(selectedIngredient.value != null && selectedIngredient.value?.quantity!! > 0) {
+            wrapEspressoIdlingResource {
+                viewModelScope.launch {
+                    selectedIngredient.value?.let { ingredientRepository.saveNewIngredient(it) }
+                }
+            }
+        }
+        else
+            Toast.makeText(app,"Invalid quantity",Toast.LENGTH_SHORT).show()
     }
 
     fun getLocalIngredientList()

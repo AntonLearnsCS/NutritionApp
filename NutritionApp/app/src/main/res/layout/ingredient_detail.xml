@@ -4,9 +4,10 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
+
         <variable
-            name="ingredientItem"
-            type="com.example.nutritionapp.database.IngredientDataClass" />
+            name="selectedIngredientViewModel"
+            type="com.example.nutritionapp.ingredientlist.IngredientViewModel" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -17,33 +18,71 @@
             android:id="@+id/ingredient_detail_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@{ingredientItem.name}"
-            app:layout_constraintBottom_toTopOf="@+id/ingredient_detail_quantity"
+            android:text="@{selectedIngredientViewModel.selectedIngredient.name}"
+            android:textSize="24sp"
+            app:layout_constraintBottom_toTopOf="@+id/quantity"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintHorizontal_bias="0.498"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <TextView
-            android:id="@+id/ingredient_detail_quantity"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@{String.valueOf(ingredientItem.quantity)}"
-            app:layout_constraintBottom_toTopOf="@+id/ingredient_detail_image"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/ingredient_detail_name" />
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.312" />
 
         <ImageView
             android:id="@+id/ingredient_detail_image"
+            android:layout_width="309dp"
+            android:layout_height="321dp"
+            android:layout_marginBottom="60dp"
+            android:contentDescription="Ingredient Image"
+            app:displayImage="@{selectedIngredientViewModel.selectedIngredient.imageUrl}"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            tools:srcCompat="@tools:sample/avatars" />
+
+        <Button
+            android:id="@+id/decreaseButton"
+            android:layout_width="63dp"
+            android:layout_height="40dp"
+            android:background="@android:drawable/arrow_down_float"
+            app:layout_constraintBottom_toTopOf="@+id/ingredient_detail_image"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toEndOf="@+id/quantity"
+            app:layout_constraintTop_toTopOf="@+id/quantity" />
+
+        <TextView
+            android:id="@+id/quantity"
+            android:layout_width="59dp"
+            android:layout_height="52dp"
+            android:layout_marginBottom="12dp"
+            android:gravity="center"
+            android:text="@{String.valueOf(selectedIngredientViewModel.selectedIngredient.quantity)}"
+            android:textSize="24sp"
+            app:layout_constraintBottom_toTopOf="@+id/ingredient_detail_image"
+            app:layout_constraintEnd_toStartOf="@+id/decreaseButton"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toEndOf="@+id/increaseButton" />
+
+        <Button
+            android:id="@+id/increaseButton"
+            android:layout_width="63dp"
+            android:layout_height="40dp"
+            android:background="@android:drawable/arrow_up_float"
+            app:layout_constraintBottom_toTopOf="@+id/ingredient_detail_image"
+            app:layout_constraintEnd_toStartOf="@+id/quantity"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintHorizontal_chainStyle="packed"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/quantity" />
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/addIngredientFAB"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/ingredient_detail_quantity"
-            tools:srcCompat="@tools:sample/avatars" />
+            app:layout_constraintTop_toBottomOf="@+id/ingredient_detail_image"
+            app:srcCompat="@android:drawable/ic_input_add"
+            />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

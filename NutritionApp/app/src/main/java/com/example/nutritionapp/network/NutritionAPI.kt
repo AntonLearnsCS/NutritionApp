@@ -38,8 +38,9 @@ var client = OkHttpClient.Builder().addInterceptor(object : Interceptor {
     @Throws(IOException::class)
     override fun intercept(chain: Interceptor.Chain): Response? {
         val newRequest: Request = chain.request().newBuilder()
+            .addHeader("content-type", "application/json")
             .addHeader("x-rapidapi-host", "spoonacular-recipe-food-nutrition-v1.p.rapidapi.com")
-            .addHeader("x-rapidapi-key", "743dd97869msh559abee3f899bd4p131dd1jsn866e00036c54")
+            .addHeader("x-rapidapi-key", "743dd97869msh559abee3f899bd4p131dd1jsn866e00036c54")//Error: HTTP 401 Unauthorized
             .build()
         return chain.proceed(newRequest)
     }

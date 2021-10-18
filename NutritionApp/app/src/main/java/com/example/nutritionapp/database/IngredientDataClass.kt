@@ -6,7 +6,7 @@ import java.util.*
 data class IngredientDataClass(
     val id: Int,
     var name : String,
-    var quantity : Int = 0,
+    var quantity : Int = 1,
     val imageUrl : String,
     val imageType : String
 ) : Serializable
