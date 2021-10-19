@@ -42,10 +42,11 @@
             app:layout_constraintTop_toBottomOf="@+id/searchIngredient">
         </androidx.recyclerview.widget.RecyclerView>
 
-        <TextView
+        <EditText
             android:id="@+id/searchIngredient"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
             android:hint="search ingredient"
             android:text="@={ingredientViewModel.searchItem}"
             app:layout_constraintBottom_toTopOf="@+id/recycler_view_network"
@@ -63,26 +64,15 @@
             app:layout_constraintStart_toStartOf="@+id/recycler_view_network"
             app:layout_constraintTop_toBottomOf="@+id/recycler_view_network" />
 
-        <TextView
-            android:id="@+id/test"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            android:layout_marginTop="92dp"
-            android:text="@{String.valueOf(ingredientViewModel.displayListInXml.size())}"
-            app:layout_constraintEnd_toStartOf="@+id/searchIngredient"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-        <!-- app:testSize="@{ingredientViewModel.listOfNetworkRequestedIngredients.size()}" -->
-
         <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/searchIngredientFAB"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="68dp"
+            android:layout_marginTop="56dp"
             android:clickable="true"
             android:focusable="true"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.606"
+            app:layout_constraintHorizontal_bias="0.552"
             app:layout_constraintStart_toEndOf="@+id/searchIngredient"
             app:layout_constraintTop_toTopOf="parent"
             app:srcCompat="@android:drawable/ic_input_add" />

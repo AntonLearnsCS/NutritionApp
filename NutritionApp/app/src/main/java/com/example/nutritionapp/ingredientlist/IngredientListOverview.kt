@@ -14,6 +14,7 @@ import com.example.nutritionapp.R
 import com.example.nutritionapp.database.IngredientDataClass
 import com.example.nutritionapp.databinding.IngredientListRecyclerviewBinding
 import com.example.nutritionapp.util.wrapEspressoIdlingResource
+import org.koin.android.ext.android.bind
 import org.koin.android.ext.android.inject
 
 class IngredientListOverview : Fragment ()
@@ -42,6 +43,8 @@ class IngredientListOverview : Fragment ()
         binding.recyclerViewNetwork.layoutManager = LinearLayoutManager(context)
         binding.recyclerViewLocal.layoutManager = LinearLayoutManager(context)
 
+        binding.searchIngredient.text
+
         //Load from local Database
         wrapEspressoIdlingResource {
             viewModel.getLocalIngredientList()
@@ -59,7 +62,6 @@ class IngredientListOverview : Fragment ()
         binding.searchIngredientFAB.setOnClickListener {
            viewModel.loadIngredientListByNetwork()}
 
-        binding.test.text
         Log.i("test","IngredientListcalled")
         if (viewModel.navigatorFlag.value == true) {
             viewModel.setNavigateToDetailNull()

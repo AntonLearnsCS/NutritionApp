@@ -40,6 +40,10 @@ class IngredientViewModel (val app: Application, val ingredientRepository : Ingr
     //two-way binding
     //no need to add "?query=" since the getIngredients() of the IngredientsApiInterface will do that
     var searchItem = MutableLiveData<String>("Apple")
+    set(value) {
+        field = value
+        Log.i("test","searchItem field set")
+    }
 
     val selectedIngredient = MutableLiveData<IngredientDataClass>()
 
