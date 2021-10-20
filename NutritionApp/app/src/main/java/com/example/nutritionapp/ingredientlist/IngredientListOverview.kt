@@ -13,21 +13,18 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.nutritionapp.R
 import com.example.nutritionapp.database.IngredientDataClass
 import com.example.nutritionapp.databinding.IngredientListRecyclerviewBinding
+import com.example.nutritionapp.recipe.ListSelectedIngredients
 import com.example.nutritionapp.util.wrapEspressoIdlingResource
 import org.koin.android.ext.android.bind
 import org.koin.android.ext.android.inject
 
 class IngredientListOverview : Fragment ()
 {
-    private var test = com.example.nutritionapp.ingredientlist.localIngredientAdapter()
-    private var selectedIngredientList : ArrayList<IngredientDataClass>? = null
-    private val localIngredientAdapter = selectedIngredientList?.let {
-        localIngredientAdapter(com.example.nutritionapp.ingredientlist.localIngredientAdapter.LocalIngredientListener { ingredientItem -> viewModel.setNavigateToDetail(ingredientItem)
-    }, it, com.example.nutritionapp.ingredientlist.localIngredientAdapter.OnItemCheckListener
 
+    private val localIngredientAdapter = com.example.nutritionapp.ingredientlist.localIngredientAdapter(
+        com.example.nutritionapp.ingredientlist.localIngredientAdapter.LocalIngredientListener{
+            ingredientItem -> viewModel.setNavigateToDetail(ingredientItem) })
 
-    )
-    }
     private val networkIngredientAdapter = networkIngredientAdapter(com.example.nutritionapp.ingredientlist.networkIngredientAdapter
         .NetworkIngredientListener { ingredientItem ->
             viewModel.setNavigateToDetail(ingredientItem) })
@@ -41,6 +38,7 @@ class IngredientListOverview : Fragment ()
     ): View
     {
         super.onCreate(savedInstanceState)
+
         binding = DataBindingUtil.inflate(inflater, R.layout.ingredient_list_recyclerview,container,false)
         //binding.ingredientList = viewModel.listOfIngredients.value
         binding.lifecycleOwner = viewLifecycleOwner
@@ -73,6 +71,12 @@ class IngredientListOverview : Fragment ()
             //networkIngredientAdapter.currentList.clear()
 
            viewModel.loadIngredientListByNetwork()}
+
+        binding.searchRecipe.setOnClickListener {
+            val serialArg = ListSelectedIngredients(localIngredientAdapter.mList)
+            Log.i("test","arg: ${serialArg.mList?.size}")
+            findNavController().navigate(IngredientListOverviewDirections.actionIngredientListOverviewToSearchRecipe(serialArg))
+        }
 
         Log.i("test","IngredientListcalled")
         if (viewModel.navigatorFlag.value == true) {

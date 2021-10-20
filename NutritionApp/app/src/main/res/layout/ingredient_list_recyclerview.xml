@@ -29,7 +29,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.501"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/Ingredients_at_Home">
+            app:layout_constraintTop_toBottomOf="@+id/search_recipe">
 
         </androidx.recyclerview.widget.RecyclerView>
 
@@ -81,6 +81,18 @@
             app:layout_constraintStart_toEndOf="@+id/searchIngredient"
             app:layout_constraintTop_toTopOf="parent"
             app:srcCompat="@android:drawable/ic_input_add" />
+
+        <Button
+            android:id="@+id/search_recipe"
+            android:layout_width="136dp"
+            android:layout_height="41dp"
+            android:text="Search Recipe"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.498"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/Ingredients_at_Home"
+            app:layout_constraintVertical_bias="0.025" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

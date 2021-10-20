@@ -1,34 +1,37 @@
 package com.example.nutritionapp.ingredientlist
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.LayoutRes
 import androidx.annotation.NonNull
 import androidx.databinding.DataBindingUtil
+import androidx.lifecycle.MutableLiveData
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.example.nutritionapp.R
 import com.example.nutritionapp.database.IngredientDataClass
 import com.example.nutritionapp.databinding.IngredientItemLocalBinding
+import com.example.nutritionapp.recipe.ListSelectedIngredients
+import org.koin.android.ext.android.inject
 
 
 class localIngredientAdapter(val onClickListener: LocalIngredientListener) : ListAdapter<IngredientDataClass, localIngredientAdapter.ViewHolder>(
     LocalIngredienttDiffCallback()
 )
 {
+    //NOTE: MutableLiveData<MutableList<IngredientDataClass>>> does not work but mutableListOf() does b/c MutableList is an interface
+    var mList = mutableListOf<IngredientDataClass>()
 
-    constructor(
-        selectedIngredientList : ArrayList<IngredientDataClass>,
-         OnItemCheckListenerVar : localIngredientAdapter.OnItemCheckListener) : this()
+    //var selectedList = ListSelectedIngredients(mList)
+
     //Callback method to be invoked when an item in this AdapterView has been clicked.
 /*@Override
 override fun onItemClick()
 {
-
 }*/
-
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view : IngredientItemLocalBinding = DataBindingUtil.inflate(
@@ -51,6 +54,7 @@ LayoutInflater.from(parent.getContext())
          */
         return ViewHolder(view, onClickListener)
     }
+
     interface OnItemCheckListener {
         fun onItemCheck(item: IngredientDataClass)
         fun onItemUncheck(item: IngredientDataClass)
@@ -62,14 +66,20 @@ LayoutInflater.from(parent.getContext())
     override fun onBindViewHolder(holder: localIngredientAdapter.ViewHolder, position: Int) {
             val ingredientItem = getItem(position)
             holder.bind(ingredientItem)
-        holder.setOnClickListener{
-            (holder.binding).checkbox.setChecked(
+
+        holder.binding.checkbox.setOnClickListener{
+          /*  (holder.binding).checkbox.setChecked(
                 !(holder.binding).checkbox.isChecked()
-            )
+            )*/
             if ((holder.binding).checkbox.isChecked()) {
-                onItemClick!!.onItemCheck(ingredientItem)
+                Log.i("test","checked")
+                mList.add(ingredientItem)
+                Log.i("test","mList size: ${mList.size}")
+                //onItemClick!!.onItemCheck(ingredientItem)
             } else {
-                onItemClick!!.onItemUncheck(ingredientItem)
+                Log.i("test","unchecked")
+                mList.remove(ingredientItem)
+                //onItemClick!!.onItemUncheck(ingredientItem)
             }
         }
     }
@@ -96,6 +106,7 @@ LayoutInflater.from(parent.getContext())
             itemView.setOnClickListener(onClickListener)
         }
     }
+
     class LocalIngredienttDiffCallback :
         DiffUtil.ItemCallback<IngredientDataClass>() {
         override fun areItemsTheSame(

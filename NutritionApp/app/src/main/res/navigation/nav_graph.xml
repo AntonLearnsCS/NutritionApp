@@ -10,6 +10,9 @@
         <action
             android:id="@+id/action_ingredientListOverview_to_ingredientDetail"
             app:destination="@id/ingredientDetail" />
+        <action
+            android:id="@+id/action_ingredientListOverview_to_searchRecipe"
+            app:destination="@id/searchRecipe" />
     </fragment>
     <activity
         android:id="@+id/ingredientListActivity"
@@ -22,5 +25,13 @@
         <action
             android:id="@+id/action_ingredientDetail_to_ingredientListOverview"
             app:destination="@id/ingredientListOverview" />
+    </fragment>
+    <fragment
+        android:id="@+id/searchRecipe"
+        android:name="com.example.nutritionapp.recipe.SearchRecipe"
+        android:label="SearchRecipe" >
+        <argument
+            android:name="SelectedIngredients"
+            app:argType="com.example.nutritionapp.recipe.ListSelectedIngredients" />
     </fragment>
 </navigation>
