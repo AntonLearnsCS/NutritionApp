@@ -22,30 +22,35 @@
             android:id="@+id/recycler_view_local"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="36dp"
             android:textColor="@color/black"
+            app:layout_constrainedHeight="true"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="@+id/Ingredients_at_Home"
-            app:layout_constraintStart_toStartOf="@+id/Ingredients_at_Home"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.501"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/Ingredients_at_Home">
 
         </androidx.recyclerview.widget.RecyclerView>
 
-
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recycler_view_network"
             android:layout_width="wrap_content"
-            android:textColor="@color/black"
             android:layout_height="wrap_content"
+            android:textColor="@color/black"
+            app:layout_constrainedHeight="true"
             app:layout_constraintBottom_toTopOf="@+id/Ingredients_at_Home"
-            app:layout_constraintEnd_toEndOf="@+id/searchIngredient"
-            app:layout_constraintStart_toStartOf="@+id/searchIngredient"
-            app:layout_constraintTop_toBottomOf="@+id/searchIngredient">
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/searchIngredientFAB">
+
         </androidx.recyclerview.widget.RecyclerView>
 
         <EditText
             android:id="@+id/searchIngredient"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_above="@+id/recycler_view_network"
             android:layout_marginTop="5dp"
             android:hint="search ingredient"
             android:text="@={ingredientViewModel.searchItem}"
@@ -58,11 +63,11 @@
             android:id="@+id/Ingredients_at_Home"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginTop="244dp"
             android:text="Ingredients at Home"
-            app:layout_constraintBottom_toTopOf="@+id/recycler_view_local"
-            app:layout_constraintEnd_toEndOf="@+id/recycler_view_network"
-            app:layout_constraintStart_toStartOf="@+id/recycler_view_network"
-            app:layout_constraintTop_toBottomOf="@+id/recycler_view_network" />
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/searchIngredientFAB" />
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/searchIngredientFAB"

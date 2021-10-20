@@ -76,6 +76,7 @@ LayoutInflater.from(parent.getContext())
         }
         //val sleepLength: TextView = itemView.findViewById(R.id.sleep_length)
     }
+
     class NetworkIngredienttDiffCallback :
         DiffUtil.ItemCallback<IngredientDataClass>() {
         override fun areItemsTheSame(

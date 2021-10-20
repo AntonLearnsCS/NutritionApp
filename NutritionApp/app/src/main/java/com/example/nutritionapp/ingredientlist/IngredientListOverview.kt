@@ -19,9 +19,18 @@ import org.koin.android.ext.android.inject
 
 class IngredientListOverview : Fragment ()
 {
-    private val localIngredientAdapter = localIngredientAdapter()
+    private var test = com.example.nutritionapp.ingredientlist.localIngredientAdapter()
+    private var selectedIngredientList : ArrayList<IngredientDataClass>? = null
+    private val localIngredientAdapter = selectedIngredientList?.let {
+        localIngredientAdapter(com.example.nutritionapp.ingredientlist.localIngredientAdapter.LocalIngredientListener { ingredientItem -> viewModel.setNavigateToDetail(ingredientItem)
+    }, it, com.example.nutritionapp.ingredientlist.localIngredientAdapter.OnItemCheckListener
+
+
+    )
+    }
     private val networkIngredientAdapter = networkIngredientAdapter(com.example.nutritionapp.ingredientlist.networkIngredientAdapter
-        .NetworkIngredientListener { ingredientItem -> viewModel.setNavigateToDetail(ingredientItem) })
+        .NetworkIngredientListener { ingredientItem ->
+            viewModel.setNavigateToDetail(ingredientItem) })
     //Koin
      val viewModel : IngredientViewModel by inject()
     private lateinit var binding : IngredientListRecyclerviewBinding
@@ -43,7 +52,7 @@ class IngredientListOverview : Fragment ()
         binding.recyclerViewNetwork.layoutManager = LinearLayoutManager(context)
         binding.recyclerViewLocal.layoutManager = LinearLayoutManager(context)
 
-        binding.searchIngredient.text
+        binding.ingredientViewModel = viewModel
 
         //Load from local Database
         wrapEspressoIdlingResource {
@@ -60,6 +69,9 @@ class IngredientListOverview : Fragment ()
         })
 
         binding.searchIngredientFAB.setOnClickListener {
+            //TODO: Clear the previous search results in recyclerView
+            //networkIngredientAdapter.currentList.clear()
+
            viewModel.loadIngredientListByNetwork()}
 
         Log.i("test","IngredientListcalled")

@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+
+    <data>
+        <variable name="ingredientItem"
+            type="com.example.nutritionapp.database.IngredientDataClass">
+
+        </variable>
+
+        <variable
+            name="clickListenerLocal"
+            type="com.example.nutritionapp.ingredientlist.localIngredientAdapter.LocalIngredientListener" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="117dp"
+        android:onClick="@{() -> clickListenerLocal.onClick(ingredientItem)}">
+
+        <com.google.android.material.checkbox.MaterialCheckBox
+            android:id="@+id/checkbox"
+            android:layout_width="76dp"
+            android:layout_height="65dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/ingredient_name"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/quantity"
+            android:layout_width="206dp"
+            android:layout_height="24dp"
+            android:textAlignment="center"
+            android:text="@{String.valueOf(ingredientItem.quantity)}"
+            android:textColor="@color/black"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/ingredient_name" />
+
+        <TextView
+            android:id="@+id/ingredient_name"
+            android:layout_width="@dimen/ingredient_item_width_name"
+            android:layout_height="@dimen/ingredient_item_height_name"
+            android:layout_marginTop="10dp"
+            android:text="@{ingredientItem.name}"
+            android:textColor="@color/black"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

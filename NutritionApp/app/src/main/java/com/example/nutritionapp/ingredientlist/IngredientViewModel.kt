@@ -4,6 +4,9 @@ import android.app.Application
 import android.util.Log
 import android.view.LayoutInflater
 import android.widget.Toast
+import androidx.databinding.Bindable
+import androidx.databinding.Observable
+import androidx.databinding.PropertyChangeRegistry
 import androidx.lifecycle.*
 //import androidx.test.core.app.ApplicationProvider
 import androidx.test.core.app.ApplicationProvider.getApplicationContext
@@ -23,7 +26,7 @@ To get context inside a ViewModel we can either extend AndroidViewModel. Do not 
 https://stackoverflow.com/questions/51451819/how-to-get-context-in-android-mvvm-viewmodel
  */
 class IngredientViewModel (val app: Application, val ingredientRepository : IngredientDataSourceInterface)
-    : AndroidViewModel(app) {
+    : AndroidViewModel(app), Observable {
 
     var navigatorFlag = MutableLiveData<Boolean>(false)
 //    val binding = IngredientListRecyclerviewBinding.inflate(LayoutInflater.from(ApplicationProvider.getApplicationContext()))
@@ -40,10 +43,11 @@ class IngredientViewModel (val app: Application, val ingredientRepository : Ingr
     //two-way binding
     //no need to add "?query=" since the getIngredients() of the IngredientsApiInterface will do that
     var searchItem = MutableLiveData<String>("Apple")
-    set(value) {
-        field = value
-        Log.i("test","searchItem field set")
-    }
+        set(value) {
+            Log.i("test","search Item assigned")
+            field = value
+        }
+
 
     val selectedIngredient = MutableLiveData<IngredientDataClass>()
 
@@ -56,7 +60,7 @@ class IngredientViewModel (val app: Application, val ingredientRepository : Ingr
                     try {
                         val result :wrapperIngredientListNetworkDataClass =
                             NutritionAPI.nutritionService.getIngredients(searchItem.value!!)
-
+                        Log.i("test","search item: ${searchItem.value}")
                         println("Total products: ${result.totalProducts}")
 
                         listOfNetworkRequestedIngredients = result.products.map {
@@ -162,5 +166,35 @@ class IngredientViewModel (val app: Application, val ingredientRepository : Ingr
     @Override
     override fun onCleared() {
         super.onCleared()
+    }
+
+
+    private val callbacks: PropertyChangeRegistry = PropertyChangeRegistry()
+
+
+    override fun addOnPropertyChangedCallback(callback: Observable.OnPropertyChangedCallback?) {
+        callbacks.add(callback)
+    }
+
+    override fun removeOnPropertyChangedCallback(callback: Observable.OnPropertyChangedCallback?) {
+        callbacks.remove(callback)
+    }
+
+    /**
+     * Notifies observers that all properties of this instance have changed.
+     */
+    fun notifyChange() {
+        callbacks.notifyCallbacks(this, 0, null)
+    }
+
+    /**
+     * Notifies observers that a specific property has changed. The getter for the
+     * property that changes should be marked with the @Bindable annotation to
+     * generate a field in the BR class to be used as the fieldId parameter.
+     *
+     * @param fieldId The generated BR id for the Bindable field.
+     */
+    fun notifyPropertyChanged(fieldId: Int) {
+        callbacks.notifyCallbacks(this, fieldId, null)
     }
 }
