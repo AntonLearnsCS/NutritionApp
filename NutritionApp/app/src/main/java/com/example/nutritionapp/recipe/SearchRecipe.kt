@@ -20,10 +20,6 @@ private lateinit var binding : RecipeLayoutBinding
          super.onCreateView(inflater, container, savedInstanceState)
         //Q: How to inflate layout object in onViewCreated?
         val args = arguments?.getSerializable("SelectedIngredients") as ListSelectedIngredients
-        for (i in args.mList!!)
-        {
-            Log.i("testRecipe","Recipe: ${i.name}")
-        }
 
         binding = DataBindingUtil.inflate(LayoutInflater.from(context), R.layout.recipe_layout, container,false)
         return binding.root

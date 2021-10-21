@@ -2,13 +2,12 @@ package com.example.nutritionapp.network
 
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
-import okhttp3.Interceptor
-import okhttp3.OkHttpClient
-import okhttp3.Request
-import okhttp3.Response
+import okhttp3.*
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
+import retrofit2.http.Body
 import retrofit2.http.GET
+import retrofit2.http.POST
 import retrofit2.http.Query
 import java.io.IOException
 
@@ -34,7 +33,23 @@ source: https://stackoverflow.com/questions/42491733/passing-api-key-in-retrofit
  A: A request header is an HTTP header that can be used in an HTTP request to provide information about the request context,
  so that the server can tailor the response (source:https://developer.mozilla.org/en-US/docs/Glossary/Request_header)
  */
-var client = OkHttpClient.Builder().addInterceptor(object : Interceptor {
+val mediaType = MediaType.parse("application/x-www-form-urlencoded")
+val body = RequestBody.create(mediaType,"text=I%20like%20to%20eat%20delicious%20tacos.%20Only%20cheeseburger%20with%20cheddar%20are%20better%20than%20that.%20But%20then%20again%2C%20pizza%20with%20pepperoni%2C%20mushrooms%2C%20and%20tomatoes%20is%20so%20good!")
+
+var clientPostRequest = OkHttpClient.Builder().addInterceptor(object : Interceptor {
+    @Throws(IOException::class)
+    override fun intercept(chain: Interceptor.Chain): Response? {
+        val newRequest: Request = chain.request().newBuilder()
+            .addHeader("content-type", "application/x-www-form-urlencoded")
+            .addHeader("x-rapidapi-host", "spoonacular-recipe-food-nutrition-v1.p.rapidapi.com")
+            .addHeader("x-rapidapi-key", "743dd97869msh559abee3f899bd4p131dd1jsn866e00036c54")//Error: HTTP 401 Unauthorized
+            .build()
+        return chain.proceed(newRequest)
+    }
+}).build()
+
+//Separate client and Retrofit object for @GET and @POST requests since they have different headers
+var clientGetRequest = OkHttpClient.Builder().addInterceptor(object : Interceptor {
     @Throws(IOException::class)
     override fun intercept(chain: Interceptor.Chain): Response? {
         val newRequest: Request = chain.request().newBuilder()
@@ -53,15 +68,20 @@ var client = OkHttpClient.Builder().addInterceptor(object : Interceptor {
 private val retrofit = Retrofit.Builder()
     .addConverterFactory(MoshiConverterFactory.create(moshi))
     .baseUrl(BASE_URL)
-    .client(client)
+    .client(clientGetRequest)
     .build()
 
+private val retrofitPost = Retrofit.Builder()
+    .addConverterFactory(MoshiConverterFactory.create(moshi))
+    .baseUrl(BASE_URL)
+    .client(clientPostRequest)
+    .build()
 /**
  * A public interface that exposes the [getIngredients] method
  */
 interface IngredientsApiInterface {
     /**
-     * Returns a Coroutine [List] of [MarsProperty] which can be fetched with await() if in a Coroutine scope.
+     * Returns a Coroutine [List] of [Ingredients] which can be fetched with await() if in a Coroutine scope.
      * The @GET annotation indicates that the "realestate" endpoint will be requested with the GET
      * HTTP method
      */
@@ -71,9 +91,17 @@ interface IngredientsApiInterface {
     suspend fun getIngredients(@Query("query") type: String): wrapperIngredientListNetworkDataClass
 }
 
+interface IngredientsApiInterfacePost{
+    @POST("food/detect")
+    suspend fun detectFoodInText(@Body text : String): String
+            //fun addUser(@Body userData: UserInfo): Call<UserInfo>
+}
+
 //we want to expose the retrofit instance because creating a Retrofit instance is expensive
 object NutritionAPI {
     val nutritionService : IngredientsApiInterface by lazy { retrofit.create(IngredientsApiInterface::class.java) }
+
+    val nutritionServicePost : IngredientsApiInterfacePost by lazy{ retrofitPost.create(IngredientsApiInterfacePost::class.java)}
 }
 
 /*

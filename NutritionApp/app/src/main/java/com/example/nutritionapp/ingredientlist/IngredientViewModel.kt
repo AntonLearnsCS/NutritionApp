@@ -50,6 +50,21 @@ class IngredientViewModel (val app: Application, val ingredientRepository : Ingr
 
 
     val selectedIngredient = MutableLiveData<IngredientDataClass>()
+    val foodInText = mutableListOf<String>()
+
+    suspend fun detectFoodInText(listName : List<String>)
+    {
+        try {
+            for (i in listName.indices) {
+                val result = NutritionAPI.nutritionServicePost.detectFoodInText(listName[i])
+                foodInText.add(result)
+            }
+        }
+        catch (e : java.lang.Exception)
+        {
+            Log.i("Exception","$e")
+        }
+    }
 
     fun loadIngredientListByNetwork()
     {

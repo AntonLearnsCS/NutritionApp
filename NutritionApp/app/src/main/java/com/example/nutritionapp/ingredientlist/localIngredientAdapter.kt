@@ -72,14 +72,11 @@ LayoutInflater.from(parent.getContext())
                 !(holder.binding).checkbox.isChecked()
             )*/
             if ((holder.binding).checkbox.isChecked()) {
-                Log.i("test","checked")
                 mList.add(ingredientItem)
-                Log.i("test","mList size: ${mList.size}")
-                //onItemClick!!.onItemCheck(ingredientItem)
             } else {
                 Log.i("test","unchecked")
                 mList.remove(ingredientItem)
-                //onItemClick!!.onItemUncheck(ingredientItem)
+                Log.i("test","mList size: ${mList.size}")
             }
         }
     }
