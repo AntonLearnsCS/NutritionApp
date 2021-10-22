@@ -17,10 +17,10 @@ import com.example.nutritionapp.recipe.ListSelectedIngredients
 import com.example.nutritionapp.util.wrapEspressoIdlingResource
 import org.koin.android.ext.android.bind
 import org.koin.android.ext.android.inject
+import java.net.URLEncoder
 
 class IngredientListOverview : Fragment ()
 {
-
     private val localIngredientAdapter = com.example.nutritionapp.ingredientlist.localIngredientAdapter(
         com.example.nutritionapp.ingredientlist.localIngredientAdapter.LocalIngredientListener{
             ingredientItem -> viewModel.setNavigateToDetail(ingredientItem) })
@@ -66,16 +66,30 @@ class IngredientListOverview : Fragment ()
             networkIngredientAdapter.submitList(it)
         })
 
-        binding.searchIngredientFAB.setOnClickListener {
+      /*  binding.searchIngredientFAB.setOnClickListener {
             //TODO: Clear the previous search results in recyclerView
             //networkIngredientAdapter.currentList.clear()
 
-           viewModel.loadIngredientListByNetwork()}
+           viewModel.loadIngredientListByNetwork()}*/
 
         binding.searchRecipe.setOnClickListener {
-            val serialArg = ListSelectedIngredients(localIngredientAdapter.mList)
-            Log.i("test","arg: ${serialArg.mList?.size}")
-            findNavController().navigate(IngredientListOverviewDirections.actionIngredientListOverviewToSearchRecipe(serialArg))
+            localIngredientAdapter.getListName()
+            //TODO: Uncomment all comments below
+                //clear list of ingredient components before trying to detect new ingredients
+                viewModel.foodInText.clear()
+            //URLEncoder.encode(localIngredientAdapter.mListOfNames.toString(),"utf-8")
+
+                //val foodDetected : List<String> = viewModel.detectFoodInText(localIngredientAdapter.mListOfNames)
+                val serialArg = ListSelectedIngredients(localIngredientAdapter.mList)
+                //Log.i("Test","size: ${foodDetected.size}")
+                /*for (i in foodDetected.indices)
+                {
+                    Log.i("test","ingredient item: $i")
+                }
+                Log.i("test","arg: ${serialArg.mList?.size}")*/
+                localIngredientAdapter.mList.clear()
+
+                findNavController().navigate(IngredientListOverviewDirections.actionIngredientListOverviewToSearchRecipe(serialArg))
         }
 
         Log.i("test","IngredientListcalled")

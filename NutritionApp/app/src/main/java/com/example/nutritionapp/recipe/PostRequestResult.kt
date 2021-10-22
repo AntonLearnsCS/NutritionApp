@@ -1,6 +1,9 @@
 package com.example.nutritionapp.recipe
 
-data class PostRequestResultWrapper(val annotation : List<IngredientResult>, val processedInMs : Int) {
+import com.squareup.moshi.Json
+
+data class PostRequestResultWrapper(@Json(name = "annotations") val annotations : List<PostIngredientResult>,
+                                    @Json(name = "processedInMs") val processedInMs : Int) {
 }
 
-data class IngredientResult(val annotation : String, val tag : String)
+data class PostIngredientResult(@Json(name = "annotation") val annotation : String, @Json(name = "tag") val tag : String)

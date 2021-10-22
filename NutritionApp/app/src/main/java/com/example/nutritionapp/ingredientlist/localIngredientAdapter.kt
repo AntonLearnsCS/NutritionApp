@@ -24,7 +24,15 @@ class localIngredientAdapter(val onClickListener: LocalIngredientListener) : Lis
 {
     //NOTE: MutableLiveData<MutableList<IngredientDataClass>>> does not work but mutableListOf() does b/c MutableList is an interface
     var mList = mutableListOf<IngredientDataClass>()
+    var mListOfNames = mutableListOf<String>()
 
+        fun getListName() : List<String>{
+            for (i in mList)
+            {
+                mListOfNames.add(i.name)
+            }
+            return mListOfNames
+        }
     //var selectedList = ListSelectedIngredients(mList)
 
     //Callback method to be invoked when an item in this AdapterView has been clicked.

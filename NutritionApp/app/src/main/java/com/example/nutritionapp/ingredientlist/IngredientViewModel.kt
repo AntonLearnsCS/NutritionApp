@@ -19,6 +19,7 @@ import com.example.nutritionapp.database.dto.IngredientDataClassDTO
 import com.example.nutritionapp.databinding.IngredientListRecyclerviewBinding
 import com.example.nutritionapp.network.IngredientListNetworkDataClass
 import com.example.nutritionapp.network.wrapperIngredientListNetworkDataClass
+import com.example.nutritionapp.recipe.PostRequestResultWrapper
 import com.example.nutritionapp.util.wrapEspressoIdlingResource
 
 /*
@@ -52,18 +53,17 @@ class IngredientViewModel (val app: Application, val ingredientRepository : Ingr
     val selectedIngredient = MutableLiveData<IngredientDataClass>()
     val foodInText = mutableListOf<String>()
 
-    suspend fun detectFoodInText(listName : List<String>)
-    {
-        try {
-            for (i in listName.indices) {
-                val result = NutritionAPI.nutritionServicePost.detectFoodInText(listName[i])
-                foodInText.add(result)
+
+
+     fun detectFoodInText(listName : List<String>) : String {
+            try {
+                val mString : String = listName.joinToString(separator = ",")
+                return mString
             }
-        }
-        catch (e : java.lang.Exception)
-        {
-            Log.i("Exception","$e")
-        }
+            catch (e: java.lang.Exception) {
+                Log.i("Exception", "$e")
+            }
+        return "No ingredients detected"
     }
 
     fun loadIngredientListByNetwork()

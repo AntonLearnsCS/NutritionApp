@@ -22,3 +22,8 @@ fun IngredientListNetworkDataClassContainer.toDomainType() : List<IngredientData
     return ingredientList.map { IngredientDataClass(name = it.name,quantity = 1,id = it.id,imageUrl = it.imageUrl,imageType = it.imageType) }
 }
 
+//Recipe page data class
+data class RecipeIngredientResultWrapper (val mList : List<RecipeIngredientResult>)
+
+data class RecipeIngredientResult (val id : Long, val title : String, val image : String, val usedIngredientCount : Int,
+val missedIngredientCount : Int, val likes : Int)

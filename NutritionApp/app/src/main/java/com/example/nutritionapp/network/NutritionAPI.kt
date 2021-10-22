@@ -1,5 +1,6 @@
 package com.example.nutritionapp.network
 
+import com.example.nutritionapp.recipe.PostRequestResultWrapper
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import okhttp3.*
@@ -11,8 +12,8 @@ import retrofit2.http.POST
 import retrofit2.http.Query
 import java.io.IOException
 
-private const val BASE_URL = "https://spoonacular-recipe-food-nutrition-v1.p.rapidapi.com/food/products/"
 
+private const val BASE_URL = "https://spoonacular-recipe-food-nutrition-v1.p.rapidapi.com/"
 
 /**
  * Build the Moshi object that Retrofit will be using, making sure to add the Kotlin adapter for
@@ -34,19 +35,44 @@ source: https://stackoverflow.com/questions/42491733/passing-api-key-in-retrofit
  so that the server can tailor the response (source:https://developer.mozilla.org/en-US/docs/Glossary/Request_header)
  */
 val mediaType = MediaType.parse("application/x-www-form-urlencoded")
-val body = RequestBody.create(mediaType,"text=I%20like%20to%20eat%20delicious%20tacos.%20Only%20cheeseburger%20with%20cheddar%20are%20better%20than%20that.%20But%20then%20again%2C%20pizza%20with%20pepperoni%2C%20mushrooms%2C%20and%20tomatoes%20is%20so%20good!")
+//TODO: What is the purpose of ".post(body)" in the OkHttpClient?
+val body = RequestBody.create(
+    mediaType,
+    "text=I%20like%20to%20eat%20delicious%20tacos.%20Only%20cheeseburger%20with%20cheddar%20are%20better%20than%20that.%20But%20then%20again%2C%20pizza%20with%20pepperoni%2C%20mushrooms%2C%20and%20tomatoes%20is%20so%20good!"
+)
 
+//Note: Need to add MediaType
 var clientPostRequest = OkHttpClient.Builder().addInterceptor(object : Interceptor {
     @Throws(IOException::class)
     override fun intercept(chain: Interceptor.Chain): Response? {
         val newRequest: Request = chain.request().newBuilder()
             .addHeader("content-type", "application/x-www-form-urlencoded")
             .addHeader("x-rapidapi-host", "spoonacular-recipe-food-nutrition-v1.p.rapidapi.com")
-            .addHeader("x-rapidapi-key", "743dd97869msh559abee3f899bd4p131dd1jsn866e00036c54")//Error: HTTP 401 Unauthorized
+            .addHeader(
+                "x-rapidapi-key",
+                "743dd97869msh559abee3f899bd4p131dd1jsn866e00036c54"
+            )//Error: HTTP 401 Unauthorized
             .build()
         return chain.proceed(newRequest)
     }
 }).build()
+
+
+/*
+val client = OkHttpClient()
+
+val mediaType = MediaType.parse("application/x-www-form-urlencoded")
+val body = RequestBody.create(mediaType, "text=I%20like%20to%20eat%20delicious%20tacos.%20Only%20cheeseburger%20with%20cheddar%20are%20better%20than%20that.%20But%20then%20again%2C%20pizza%20with%20pepperoni%2C%20mushrooms%2C%20and%20tomatoes%20is%20so%20good!")
+val request = Request.Builder()
+	.url("https://spoonacular-recipe-food-nutrition-v1.p.rapidapi.com/food/detect")
+	.post(body)
+	.addHeader("content-type", "application/x-www-form-urlencoded")
+	.addHeader("x-rapidapi-host", "spoonacular-recipe-food-nutrition-v1.p.rapidapi.com")
+	.addHeader("x-rapidapi-key", "743dd97869msh559abee3f899bd4p131dd1jsn866e00036c54")
+	.build()
+
+val response = client.newCall(request).execute()
+ */
 
 //Separate client and Retrofit object for @GET and @POST requests since they have different headers
 var clientGetRequest = OkHttpClient.Builder().addInterceptor(object : Interceptor {
@@ -55,7 +81,10 @@ var clientGetRequest = OkHttpClient.Builder().addInterceptor(object : Intercepto
         val newRequest: Request = chain.request().newBuilder()
             .addHeader("content-type", "application/json")
             .addHeader("x-rapidapi-host", "spoonacular-recipe-food-nutrition-v1.p.rapidapi.com")
-            .addHeader("x-rapidapi-key", "743dd97869msh559abee3f899bd4p131dd1jsn866e00036c54")//Error: HTTP 401 Unauthorized
+            .addHeader(
+                "x-rapidapi-key",
+                "743dd97869msh559abee3f899bd4p131dd1jsn866e00036c54"
+            )//Error: HTTP 401 Unauthorized
             .build()
         return chain.proceed(newRequest)
     }
@@ -87,13 +116,16 @@ interface IngredientsApiInterface {
      */
 
     //Note: "query" is what will be appended to the end point i.e http.somesite.com/search?query=
-    @GET("search")
+    @GET("food/products/search")
     suspend fun getIngredients(@Query("query") type: String): wrapperIngredientListNetworkDataClass
+
+    @GET("recipes/findByIngredients")
+    suspend fun findByIngredients(@Query("ingredients") list : String) : RecipeIngredientResultWrapper
 }
 
 interface IngredientsApiInterfacePost{
     @POST("food/detect")
-    suspend fun detectFoodInText(@Body text : String): String
+    suspend fun detectFoodInText(@Body text: String): PostRequestResultWrapper
             //fun addUser(@Body userData: UserInfo): Call<UserInfo>
 }
 
@@ -101,7 +133,10 @@ interface IngredientsApiInterfacePost{
 object NutritionAPI {
     val nutritionService : IngredientsApiInterface by lazy { retrofit.create(IngredientsApiInterface::class.java) }
 
-    val nutritionServicePost : IngredientsApiInterfacePost by lazy{ retrofitPost.create(IngredientsApiInterfacePost::class.java)}
+    val nutritionServicePost : IngredientsApiInterfacePost by lazy{ retrofitPost.create(
+        IngredientsApiInterfacePost::class.java
+    )}
+    val nutritionServiceGetRecipeIngredients : IngredientsApiInterface by lazy { retrofit.create(IngredientsApiInterface::class.java) }
 }
 
 /*
