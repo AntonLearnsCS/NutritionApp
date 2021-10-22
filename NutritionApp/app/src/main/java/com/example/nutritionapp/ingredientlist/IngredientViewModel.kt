@@ -10,16 +10,16 @@ import androidx.databinding.PropertyChangeRegistry
 import androidx.lifecycle.*
 //import androidx.test.core.app.ApplicationProvider
 import androidx.test.core.app.ApplicationProvider.getApplicationContext
-import com.example.nutritionapp.network.NutritionAPI
 import com.example.nutritionapp.database.IngredientDataClass
 import kotlinx.coroutines.launch
 import com.example.nutritionapp.util.Result
 import com.example.nutritionapp.database.IngredientDataSourceInterface
 import com.example.nutritionapp.database.dto.IngredientDataClassDTO
 import com.example.nutritionapp.databinding.IngredientListRecyclerviewBinding
-import com.example.nutritionapp.network.IngredientListNetworkDataClass
-import com.example.nutritionapp.network.wrapperIngredientListNetworkDataClass
+import com.example.nutritionapp.network.*
 import com.example.nutritionapp.recipe.PostRequestResultWrapper
+import com.example.nutritionapp.recipe.RecipeIngredientResult
+import com.example.nutritionapp.recipe.RecipeIngredientResultWrapper
 import com.example.nutritionapp.util.wrapEspressoIdlingResource
 
 /*
@@ -28,6 +28,11 @@ https://stackoverflow.com/questions/51451819/how-to-get-context-in-android-mvvm-
  */
 class IngredientViewModel (val app: Application, val ingredientRepository : IngredientDataSourceInterface)
     : AndroidViewModel(app), Observable {
+
+    val listOfRecipes = mutableListOf<RecipeIngredientResult>()
+    val listOfRecipesLiveData = MutableLiveData<List<RecipeIngredientResult>>(listOfRecipes)
+
+    //val selectedRecipe = MutableLiveData<RecipeIngredientResult>()
 
     var navigatorFlag = MutableLiveData<Boolean>(false)
 //    val binding = IngredientListRecyclerviewBinding.inflate(LayoutInflater.from(ApplicationProvider.getApplicationContext()))
@@ -52,18 +57,44 @@ class IngredientViewModel (val app: Application, val ingredientRepository : Ingr
 
     val selectedIngredient = MutableLiveData<IngredientDataClass>()
     val foodInText = mutableListOf<String>()
+    val listOfIngredientsString = MutableLiveData<String>("Apple,flour,sugar")
 
-
-
-     fun detectFoodInText(listName : List<String>) : String {
+        //input is list of names i.e {"Snapple Apple flavored drink 4oz","Mott's Apple pudding 3oz"}
+     fun detectFoodInText(listName : List<String>) {
+          viewModelScope.launch {
             try {
-                val mString : String = listName.joinToString(separator = ",")
-                return mString
+                for (i in listName)
+                {
+                    val listOfIngredients : PostRequestResultWrapper = NutritionAPI.nutritionServicePost.detectFoodInText(i)
+                    for (g in listOfIngredients.annotations)
+                    {
+                        foodInText.add(g.annotation)
+                    }
+                }
             }
             catch (e: java.lang.Exception) {
                 Log.i("Exception", "$e")
             }
-        return "No ingredients detected"
+              if (!foodInText.isEmpty())
+                  listOfIngredientsString.value = foodInText.joinToString(separator = ",")
+            }
+     }
+    fun findRecipeByIngredients()
+    {
+        viewModelScope.launch {
+            try {
+                val resultWrapper : RecipeIngredientResultWrapper = NutritionAPI.nutritionServiceGetRecipeIngredients.findByIngredients(listOfIngredientsString.value!!)
+                for (i in resultWrapper.mList)
+                {
+                    listOfRecipes.add(i)
+                }
+                listOfRecipesLiveData.value = listOfRecipes
+            }
+            catch (e : java.lang.Exception)
+            {
+                Log.i("Exception","$e")
+            }
+        }
     }
 
     fun loadIngredientListByNetwork()
@@ -176,6 +207,19 @@ class IngredientViewModel (val app: Application, val ingredientRepository : Ingr
     fun setNavigateToDetailNull()
     {
         _navigateToDetail.value = null
+    }
+
+
+    private val _navigateToRecipe = MutableLiveData<RecipeIngredientResult>()
+    val navigateToRecipe : LiveData<RecipeIngredientResult>
+        get() = _navigateToRecipe
+    fun setNavigateToRecipe(recipe : RecipeIngredientResult)
+    {
+        _navigateToRecipe.value = recipe
+    }
+    fun setNavigateToRecipeNull()
+    {
+        _navigateToRecipe.value = null
     }
 
     @Override

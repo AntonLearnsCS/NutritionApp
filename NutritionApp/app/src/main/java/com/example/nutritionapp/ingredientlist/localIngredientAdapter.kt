@@ -96,7 +96,6 @@ LayoutInflater.from(parent.getContext())
         val clickListener: LocalIngredientListener
     ) : RecyclerView.ViewHolder(binding.root)
     {
-
         fun bind(item: IngredientDataClass)
         {
             binding.clickListenerLocal = clickListener

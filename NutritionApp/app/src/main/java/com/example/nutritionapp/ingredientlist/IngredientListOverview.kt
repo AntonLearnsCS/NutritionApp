@@ -79,7 +79,8 @@ class IngredientListOverview : Fragment ()
                 viewModel.foodInText.clear()
             //URLEncoder.encode(localIngredientAdapter.mListOfNames.toString(),"utf-8")
 
-                //val foodDetected : List<String> = viewModel.detectFoodInText(localIngredientAdapter.mListOfNames)
+                //Returns list of ingredients i.e {"mushroom","flour","tomato"}
+                //val foodDetected : String = viewModel.detectFoodInText(localIngredientAdapter.mListOfNames)
                 val serialArg = ListSelectedIngredients(localIngredientAdapter.mList)
                 //Log.i("Test","size: ${foodDetected.size}")
                 /*for (i in foodDetected.indices)
