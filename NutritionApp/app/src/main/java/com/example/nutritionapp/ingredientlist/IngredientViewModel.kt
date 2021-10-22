@@ -16,16 +16,28 @@ import com.example.nutritionapp.util.Result
 import com.example.nutritionapp.database.IngredientDataSourceInterface
 import com.example.nutritionapp.database.dto.IngredientDataClassDTO
 import com.example.nutritionapp.databinding.IngredientListRecyclerviewBinding
+import com.example.nutritionapp.ingredientlist.testNutritionApi.nutritionServicePost
 import com.example.nutritionapp.network.*
 import com.example.nutritionapp.recipe.PostRequestResultWrapper
 import com.example.nutritionapp.recipe.RecipeIngredientResult
 import com.example.nutritionapp.recipe.RecipeIngredientResultWrapper
 import com.example.nutritionapp.util.wrapEspressoIdlingResource
+import com.squareup.moshi.Moshi
+import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
+import okhttp3.*
+import retrofit2.Retrofit
+import retrofit2.converter.moshi.MoshiConverterFactory
+import retrofit2.http.Body
+import retrofit2.http.POST
+import java.io.IOException
+import java.net.URLEncoder
 
 /*
 To get context inside a ViewModel we can either extend AndroidViewModel. Do not use ApplicationProvider in production code, only in tests
 https://stackoverflow.com/questions/51451819/how-to-get-context-in-android-mvvm-viewmodel
  */
+val selectedProductName = MutableLiveData<String>("Apple,flour,sugar")
+
 class IngredientViewModel (val app: Application, val ingredientRepository : IngredientDataSourceInterface)
     : AndroidViewModel(app), Observable {
 
@@ -59,15 +71,24 @@ class IngredientViewModel (val app: Application, val ingredientRepository : Ingr
     val foodInText = mutableListOf<String>()
     val listOfIngredientsString = MutableLiveData<String>("Apple,flour,sugar")
 
+
+
         //input is list of names i.e {"Snapple Apple flavored drink 4oz","Mott's Apple pudding 3oz"}
      fun detectFoodInText(listName : List<String>) {
           viewModelScope.launch {
             try {
                 for (i in listName)
                 {
-                    val listOfIngredients : PostRequestResultWrapper = NutritionAPI.nutritionServicePost.detectFoodInText(i)
+                    //Note: For a post request, you can either provide a request body, passing in your text to the request body or you
+                        //can provide a text parameter within the suspend function in your API Interface.
+                    selectedProductName.value = URLEncoder.encode(i,"utf-8").toString()
+                    setBody()
+                    Log.i("testURLEncoded: ", selectedProductName.value.toString())
+                    val listOfIngredients : PostRequestResultWrapper = nutritionServicePost.detectFoodInText(
+                        )
                     for (g in listOfIngredients.annotations)
                     {
+                        Log.i("testURLAnnotation",g.annotation)
                         foodInText.add(g.annotation)
                     }
                 }
@@ -79,6 +100,7 @@ class IngredientViewModel (val app: Application, val ingredientRepository : Ingr
                   listOfIngredientsString.value = foodInText.joinToString(separator = ",")
             }
      }
+
     fun findRecipeByIngredients()
     {
         viewModelScope.launch {
@@ -256,4 +278,55 @@ class IngredientViewModel (val app: Application, val ingredientRepository : Ingr
     fun notifyPropertyChanged(fieldId: Int) {
         callbacks.notifyCallbacks(this, fieldId, null)
     }
+}
+
+private const val BASE_URL = "https://spoonacular-recipe-food-nutrition-v1.p.rapidapi.com/"
+private val moshi = Moshi.Builder()
+    .add(KotlinJsonAdapterFactory())
+    .build()
+val mediaType = MediaType.parse("application/x-www-form-urlencoded")
+//Q: What is the purpose of ".post(body)" in the OkHttpClient?
+//A: To input your text that will be acted upon by the API POST function
+var body : RequestBody? = null
+fun setBody() {
+ body = RequestBody.create(
+        mediaType,
+        "text=${selectedProductName.value}"
+    )
+    Log.i("testSetBody()", selectedProductName.value.toString())
+}
+//I%20like%20to%20eat%20delicious%20tacos.%20Only%20cheeseburger%20with%20cheddar%20are%20better%20than%20that.%20But%20then%20again%2C%20pizza%20with%20pepperoni%2C%20mushrooms%2C%20and%20tomatoes%20is%20so%20good!"
+//Note: Need to add MediaType
+val clientPostRequest by lazy {   OkHttpClient.Builder().addInterceptor(object : Interceptor {
+    @Throws(IOException::class)
+    override fun intercept(chain: Interceptor.Chain): Response? {
+        val newRequest: Request = chain.request().newBuilder()
+            .post(body!!)
+            .addHeader("content-type", "application/x-www-form-urlencoded")
+            .addHeader("x-rapidapi-host", "spoonacular-recipe-food-nutrition-v1.p.rapidapi.com")
+            .addHeader(
+                "x-rapidapi-key",
+                "743dd97869msh559abee3f899bd4p131dd1jsn866e00036c54"
+            )//Error: HTTP 401 Unauthorized
+            .build()
+        return chain.proceed(newRequest)
+    }
+}).build()}
+
+private val retrofitPost by lazy {   Retrofit.Builder()
+    .addConverterFactory(MoshiConverterFactory.create(moshi))
+    .baseUrl(BASE_URL)
+    .client(clientPostRequest)
+    .build()}
+
+interface IngredientsApiInterfacePost{
+    @POST("food/detect")
+    suspend fun detectFoodInText(): PostRequestResultWrapper
+    //fun addUser(@Body userData: UserInfo): Call<UserInfo>
+}
+
+object testNutritionApi{
+    val nutritionServicePost : IngredientsApiInterfacePost by lazy{ retrofitPost.create(
+        IngredientsApiInterfacePost::class.java
+    )}
 }

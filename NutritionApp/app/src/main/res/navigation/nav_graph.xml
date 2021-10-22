@@ -31,7 +31,7 @@
         android:name="com.example.nutritionapp.recipe.SearchRecipe"
         android:label="SearchRecipe" >
         <argument
-            android:name="SelectedIngredients"
-            app:argType="com.example.nutritionapp.recipe.ListSelectedIngredients" />
+            android:name="ListOfIngredients"
+            app:argType="string" />
     </fragment>
 </navigation>

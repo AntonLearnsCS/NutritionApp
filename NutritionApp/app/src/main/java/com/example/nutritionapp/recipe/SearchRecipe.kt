@@ -26,7 +26,8 @@ private lateinit var binding : RecipeLayoutBinding
     ): View? {
          super.onCreateView(inflater, container, savedInstanceState)
         //Q: How to inflate layout object in onViewCreated?
-        val args = arguments?.getSerializable("SelectedIngredients") as ListSelectedIngredients
+        val args = arguments?.getString("ListOfIngredients")
+        Log.i("test","args: $args")
         val mockText = "Apple,Oranges,Kiwi"
         binding = DataBindingUtil.inflate(LayoutInflater.from(context), R.layout.recipe_layout, container,false)
         binding.searchRecipeButton.setOnClickListener {
@@ -34,7 +35,6 @@ private lateinit var binding : RecipeLayoutBinding
         }
         binding.recipeRecyclerView.layoutManager = LinearLayoutManager(context)
         val adapter = recipeAdapter(recipeAdapter.RecipeIngredientListener { recipe -> viewModel.setNavigateToRecipe(recipe) })
-
         binding.recipeRecyclerView.adapter = adapter
 
         viewModel.listOfRecipesLiveData.observe(viewLifecycleOwner, Observer{
