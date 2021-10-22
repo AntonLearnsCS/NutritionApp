@@ -43,7 +43,7 @@ private lateinit var binding : RecipeLayoutBinding
         viewModel.navigateToRecipe.observe(viewLifecycleOwner, Observer {
             if (it != null)
             {
-                findNavController().navigate()
+                //findNavController().navigate()
             }
 
         })

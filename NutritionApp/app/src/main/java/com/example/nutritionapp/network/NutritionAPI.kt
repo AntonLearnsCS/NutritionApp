@@ -1,6 +1,7 @@
 package com.example.nutritionapp.network
 
 import com.example.nutritionapp.recipe.PostRequestResultWrapper
+import com.example.nutritionapp.recipe.RecipeIngredientResultWrapper
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import okhttp3.*
@@ -46,6 +47,7 @@ var clientPostRequest = OkHttpClient.Builder().addInterceptor(object : Intercept
     @Throws(IOException::class)
     override fun intercept(chain: Interceptor.Chain): Response? {
         val newRequest: Request = chain.request().newBuilder()
+            .post(body)
             .addHeader("content-type", "application/x-www-form-urlencoded")
             .addHeader("x-rapidapi-host", "spoonacular-recipe-food-nutrition-v1.p.rapidapi.com")
             .addHeader(

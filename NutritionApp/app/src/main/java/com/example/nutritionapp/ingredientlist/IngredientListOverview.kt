@@ -80,14 +80,16 @@ class IngredientListOverview : Fragment ()
             //URLEncoder.encode(localIngredientAdapter.mListOfNames.toString(),"utf-8")
 
                 //Returns list of ingredients i.e {"mushroom","flour","tomato"}
-                //val foodDetected : String = viewModel.detectFoodInText(localIngredientAdapter.mListOfNames)
+            viewModel.detectFoodInText(localIngredientAdapter.mListOfNames)
+                val foodDetected : String? = viewModel.listOfIngredientsString.value
                 val serialArg = ListSelectedIngredients(localIngredientAdapter.mList)
-                //Log.i("Test","size: ${foodDetected.size}")
-                /*for (i in foodDetected.indices)
+
+                Log.i("Test","size: ${foodDetected.size}")
+                for (i in foodDetected.indices)
                 {
                     Log.i("test","ingredient item: $i")
                 }
-                Log.i("test","arg: ${serialArg.mList?.size}")*/
+                Log.i("test","arg: ${serialArg.mList?.size}")
                 localIngredientAdapter.mList.clear()
 
                 findNavController().navigate(IngredientListOverviewDirections.actionIngredientListOverviewToSearchRecipe(serialArg))
