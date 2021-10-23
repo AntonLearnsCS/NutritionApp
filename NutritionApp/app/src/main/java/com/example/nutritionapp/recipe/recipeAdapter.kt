@@ -1,21 +1,15 @@
 package com.example.nutritionapp.recipe
 
-import android.util.Log
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.LayoutRes
-import androidx.annotation.NonNull
 import androidx.databinding.DataBindingUtil
-import androidx.lifecycle.MutableLiveData
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.example.nutritionapp.R
-import com.example.nutritionapp.databinding.IngredientItemLocalBinding
-import com.example.nutritionapp.databinding.RecipeLayoutBinding
-import com.example.nutritionapp.recipe.ListSelectedIngredients
-import org.koin.android.ext.android.inject
+import com.example.nutritionapp.databinding.RecipeLayoutItemBinding
+
 
 
 class recipeAdapter(val onClickListener: RecipeIngredientListener) : ListAdapter<RecipeIngredientResult, recipeAdapter.ViewHolder>(
@@ -23,13 +17,12 @@ class recipeAdapter(val onClickListener: RecipeIngredientListener) : ListAdapter
 )
 {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        val view : RecipeLayoutBinding = DataBindingUtil.inflate(
+        val view : RecipeLayoutItemBinding = DataBindingUtil.inflate(
             LayoutInflater.from(parent.context),
             ViewHolder.LAYOUT,
             parent,
             false
         )
-
         return ViewHolder(view, onClickListener)
     }
 
@@ -39,11 +32,10 @@ class recipeAdapter(val onClickListener: RecipeIngredientListener) : ListAdapter
     }
 
     class ViewHolder(
-        val binding: RecipeLayoutBinding,
+        val binding: RecipeLayoutItemBinding,
         val clickListener: RecipeIngredientListener
     ) : RecyclerView.ViewHolder(binding.root)
     {
-
         fun bind(item: RecipeIngredientResult)
         {
             binding.clickListener = clickListener
@@ -51,7 +43,7 @@ class recipeAdapter(val onClickListener: RecipeIngredientListener) : ListAdapter
         }
         companion object {
             @LayoutRes
-            val LAYOUT = R.layout.ingredient_item_local
+            val LAYOUT = R.layout.recipe_layout_item
         }
     }
 

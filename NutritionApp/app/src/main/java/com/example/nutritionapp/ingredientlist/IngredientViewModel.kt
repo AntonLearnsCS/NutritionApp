@@ -42,7 +42,13 @@ class IngredientViewModel (val app: Application, val ingredientRepository : Ingr
     : AndroidViewModel(app), Observable {
 
     val listOfRecipes = mutableListOf<RecipeIngredientResult>()
-    val listOfRecipesLiveData = MutableLiveData<List<RecipeIngredientResult>>(listOfRecipes)
+    //Q: Why does "val listOfRecipesLiveData = MutableLiveData<List<RecipeIngredientResult>>(listOfRecipes)" result in RecyclerView
+    //being empty?
+    //(?) B/c since listOfRecipes is initially null, it is the same as setting listOfRecipesLiveData = null.
+    //"val listOfRecipesLiveData : MutableLiveData<List<RecipeIngredientResult>>? = null" does not work either
+    //But then "val listOfRecipesLiveData = MutableLiveData<List<RecipeIngredientResult>>()" is also initially null, so it's not unique.
+    //TODO: Why is this the correct way to initialize the variable?
+    val listOfRecipesLiveData = MutableLiveData<List<RecipeIngredientResult>>()
 
     //val selectedRecipe = MutableLiveData<RecipeIngredientResult>()
 
@@ -66,11 +72,15 @@ class IngredientViewModel (val app: Application, val ingredientRepository : Ingr
             field = value
         }
 
-
+    fun refreshRecipeList()
+    {
+        listOfRecipesLiveData?.value = listOfRecipes
+    }
     val selectedIngredient = MutableLiveData<IngredientDataClass>()
     val foodInText = mutableListOf<String>()
     val listOfIngredientsString = MutableLiveData<String>("Apple,flour,sugar")
 
+    var detectFoodInTextFinishedFlag = MutableLiveData<Boolean>(false)
 
 
         //input is list of names i.e {"Snapple Apple flavored drink 4oz","Mott's Apple pudding 3oz"}
@@ -98,19 +108,22 @@ class IngredientViewModel (val app: Application, val ingredientRepository : Ingr
             }
               if (!foodInText.isEmpty())
                   listOfIngredientsString.value = foodInText.joinToString(separator = ",")
-            }
+          detectFoodInTextFinishedFlag.value = true
+          }
      }
 
     fun findRecipeByIngredients()
     {
         viewModelScope.launch {
             try {
-                val resultWrapper : RecipeIngredientResultWrapper = NutritionAPI.nutritionServiceGetRecipeIngredients.findByIngredients(listOfIngredientsString.value!!)
-                for (i in resultWrapper.mList)
+                val resultWrapper : List<RecipeIngredientResult> = NutritionAPI.nutritionServiceGetRecipeIngredients.findByIngredients(listOfIngredientsString.value!!)
+                Log.i("test","recipe list size: ${resultWrapper.size}")
+                Log.i("test","recipe[0]: ${resultWrapper[0].title}")
+                for (i in resultWrapper)
                 {
                     listOfRecipes.add(i)
                 }
-                listOfRecipesLiveData.value = listOfRecipes
+                listOfRecipesLiveData?.value = listOfRecipes
             }
             catch (e : java.lang.Exception)
             {
@@ -142,8 +155,6 @@ class IngredientViewModel (val app: Application, val ingredientRepository : Ingr
                         println("Number of items displayListInXml: ${displayListInXml.size}")
 
                         mutableLiveDataList?.value = displayListInXml
-
-
 
                         println("Number of items: ${mutableLiveDataList?.value!!.size}")
 

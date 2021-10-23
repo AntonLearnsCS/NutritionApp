@@ -86,9 +86,17 @@ class IngredientListOverview : Fragment ()
 
                 Log.i("test","arg: ${serialArg.mList?.size}")*/
                 localIngredientAdapter.mList.clear()
-
-                findNavController().navigate(IngredientListOverviewDirections.actionIngredientListOverviewToSearchRecipe(serialArg))
-        }
+            //wait for flag to be true, indicating that the viewModelScope coroutine is done
+                viewModel.detectFoodInTextFinishedFlag.observe(viewLifecycleOwner, Observer { flag ->
+                    if (flag)
+                    {
+                        viewModel.detectFoodInTextFinishedFlag.value = false
+                        findNavController().navigate(IngredientListOverviewDirections.actionIngredientListOverviewToSearchRecipe(serialArg))
+                        //once you navigate away, this fragment is destroyed, which destroys this method, so no need for return
+                        //return@Observer
+                    }
+                })
+                }
 
         Log.i("test","IngredientListcalled")
         if (viewModel.navigatorFlag.value == true) {

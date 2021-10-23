@@ -2,6 +2,7 @@ package com.example.nutritionapp.network
 
 import com.example.nutritionapp.ingredientlist.IngredientViewModel
 import com.example.nutritionapp.recipe.PostRequestResultWrapper
+import com.example.nutritionapp.recipe.RecipeIngredientResult
 import com.example.nutritionapp.recipe.RecipeIngredientResultWrapper
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
@@ -98,7 +99,7 @@ val response = client.newCall(request).execute()
         suspend fun getIngredients(@Query("query") type: String): wrapperIngredientListNetworkDataClass
 
         @GET("recipes/findByIngredients")
-        suspend fun findByIngredients(@Query("ingredients") list: String): RecipeIngredientResultWrapper
+        suspend fun findByIngredients(@Query("ingredients") list: String): List<RecipeIngredientResult>
     }
 
 

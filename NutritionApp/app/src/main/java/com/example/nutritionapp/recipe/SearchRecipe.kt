@@ -17,7 +17,9 @@ import org.koin.android.ext.android.inject
 
 class SearchRecipe : Fragment() {
 private lateinit var binding : RecipeLayoutBinding
- val viewModel : IngredientViewModel by inject()
+//viewModel is being initialized before the detectFoodText is done running in the background
+ //val viewModel by lazy { ViewModelProvider(this).get(IngredientViewModel::class.java)}
+val viewModel : IngredientViewModel by inject()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -29,21 +31,30 @@ private lateinit var binding : RecipeLayoutBinding
         val args = arguments?.getString("ListOfIngredients")
         Log.i("test","args: $args")
         val mockText = "Apple,Oranges,Kiwi"
+        Log.i("test","LiveData: ${viewModel.listOfRecipesLiveData?.value}")
         binding = DataBindingUtil.inflate(LayoutInflater.from(context), R.layout.recipe_layout, container,false)
+
+        binding.viewModel = viewModel
+
         binding.searchRecipeButton.setOnClickListener {
             viewModel.findRecipeByIngredients()
         }
+
         binding.recipeRecyclerView.layoutManager = LinearLayoutManager(context)
+
         val adapter = recipeAdapter(recipeAdapter.RecipeIngredientListener { recipe -> viewModel.setNavigateToRecipe(recipe) })
+
         binding.recipeRecyclerView.adapter = adapter
 
-        viewModel.listOfRecipesLiveData.observe(viewLifecycleOwner, Observer{
+        viewModel.listOfRecipesLiveData?.observe(viewLifecycleOwner, Observer{
             adapter.submitList(it)
         })
+
         viewModel.navigateToRecipe.observe(viewLifecycleOwner, Observer {
             if (it != null)
             {
-                //findNavController().navigate()
+                findNavController().navigate(SearchRecipeDirections.actionSearchRecipeToRecipeDetail(it))
+                viewModel.setNavigateToRecipeNull()
             }
 
         })

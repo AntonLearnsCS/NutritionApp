@@ -48,5 +48,6 @@
 <!-- Set placeholders for the String resource values-->
 <string name="location">%1$s, %2$s</string>
     <string name="nullValue">null</string>
+    <string name="recipe_image">recipe image</string>
 
 </resources>

@@ -8,7 +8,6 @@
     <data>
         <variable name="ingredientItem"
             type="com.example.nutritionapp.database.IngredientDataClass">
-
         </variable>
 
         <variable
