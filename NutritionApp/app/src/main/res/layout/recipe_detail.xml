@@ -26,13 +26,14 @@
         <ImageView
             android:id="@+id/recipe_image"
             displayImage="@{recipe.image}"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="338dp"
+            android:layout_height="280dp"
             android:layout_marginBottom="272dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.498"
             app:layout_constraintStart_toStartOf="parent"
-            tools:srcCompat="@tools:sample/avatars" />
+            tools:srcCompat="@tools:sample/avatars"
+            android:contentDescription="@string/recipe_image" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

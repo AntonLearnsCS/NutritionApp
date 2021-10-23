@@ -15,16 +15,18 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="117dp"
         android:onClick="@{() -> clickListener.onClick(recipe)}">
 
         <TextView
             android:id="@+id/recipe_name"
-            android:textSize="15sp"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="100dp"
+            android:layout_marginTop="8dp"
             android:text="@{recipe.title}"
+            android:textSize="15sp"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 

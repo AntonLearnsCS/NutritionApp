@@ -1,5 +1,7 @@
 package com.example.nutritionapp
 
+import android.animation.Animator
+import android.animation.AnimatorListenerAdapter
 import android.app.Application
 import android.view.View
 import android.widget.ImageView
@@ -33,6 +35,47 @@ object Adapters {
                         .placeholder(R.drawable.loading_animation)
                         .error(R.drawable.ic_broken_image))
                 .into(imageView)
+        }
+    }
+    //animate changing the view visibility
+    fun View.fadeIn() {
+        this.visibility = View.VISIBLE
+        this.alpha = 0f
+        this.animate().alpha(1f).setListener(object : AnimatorListenerAdapter() {
+            override fun onAnimationEnd(animation: Animator) {
+                this@fadeIn.alpha = 1f
+            }
+        })
+    }
+
+    //animate changing the view visibility
+    fun View.fadeOut() {
+        this.animate().alpha(0f).setListener(object : AnimatorListenerAdapter() {
+            override fun onAnimationEnd(animation: Animator) {
+                this@fadeOut.alpha = 1f
+                this@fadeOut.visibility = View.GONE
+            }
+        })
+    }
+
+    /**
+     * Use this binding adapter to show and hide the views using boolean variables
+     */
+    @BindingAdapter("android:fadeVisible")
+    @JvmStatic
+    fun setFadeVisible(view: View, visible: Boolean? = true) {
+        if (view.tag == null) {
+            view.tag = true
+            view.visibility = if (visible == true) View.VISIBLE else View.GONE
+        } else {
+            view.animate().cancel()
+            if (visible == true) {
+                if (view.visibility == View.GONE)
+                    view.fadeIn()
+            } else {
+                if (view.visibility == View.VISIBLE)
+                    view.fadeOut()
+            }
         }
     }
 }

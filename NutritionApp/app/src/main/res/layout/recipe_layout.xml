@@ -18,11 +18,14 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="96dp"
+            android:hint="@string/enter_ingredients_here"
             android:text="@={viewModel.listOfIngredientsString}"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.498"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            android:autofillHints="Ingredient list"
+            android:inputType="text" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recipe_recycler_view"
@@ -36,16 +39,28 @@
 
         </androidx.recyclerview.widget.RecyclerView>
 
-        <Button
-            android:id="@+id/search_recipe_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Search Recipe"
+        <androidx.core.widget.ContentLoadingProgressBar
+            android:id="@+id/progress_circular"
+            android:layout_width="84dp"
+            android:layout_height="80dp"
+            android:fadeVisible="@{viewModel.viewVisibilityFlag}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.498"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/ingredient_list"
-            app:layout_constraintVertical_bias="0.207" />
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.459">
+
+        </androidx.core.widget.ContentLoadingProgressBar>
+
+        <Button
+            android:id="@+id/search_recipe_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/search_recipe"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.498"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/ingredient_list" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

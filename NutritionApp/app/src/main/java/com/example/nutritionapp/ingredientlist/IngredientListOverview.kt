@@ -66,11 +66,11 @@ class IngredientListOverview : Fragment ()
             networkIngredientAdapter.submitList(it)
         })
 
-      /*  binding.searchIngredientFAB.setOnClickListener {
+        binding.searchIngredientButton.setOnClickListener {
             //TODO: Clear the previous search results in recyclerView
-            //networkIngredientAdapter.currentList.clear()
+            networkIngredientAdapter.currentList.clear()
 
-           viewModel.loadIngredientListByNetwork()}*/
+           viewModel.loadIngredientListByNetwork()}
 
         binding.searchRecipe.setOnClickListener {
             localIngredientAdapter.getListName()

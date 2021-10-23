@@ -40,7 +40,8 @@ val selectedProductName = MutableLiveData<String>("Apple,flour,sugar")
 
 class IngredientViewModel (val app: Application, val ingredientRepository : IngredientDataSourceInterface)
     : AndroidViewModel(app), Observable {
-
+    val viewVisibilityFlag = MutableLiveData<Boolean>(false)
+    val shoppingCartVisibilityFlag = MutableLiveData<Boolean>(true)
     val listOfRecipes = mutableListOf<RecipeIngredientResult>()
     //Q: Why does "val listOfRecipesLiveData = MutableLiveData<List<RecipeIngredientResult>>(listOfRecipes)" result in RecyclerView
     //being empty?
@@ -62,20 +63,10 @@ class IngredientViewModel (val app: Application, val ingredientRepository : Ingr
     var mutableLiveDataList : MutableLiveData<MutableList<IngredientDataClass>> = MutableLiveData()
     var listOfSavedIngredients : MutableLiveData<List<IngredientDataClass>> = MutableLiveData()//null//getLocalIngredientList()
 
-    val testDTO = IngredientDataClass(4,"nameTest",2,"url","jpeg")
-
     //two-way binding
     //no need to add "?query=" since the getIngredients() of the IngredientsApiInterface will do that
     var searchItem = MutableLiveData<String>("Apple")
-        set(value) {
-            Log.i("test","search Item assigned")
-            field = value
-        }
 
-    fun refreshRecipeList()
-    {
-        listOfRecipesLiveData?.value = listOfRecipes
-    }
     val selectedIngredient = MutableLiveData<IngredientDataClass>()
     val foodInText = mutableListOf<String>()
     val listOfIngredientsString = MutableLiveData<String>("Apple,flour,sugar")
@@ -86,6 +77,7 @@ class IngredientViewModel (val app: Application, val ingredientRepository : Ingr
         //input is list of names i.e {"Snapple Apple flavored drink 4oz","Mott's Apple pudding 3oz"}
      fun detectFoodInText(listName : List<String>) {
           viewModelScope.launch {
+              viewVisibilityFlag.value = true
             try {
                 for (i in listName)
                 {
@@ -108,13 +100,16 @@ class IngredientViewModel (val app: Application, val ingredientRepository : Ingr
             }
               if (!foodInText.isEmpty())
                   listOfIngredientsString.value = foodInText.joinToString(separator = ",")
-          detectFoodInTextFinishedFlag.value = true
+
+              viewVisibilityFlag.value = false
+              detectFoodInTextFinishedFlag.value = true
           }
      }
 
     fun findRecipeByIngredients()
     {
         viewModelScope.launch {
+            viewVisibilityFlag.value = true
             try {
                 val resultWrapper : List<RecipeIngredientResult> = NutritionAPI.nutritionServiceGetRecipeIngredients.findByIngredients(listOfIngredientsString.value!!)
                 Log.i("test","recipe list size: ${resultWrapper.size}")
@@ -129,16 +124,19 @@ class IngredientViewModel (val app: Application, val ingredientRepository : Ingr
             {
                 Log.i("Exception","$e")
             }
+            viewVisibilityFlag.value = false
         }
     }
 
     fun loadIngredientListByNetwork()
     {
         wrapEspressoIdlingResource {
+            shoppingCartVisibilityFlag.value = false
             viewModelScope.launch {
-
+                viewVisibilityFlag.value = true
                 if (searchItem.value != null) {
                     try {
+
                         val result :wrapperIngredientListNetworkDataClass =
                             NutritionAPI.nutritionService.getIngredients(searchItem.value!!)
                         Log.i("test","search item: ${searchItem.value}")
@@ -152,18 +150,9 @@ class IngredientViewModel (val app: Application, val ingredientRepository : Ingr
                         }
                         //assignment not working
                         displayListInXml.addAll(listOfNetworkRequestedIngredients!!)
-                        println("Number of items displayListInXml: ${displayListInXml.size}")
 
-                        mutableLiveDataList?.value = displayListInXml
+                        mutableLiveDataList.value = displayListInXml
 
-                        println("Number of items: ${mutableLiveDataList?.value!!.size}")
-
-                        for (i in listOfNetworkRequestedIngredients!!)
-                        {
-                            println("Ingredient name: ${i.name}")
-                        }
-
-                        //Note
                         Toast.makeText(
                             app,
                             "networkRequestSuccess",
@@ -181,6 +170,7 @@ class IngredientViewModel (val app: Application, val ingredientRepository : Ingr
                         Toast.LENGTH_SHORT
                     ).show()
                 }
+                viewVisibilityFlag.value = false
             }
         }
     }
