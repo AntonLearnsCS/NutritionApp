@@ -36,7 +36,6 @@ class IngredientDetail : Fragment() {
 
         binding.addIngredientFAB.setOnClickListener {
             viewModel.saveIngredientItem()
-            viewModel.navigatorFlag.value = true
             findNavController().navigate(IngredientDetailDirections.actionIngredientDetailToIngredientListOverview())
         }
         return binding.root

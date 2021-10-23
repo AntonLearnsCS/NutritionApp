@@ -2,8 +2,6 @@
 <layout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-
     >
 
     <data>
@@ -65,19 +63,21 @@
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintVertical_bias="0.139" />
 
-        <androidx.core.widget.ContentLoadingProgressBar
+        <ProgressBar
             android:id="@+id/progress_circular"
-            android:layout_width="88dp"
-            android:layout_height="99dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/ic_launcher_foreground"
+            android:elevation="2dp"
             android:fadeVisible="@{ingredientViewModel.viewVisibilityFlag}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.498"
+            app:layout_constraintHorizontal_bias="0.49"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/searchIngredientButton"
-            app:layout_constraintVertical_bias="0.367">
+            app:layout_constraintVertical_bias="0.262">
 
-        </androidx.core.widget.ContentLoadingProgressBar>
+        </ProgressBar>
 
         <TextView
             android:id="@+id/Ingredients_at_Home"
@@ -124,7 +124,8 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/searchIngredientButton"
             app:layout_constraintVertical_bias="0.434"
-            app:srcCompat="@drawable/food_shopping_cart" />
+            app:srcCompat="@drawable/food_shopping_cart"
+            android:contentDescription="@string/grocery_cart_image" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

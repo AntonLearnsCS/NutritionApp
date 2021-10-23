@@ -15,9 +15,9 @@ import retrofit2.http.GET
 import retrofit2.http.POST
 import retrofit2.http.Query
 import java.io.IOException
+private const val BASE_URL = "https://spoonacular-recipe-food-nutrition-v1.p.rapidapi.com/"
 
-
-    private const val BASE_URL = "https://spoonacular-recipe-food-nutrition-v1.p.rapidapi.com/"
+class NutritionAPI() {
 
     /**
      * Build the Moshi object that Retrofit will be using, making sure to add the Kotlin adapter for
@@ -27,7 +27,6 @@ import java.io.IOException
     private val moshi = Moshi.Builder()
         .add(KotlinJsonAdapterFactory())
         .build()
-
 
 /*
 An interceptor will intercept the HTTP request and append the headers when Retrofit is initialized
@@ -40,22 +39,6 @@ source: https://stackoverflow.com/questions/42491733/passing-api-key-in-retrofit
  so that the server can tailor the response (source:https://developer.mozilla.org/en-US/docs/Glossary/Request_header)
  */
 
-
-/*
-val client = OkHttpClient()
-
-val mediaType = MediaType.parse("application/x-www-form-urlencoded")
-val body = RequestBody.create(mediaType, "text=I%20like%20to%20eat%20delicious%20tacos.%20Only%20cheeseburger%20with%20cheddar%20are%20better%20than%20that.%20But%20then%20again%2C%20pizza%20with%20pepperoni%2C%20mushrooms%2C%20and%20tomatoes%20is%20so%20good!")
-val request = Request.Builder()
-	.url("https://spoonacular-recipe-food-nutrition-v1.p.rapidapi.com/food/detect")
-	.post(body)
-	.addHeader("content-type", "application/x-www-form-urlencoded")
-	.addHeader("x-rapidapi-host", "spoonacular-recipe-food-nutrition-v1.p.rapidapi.com")
-	.addHeader("x-rapidapi-key", "743dd97869msh559abee3f899bd4p131dd1jsn866e00036c54")
-	.build()
-
-val response = client.newCall(request).execute()
- */
 
     //Separate client and Retrofit object for @GET and @POST requests since they have different headers
     var clientGetRequest = OkHttpClient.Builder().addInterceptor(object : Interceptor {
@@ -77,7 +60,7 @@ val response = client.newCall(request).execute()
      * Use the Retrofit builder to build a retrofit object using a Moshi converter with our Moshi
      * object.
      */
-    private val retrofit = Retrofit.Builder()
+      val retrofit = Retrofit.Builder()
         .addConverterFactory(MoshiConverterFactory.create(moshi))
         .baseUrl(BASE_URL)
         .client(clientGetRequest)
@@ -103,23 +86,24 @@ val response = client.newCall(request).execute()
     }
 
 
-    //we want to expose the retrofit instance because creating a Retrofit instance is expensive
-    object NutritionAPI {
-        val nutritionService: IngredientsApiInterface by lazy {
-            retrofit.create(
-                IngredientsApiInterface::class.java
-            )
-        }
-
-
-        val nutritionServiceGetRecipeIngredients: IngredientsApiInterface by lazy {
-            retrofit.create(
-                IngredientsApiInterface::class.java
-            )
-        }
+    val nutritionService: NutritionAPI.IngredientsApiInterface by lazy {
+        retrofit.create(
+            NutritionAPI.IngredientsApiInterface::class.java
+        )
     }
 
 
+    val nutritionServiceGetRecipeIngredients: NutritionAPI.IngredientsApiInterface by lazy {
+        retrofit.create(
+            NutritionAPI.IngredientsApiInterface::class.java
+        )
+    }
+
+}
+//we want to expose the retrofit instance because creating a Retrofit instance is expensive
+object NutritionAPIObject {
+
+}
 /*
 
 val client = OkHttpClient()

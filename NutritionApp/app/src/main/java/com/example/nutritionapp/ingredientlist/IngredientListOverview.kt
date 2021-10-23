@@ -19,27 +19,37 @@ import org.koin.android.ext.android.bind
 import org.koin.android.ext.android.inject
 import java.net.URLEncoder
 
-class IngredientListOverview : Fragment ()
-{
-    private val localIngredientAdapter = com.example.nutritionapp.ingredientlist.localIngredientAdapter(
-        com.example.nutritionapp.ingredientlist.localIngredientAdapter.LocalIngredientListener{
-            ingredientItem -> viewModel.setNavigateToDetail(ingredientItem) })
+class IngredientListOverview : Fragment() {
+    private val localIngredientAdapter =
+        com.example.nutritionapp.ingredientlist.localIngredientAdapter(
+            com.example.nutritionapp.ingredientlist.localIngredientAdapter.LocalIngredientListener { ingredientItem ->
+                viewModel.setNavigateToDetail(
+                    ingredientItem
+                )
+            })
 
-    private val networkIngredientAdapter = networkIngredientAdapter(com.example.nutritionapp.ingredientlist.networkIngredientAdapter
-        .NetworkIngredientListener { ingredientItem ->
-            viewModel.setNavigateToDetail(ingredientItem) })
+    private val networkIngredientAdapter =
+        networkIngredientAdapter(com.example.nutritionapp.ingredientlist.networkIngredientAdapter
+            .NetworkIngredientListener { ingredientItem ->
+                viewModel.setNavigateToDetail(ingredientItem)
+            })
+
     //Koin
-     val viewModel : IngredientViewModel by inject()
-    private lateinit var binding : IngredientListRecyclerviewBinding
+    val viewModel: IngredientViewModel by inject()
+    private lateinit var binding: IngredientListRecyclerviewBinding
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View
-    {
+    ): View {
         super.onCreate(savedInstanceState)
 
-        binding = DataBindingUtil.inflate(inflater, R.layout.ingredient_list_recyclerview,container,false)
+        binding = DataBindingUtil.inflate(
+            inflater,
+            R.layout.ingredient_list_recyclerview,
+            container,
+            false
+        )
         //binding.ingredientList = viewModel.listOfIngredients.value
         binding.lifecycleOwner = viewLifecycleOwner
 
@@ -70,52 +80,48 @@ class IngredientListOverview : Fragment ()
             //TODO: Clear the previous search results in recyclerView
             networkIngredientAdapter.currentList.clear()
 
-           viewModel.loadIngredientListByNetwork()}
+            viewModel.loadIngredientListByNetwork()
+        }
 
         binding.searchRecipe.setOnClickListener {
             localIngredientAdapter.getListName()
-                //clear list of ingredient components before trying to detect new ingredients
-                viewModel.foodInText.clear()
+            //clear list of ingredient components before trying to detect new ingredients
+            viewModel.foodInText.clear()
 
-                //Returns list of ingredients i.e {"mushroom","flour","tomato"}
+            //Returns list of ingredients i.e {"mushroom","flour","tomato"}
             viewModel.detectFoodInText(localIngredientAdapter.mListOfNames)
-                //val foodDetected : String? = viewModel.listOfIngredientsString.value
-                val serialArg = viewModel.foodInText.toString()
+            //val foodDetected : String? = viewModel.listOfIngredientsString.value
+            val serialArg = viewModel.foodInText.toString()
 
-               /* Log.i("Test","size: ${foodDetected.size}")
-
-                Log.i("test","arg: ${serialArg.mList?.size}")*/
-                localIngredientAdapter.mList.clear()
+            localIngredientAdapter.mList.clear()
             //wait for flag to be true, indicating that the viewModelScope coroutine is done
-                viewModel.detectFoodInTextFinishedFlag.observe(viewLifecycleOwner, Observer { flag ->
-                    if (flag)
-                    {
-                        viewModel.detectFoodInTextFinishedFlag.value = false
-                        findNavController().navigate(IngredientListOverviewDirections.actionIngredientListOverviewToSearchRecipe(serialArg))
-                        //once you navigate away, this fragment is destroyed, which destroys this method, so no need for return
-                        //return@Observer
-                    }
-                })
-                }
-
-        Log.i("test","IngredientListcalled")
-        if (viewModel.navigatorFlag.value == true) {
-            viewModel.setNavigateToDetailNull()
-            viewModel.navigatorFlag.value = false
-        }
-            viewModel.navigateToDetail.observe(viewLifecycleOwner, Observer {
-                if (viewModel.navigateToDetail.value != null) {
-                    viewModel.selectedIngredient.value = it
-                    findNavController().navigate(IngredientListOverviewDirections.actionIngredientListOverviewToIngredientDetail())
+            viewModel.navigatorFlag.observe(viewLifecycleOwner, Observer { flag ->
+                if (flag) {
+                    viewModel.setNavigatorFlag(false)
+                    findNavController().navigate(
+                        IngredientListOverviewDirections.actionIngredientListOverviewToSearchRecipe(
+                            serialArg
+                        )
+                    )
+                    //once you navigate away, this fragment is destroyed, which destroys this method, so no need for return
+                    //return@Observer
                 }
             })
+        }
 
-    return binding.root
+        viewModel.navigateToDetail.observe(viewLifecycleOwner, Observer {
+            if (viewModel.navigateToDetail.value != null) {
+                viewModel.selectedIngredient.value = it
+                findNavController().navigate(IngredientListOverviewDirections.actionIngredientListOverviewToIngredientDetail())
+            }
+        })
+        return binding.root
     }
+
     override fun onResume() {
         super.onResume()
         //load the reminders list on the ui
-        wrapEspressoIdlingResource {  viewModel.getLocalIngredientList()}
+        wrapEspressoIdlingResource { viewModel.getLocalIngredientList() }
         //viewModel.setNavigateToDetailNull()
     }
 }

@@ -57,5 +57,6 @@
     <string name="enter_ingredients_here">Enter ingredients here</string>
     <string name="search_grocery_product">Search grocery product</string>
     <string name="search_grocery">Search Grocery</string>
+    <string name="grocery_cart_image">Grocery cart image</string>
 
 </resources>
