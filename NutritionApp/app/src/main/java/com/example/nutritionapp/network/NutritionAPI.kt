@@ -3,7 +3,7 @@ package com.example.nutritionapp.network
 import com.example.nutritionapp.ingredientlist.IngredientViewModel
 import com.example.nutritionapp.recipe.PostRequestResultWrapper
 import com.example.nutritionapp.recipe.RecipeIngredientResult
-import com.example.nutritionapp.recipe.RecipeIngredientResultWrapper
+import com.example.nutritionapp.recipe.RecipeInstructionsWrapper
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import okhttp3.*
@@ -17,7 +17,6 @@ import retrofit2.http.Query
 import java.io.IOException
 private const val BASE_URL = "https://spoonacular-recipe-food-nutrition-v1.p.rapidapi.com/"
 
-class NutritionAPI() {
 
     /**
      * Build the Moshi object that Retrofit will be using, making sure to add the Kotlin adapter for
@@ -83,26 +82,32 @@ source: https://stackoverflow.com/questions/42491733/passing-api-key-in-retrofit
 
         @GET("recipes/findByIngredients")
         suspend fun findByIngredients(@Query("ingredients") list: String): List<RecipeIngredientResult>
+
+        @GET("recipes/{id}/analyzedInstructions")
+        suspend fun getRecipeInstructions(@Query("stepBreakdown") boolean: Boolean) : RecipeInstructionsWrapper
     }
 
 
-    val nutritionService: NutritionAPI.IngredientsApiInterface by lazy {
-        retrofit.create(
-            NutritionAPI.IngredientsApiInterface::class.java
-        )
-    }
 
 
-    val nutritionServiceGetRecipeIngredients: NutritionAPI.IngredientsApiInterface by lazy {
-        retrofit.create(
-            NutritionAPI.IngredientsApiInterface::class.java
-        )
-    }
 
-}
 //we want to expose the retrofit instance because creating a Retrofit instance is expensive
-object NutritionAPIObject {
+object NutritionAPI {
+    val nutritionService: IngredientsApiInterface by lazy {
+        retrofit.create(
+            IngredientsApiInterface::class.java
+        )
+    }
 
+
+    val nutritionServiceGetRecipeIngredients: IngredientsApiInterface by lazy {
+        retrofit.create(
+            IngredientsApiInterface::class.java
+        )
+    }
+    val nutritionServiceGetRecipeInstructions : IngredientsApiInterface by lazy {
+        retrofit.create( IngredientsApiInterface::class.java)
+    }
 }
 /*
 

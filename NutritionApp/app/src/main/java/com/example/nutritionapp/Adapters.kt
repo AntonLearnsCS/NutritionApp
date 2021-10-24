@@ -37,6 +37,24 @@ object Adapters {
                 .into(imageView)
         }
     }
+
+    @JvmStatic
+    @BindingAdapter("displaySteps")
+    fun bindSteps(textView: TextView, mList : List<String>)
+    {
+        var counter = 1
+        val mString = ""
+        for( step in mList)
+        {
+            if (step.contains("Title"))
+            {
+                mString.plus("Sub-Recipe: ${step}\n")
+            }
+            mString.plus("${counter}${')'}  ${step}\n")
+            counter++
+        }
+        textView.text = mString
+    }
     //animate changing the view visibility
     fun View.fadeIn() {
         this.visibility = View.VISIBLE

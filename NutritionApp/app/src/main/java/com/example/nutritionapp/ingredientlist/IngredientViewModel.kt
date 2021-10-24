@@ -14,8 +14,7 @@ import com.example.nutritionapp.database.IngredientDataSourceInterface
 import com.example.nutritionapp.database.dto.IngredientDataClassDTO
 import com.example.nutritionapp.ingredientlist.testNutritionApi.nutritionServicePost
 import com.example.nutritionapp.network.*
-import com.example.nutritionapp.recipe.PostRequestResultWrapper
-import com.example.nutritionapp.recipe.RecipeIngredientResult
+import com.example.nutritionapp.recipe.*
 import com.example.nutritionapp.util.wrapEspressoIdlingResource
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
@@ -82,6 +81,14 @@ class IngredientViewModel(
         get() = _listOfRecipesLiveData
 
     val listOfRecipes = mutableListOf<RecipeIngredientResult>()
+
+
+    private val _listOfStepsLiveData = MutableLiveData<List<String>>()
+    val listOfStepsLiveData: LiveData<List<String>>
+        get() = _listOfStepsLiveData
+
+    val listOfSteps = mutableListOf<String>()
+
 
     var listOfNetworkRequestedIngredients: List<IngredientDataClass>? = null
 
@@ -194,6 +201,29 @@ class IngredientViewModel(
         }
     }
 
+    fun getRecipeInstructions()
+    {
+        wrapEspressoIdlingResource {
+            viewModelScope.launch {
+                val resultInstructions : RecipeInstructionsWrapper = NutritionAPI.nutritionServiceGetRecipeInstructions.getRecipeInstructions(false)
+
+                //iterates over each sub recipe i.e recipe for cake and recipe for frosting
+                for(i in resultInstructions.mList)
+                {
+                    //adds title of sub recipes i.e frosting recipe in a cake recipe
+                    if (i.name.length > 0)
+                        listOfSteps.add(i.name)
+                    //iterates over "RecipeInstruction"
+                    for(steps in i.steps)
+                    {
+                        listOfSteps.add(steps.step)
+                    }
+                }
+                _listOfStepsLiveData.value = listOfSteps
+            }
+        }
+    }
+
     fun saveIngredientItem() {
         if (selectedIngredient.value != null && selectedIngredient.value?.quantity!! > 0) {
             wrapEspressoIdlingResource {
@@ -300,6 +330,9 @@ private const val BASE_URL = "https://spoonacular-recipe-food-nutrition-v1.p.rap
 private val moshi = Moshi.Builder()
     .add(KotlinJsonAdapterFactory())
     .build()
+
+
+//----------------------------------------POST Request--------------------------------------------------------------------------------
 val mediaType = MediaType.parse("application/x-www-form-urlencoded")
 
 //Q: What is the purpose of ".post(body)" in the OkHttpClient?
@@ -313,7 +346,6 @@ fun setBody() {
     Log.i("testSetBody()", selectedProductName.value.toString())
 }
 
-//I%20like%20to%20eat%20delicious%20tacos.%20Only%20cheeseburger%20with%20cheddar%20are%20better%20than%20that.%20But%20then%20again%2C%20pizza%20with%20pepperoni%2C%20mushrooms%2C%20and%20tomatoes%20is%20so%20good!"
 //Note: Need to add MediaType
 val clientPostRequest by lazy {
     OkHttpClient.Builder().addInterceptor(object : Interceptor {
