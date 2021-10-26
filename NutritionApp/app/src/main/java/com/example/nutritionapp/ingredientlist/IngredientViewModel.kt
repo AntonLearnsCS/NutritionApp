@@ -82,7 +82,6 @@ class IngredientViewModel(
 
     val listOfRecipes = mutableListOf<RecipeIngredientResult>()
 
-
     private val _listOfStepsLiveData = MutableLiveData<List<String>>()
     val listOfStepsLiveData: LiveData<List<String>>
         get() = _listOfStepsLiveData
@@ -198,7 +197,7 @@ class IngredientViewModel(
             }
         }
     }
-
+        val mFlag = MutableLiveData(false)
     fun getRecipeInstructions()
     {
         val listOfSteps = mutableListOf<String>()
@@ -222,7 +221,7 @@ class IngredientViewModel(
                         }
                     }
                     _listOfStepsLiveData.value = listOfSteps
-
+                    mFlag.value = true
                     Log.i("test","listOfSteps size: ${(_listOfStepsLiveData.value as MutableList<String>).size}")
                     for (i in _listOfStepsLiveData.value as MutableList<String>)
                     {

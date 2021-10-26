@@ -29,7 +29,7 @@ class RecipeDetail : Fragment() {
         Log.i("test","RecipeDetail: ${viewModel.navigateToRecipe.value?.title}")
 
         //Q: Why wont _listOfRecipesLiveData update the xml?
-        viewModel.getRecipeInstructions()
+        //viewModel.getRecipeInstructions()
 
         return binding.root
     }

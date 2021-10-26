@@ -23,7 +23,8 @@ private lateinit var binding : RecipeLayoutBinding
 private val adapter = recipeAdapter(recipeAdapter.RecipeIngredientListener { recipe ->
         Log.i("test","Recipe selected name: ${recipe.title}")
         viewModel.setNavigateToRecipe(recipe)
-        viewModel.setNavigateToRecipeFlag(true)}
+        viewModel.setNavigateToRecipeFlag(true)
+}
         )
 
 val viewModel : IngredientViewModel by inject()
@@ -58,10 +59,23 @@ val viewModel : IngredientViewModel by inject()
         viewModel.navigateToRecipeFlag.observe(viewLifecycleOwner, Observer {
             if (it)
             {
-                findNavController().navigate(SearchRecipeDirections.actionSearchRecipeToRecipeDetail(viewModel.navigateToRecipe.value!!))
-                viewModel.setNavigateToRecipeFlag(false)
+                viewModel.getRecipeInstructions()
+
+                viewModel.mFlag.observe(viewLifecycleOwner, Observer {
+                    if (it) {
+                        findNavController().navigate(
+                            SearchRecipeDirections.actionSearchRecipeToRecipeDetail(
+                                viewModel.navigateToRecipe.value!!
+                            )
+                        )
+                        viewModel.setNavigateToRecipeFlag(false)
+                    }
+                })
+
+                }
             }
-        })
+        )
+
 
         return binding.root
     }
