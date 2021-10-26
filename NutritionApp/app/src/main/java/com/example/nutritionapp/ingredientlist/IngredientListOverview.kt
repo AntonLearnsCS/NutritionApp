@@ -112,6 +112,7 @@ class IngredientListOverview : Fragment() {
         viewModel.navigateToDetail.observe(viewLifecycleOwner, Observer {
             if (viewModel.navigateToDetail.value != null) {
                 viewModel.selectedIngredient.value = it
+                viewModel.setNavigateToDetailNull()
                 findNavController().navigate(IngredientListOverviewDirections.actionIngredientListOverviewToIngredientDetail())
             }
         })

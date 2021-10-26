@@ -19,6 +19,13 @@ class SearchRecipe : Fragment() {
 private lateinit var binding : RecipeLayoutBinding
 //viewModel is being initialized before the detectFoodText is done running in the background
  //val viewModel by lazy { ViewModelProvider(this).get(IngredientViewModel::class.java)}
+
+private val adapter = recipeAdapter(recipeAdapter.RecipeIngredientListener { recipe ->
+        Log.i("test","Recipe selected name: ${recipe.title}")
+        viewModel.setNavigateToRecipe(recipe)
+        viewModel.setNavigateToRecipeFlag(true)}
+        )
+
 val viewModel : IngredientViewModel by inject()
 
     override fun onCreateView(
@@ -37,12 +44,10 @@ val viewModel : IngredientViewModel by inject()
         binding.viewModel = viewModel
 
         binding.searchRecipeButton.setOnClickListener {
-            viewModel.findRecipeByIngredients()
-        }
+            viewModel.findRecipeByIngredients()}
 
         binding.recipeRecyclerView.layoutManager = LinearLayoutManager(context)
 
-        val adapter = recipeAdapter(recipeAdapter.RecipeIngredientListener { recipe -> viewModel.setNavigateToRecipe(recipe) })
 
         binding.recipeRecyclerView.adapter = adapter
 
@@ -50,13 +55,12 @@ val viewModel : IngredientViewModel by inject()
             adapter.submitList(it)
         })
 
-        viewModel.navigateToRecipe.observe(viewLifecycleOwner, Observer {
-            if (it != null)
+        viewModel.navigateToRecipeFlag.observe(viewLifecycleOwner, Observer {
+            if (it)
             {
-                findNavController().navigate(SearchRecipeDirections.actionSearchRecipeToRecipeDetail(it))
-                viewModel.setNavigateToRecipeNull()
+                findNavController().navigate(SearchRecipeDirections.actionSearchRecipeToRecipeDetail(viewModel.navigateToRecipe.value!!))
+                viewModel.setNavigateToRecipeFlag(false)
             }
-
         })
 
         return binding.root

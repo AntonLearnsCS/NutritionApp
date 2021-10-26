@@ -3,17 +3,14 @@ package com.example.nutritionapp.network
 import com.example.nutritionapp.ingredientlist.IngredientViewModel
 import com.example.nutritionapp.recipe.PostRequestResultWrapper
 import com.example.nutritionapp.recipe.RecipeIngredientResult
-import com.example.nutritionapp.recipe.RecipeInstructionsWrapper
+import com.example.nutritionapp.recipe.RecipeInstruction
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import okhttp3.*
 import org.koin.android.ext.android.inject
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
-import retrofit2.http.Body
-import retrofit2.http.GET
-import retrofit2.http.POST
-import retrofit2.http.Query
+import retrofit2.http.*
 import java.io.IOException
 private const val BASE_URL = "https://spoonacular-recipe-food-nutrition-v1.p.rapidapi.com/"
 
@@ -40,11 +37,12 @@ source: https://stackoverflow.com/questions/42491733/passing-api-key-in-retrofit
 
 
     //Separate client and Retrofit object for @GET and @POST requests since they have different headers
+//                .addHeader("content-type", "application/json")
     var clientGetRequest = OkHttpClient.Builder().addInterceptor(object : Interceptor {
         @Throws(IOException::class)
         override fun intercept(chain: Interceptor.Chain): Response? {
             val newRequest: Request = chain.request().newBuilder()
-                .addHeader("content-type", "application/json")
+                .get()
                 .addHeader("x-rapidapi-host", "spoonacular-recipe-food-nutrition-v1.p.rapidapi.com")
                 .addHeader(
                     "x-rapidapi-key",
@@ -55,6 +53,24 @@ source: https://stackoverflow.com/questions/42491733/passing-api-key-in-retrofit
         }
     }).build()
 
+/*var clientGetRequestInstructions = OkHttpClient.Builder().addInterceptor(object : Interceptor {
+    @Throws(IOException::class)
+    override fun intercept(chain: Interceptor.Chain): Response? {
+        val newRequest: Request = chain.request().newBuilder()
+            .get()
+            .addHeader("x-rapidapi-host", "spoonacular-recipe-food-nutrition-v1.p.rapidapi.com")
+            .addHeader("x-rapidapi-key", "743dd97869msh559abee3f899bd4p131dd1jsn866e00036c54")
+            .build()
+        return chain.proceed(newRequest)
+    }
+}).build()
+
+val retrofitInstructions = Retrofit.Builder()
+    .addConverterFactory(MoshiConverterFactory.create(moshi))
+    .baseUrl(BASE_URL)
+    .client(clientGetRequestInstructions)
+    .build()*/
+
     /**
      * Use the Retrofit builder to build a retrofit object using a Moshi converter with our Moshi
      * object.
@@ -64,6 +80,8 @@ source: https://stackoverflow.com/questions/42491733/passing-api-key-in-retrofit
         .baseUrl(BASE_URL)
         .client(clientGetRequest)
         .build()
+
+
 
 
     /**
@@ -84,12 +102,8 @@ source: https://stackoverflow.com/questions/42491733/passing-api-key-in-retrofit
         suspend fun findByIngredients(@Query("ingredients") list: String): List<RecipeIngredientResult>
 
         @GET("recipes/{id}/analyzedInstructions")
-        suspend fun getRecipeInstructions(@Query("stepBreakdown") boolean: Boolean) : RecipeInstructionsWrapper
+        suspend fun getRecipeInstructions(@Path("id") id : Long, @Query("stepBreakdown") boolean: Boolean) : List<RecipeInstruction>
     }
-
-
-
-
 
 //we want to expose the retrofit instance because creating a Retrofit instance is expensive
 object NutritionAPI {
@@ -97,16 +111,6 @@ object NutritionAPI {
         retrofit.create(
             IngredientsApiInterface::class.java
         )
-    }
-
-
-    val nutritionServiceGetRecipeIngredients: IngredientsApiInterface by lazy {
-        retrofit.create(
-            IngredientsApiInterface::class.java
-        )
-    }
-    val nutritionServiceGetRecipeInstructions : IngredientsApiInterface by lazy {
-        retrofit.create( IngredientsApiInterface::class.java)
     }
 }
 /*

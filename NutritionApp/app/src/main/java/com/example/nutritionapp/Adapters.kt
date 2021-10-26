@@ -8,6 +8,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.core.net.toUri
 import androidx.databinding.BindingAdapter
+import androidx.lifecycle.LiveData
 import androidx.test.core.app.ApplicationProvider
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
@@ -40,21 +41,24 @@ object Adapters {
 
     @JvmStatic
     @BindingAdapter("displaySteps")
-    fun bindSteps(textView: TextView, mList : List<String>)
+    fun bindSteps(textView: TextView, mList : LiveData<List<String>>)
     {
-        var counter = 1
-        val mString = ""
-        for( step in mList)
-        {
-            if (step.contains("Title"))
-            {
-                mString.plus("Sub-Recipe: ${step}\n")
+        if (!mList.value.isNullOrEmpty()) {
+            var counter = 1
+            val mString = ""
+            for (step in mList.value!!) {
+                if (step.contains("Title")) {
+                    mString.plus("Sub-Recipe: ${step}\n")
+                }
+                mString.plus("${counter}${')'} ${step}\n")
+                counter++
             }
-            mString.plus("${counter}${')'}  ${step}\n")
-            counter++
+            textView.text = mString
         }
-        textView.text = mString
+        else
+            textView.setText(R.string.app_name)
     }
+
     //animate changing the view visibility
     fun View.fadeIn() {
         this.visibility = View.VISIBLE

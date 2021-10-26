@@ -87,8 +87,6 @@ class IngredientViewModel(
     val listOfStepsLiveData: LiveData<List<String>>
         get() = _listOfStepsLiveData
 
-    val listOfSteps = mutableListOf<String>()
-
 
     var listOfNetworkRequestedIngredients: List<IngredientDataClass>? = null
 
@@ -139,10 +137,10 @@ class IngredientViewModel(
 
     fun findRecipeByIngredients() {
         viewModelScope.launch {
-            this@IngredientViewModel._viewVisibilityFlag.value = true
+            _viewVisibilityFlag.value = true
             try {
                 val resultWrapper: List<RecipeIngredientResult> =
-                    NutritionAPI.nutritionServiceGetRecipeIngredients.findByIngredients(
+                    NutritionAPI.nutritionService.findByIngredients(
                         listOfIngredientsString.value!!
                     )
                 Log.i("test", "recipe list size: ${resultWrapper.size}")
@@ -203,23 +201,34 @@ class IngredientViewModel(
 
     fun getRecipeInstructions()
     {
+        val listOfSteps = mutableListOf<String>()
+
         wrapEspressoIdlingResource {
             viewModelScope.launch {
-                val resultInstructions : RecipeInstructionsWrapper = NutritionAPI.nutritionServiceGetRecipeInstructions.getRecipeInstructions(false)
+                Log.i("testFunctionID","ID: ${_navigateToRecipe.value?.id}")
+                val resultInstructions : List<RecipeInstruction>? = _navigateToRecipe.value?.id?.let {
+                    NutritionAPI.nutritionService.getRecipeInstructions(it,false)
+                }
 
                 //iterates over each sub recipe i.e recipe for cake and recipe for frosting
-                for(i in resultInstructions.mList)
-                {
-                    //adds title of sub recipes i.e frosting recipe in a cake recipe
-                    if (i.name.length > 0)
-                        listOfSteps.add(i.name)
-                    //iterates over "RecipeInstruction"
-                    for(steps in i.steps)
+                if (resultInstructions != null) {
+                    for(i in resultInstructions) {
+                        //adds title of sub recipes i.e frosting recipe in a cake recipe
+                        if (i.name?.length!! > 0)
+                            listOfSteps.add(i.name)
+                        //iterates over "RecipeInstruction"
+                        for(steps in i.steps!!) {
+                            steps.step?.let { listOfSteps.add(it) }
+                        }
+                    }
+                    _listOfStepsLiveData.value = listOfSteps
+
+                    Log.i("test","listOfSteps size: ${(_listOfStepsLiveData.value as MutableList<String>).size}")
+                    for (i in _listOfStepsLiveData.value as MutableList<String>)
                     {
-                        listOfSteps.add(steps.step)
+                        Log.i("test i", "i: $i")
                     }
                 }
-                _listOfStepsLiveData.value = listOfSteps
             }
         }
     }
@@ -278,16 +287,20 @@ class IngredientViewModel(
     }
 
 
+    private var _navigateToRecipeFlag = MutableLiveData(false)
+    val navigateToRecipeFlag : LiveData<Boolean>
+    get() = _navigateToRecipeFlag
+
+
     private val _navigateToRecipe = MutableLiveData<RecipeIngredientResult>()
     val navigateToRecipe: LiveData<RecipeIngredientResult>
         get() = _navigateToRecipe
 
     fun setNavigateToRecipe(recipe: RecipeIngredientResult) {
-        _navigateToRecipe.value = recipe
-    }
+        _navigateToRecipe.value = recipe }
 
-    fun setNavigateToRecipeNull() {
-        _navigateToRecipe.value = null
+    fun setNavigateToRecipeFlag( boolean: Boolean) {
+        _navigateToRecipeFlag.value = boolean
     }
 
     @Override

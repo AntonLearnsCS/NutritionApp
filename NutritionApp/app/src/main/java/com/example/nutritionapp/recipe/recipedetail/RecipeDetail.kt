@@ -21,12 +21,14 @@ class RecipeDetail : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-
-
         binding = DataBindingUtil.inflate(inflater, R.layout.recipe_detail,container,false)
+        binding.viewModel = viewModel
         val args  = RecipeDetailArgs.fromBundle(requireArguments()).Recipe
         binding.recipe = args
+        Log.i("test","args: ${args.title}")
+        Log.i("test","RecipeDetail: ${viewModel.navigateToRecipe.value?.title}")
 
+        //Q: Why wont _listOfRecipesLiveData update the xml?
         viewModel.getRecipeInstructions()
 
         return binding.root

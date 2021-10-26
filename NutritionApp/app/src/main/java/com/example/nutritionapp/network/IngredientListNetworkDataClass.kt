@@ -8,8 +8,8 @@ data class IngredientListNetworkDataClassContainer(val ingredientList : List<Ing
 data class wrapperIngredientListNetworkDataClass(
     val type : String, val products : List<IngredientListNetworkDataClass>,
     val offset : Int, val number: Int, val totalProducts : Int,
-    val processingTimeMs : Int, val expires: Long, val isStale: Boolean
-)
+    val processingTimeMs : Int, val expires: Long, val isStale: Boolean)
+
 data class IngredientListNetworkDataClass (
     val id : Int,
     @Json(name = "title")val name : String,
