@@ -28,7 +28,7 @@ class RecipeDetail : Fragment() {
         Log.i("test","args: ${args.title}")
         Log.i("test","RecipeDetail: ${viewModel.navigateToRecipe.value?.title}")
 
-        //TODO: Why wont calling getRecipeInstructions here update the xml?
+        //TODO: In contrast, calling getRecipeInstructions here does not update the xml
         //viewModel.getRecipeInstructions()
 
         return binding.root
