@@ -222,6 +222,7 @@ class IngredientViewModel(
                     }
                     _listOfStepsLiveData.value = listOfSteps
                     mFlag.value = true
+
                     Log.i("test","listOfSteps size: ${(_listOfStepsLiveData.value as MutableList<String>).size}")
                     for (i in _listOfStepsLiveData.value as MutableList<String>)
                     {
