@@ -14,6 +14,7 @@ import com.example.nutritionapp.R
 import com.example.nutritionapp.databinding.RecipeLayoutBinding
 import com.example.nutritionapp.ingredientlist.IngredientViewModel
 import org.koin.android.ext.android.inject
+import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 
 class SearchRecipe : Fragment() {
 private lateinit var binding : RecipeLayoutBinding
@@ -27,7 +28,7 @@ private val adapter = recipeAdapter(recipeAdapter.RecipeIngredientListener { rec
 }
         )
 
-val viewModel : IngredientViewModel by inject()
+val viewModel : IngredientViewModel by sharedViewModel()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -60,16 +61,16 @@ val viewModel : IngredientViewModel by inject()
             if (it)
             {
                 //TODO: Calling getRecipeInstructions() in addition to using a flag results in expected behavior
-                viewModel.getRecipeInstructions()
+                //viewModel.getRecipeInstructions()
+                findNavController().navigate(
+                    SearchRecipeDirections.actionSearchRecipeToRecipeDetail(
+                        viewModel.navigateToRecipe.value!!
+                    ))
+                viewModel.setNavigateToRecipeFlag(false)
                 //Once getRecipeInstructions() is complete it will set mFlag = true so that navigation happens only after the liveData in getRecipeInstructions is updated
                 viewModel.mFlag.observe(viewLifecycleOwner, Observer {
                     if (it) {
-                        findNavController().navigate(
-                            SearchRecipeDirections.actionSearchRecipeToRecipeDetail(
-                                viewModel.navigateToRecipe.value!!
-                            )
-                        )
-                        viewModel.setNavigateToRecipeFlag(false)
+
                     }
                 })
 

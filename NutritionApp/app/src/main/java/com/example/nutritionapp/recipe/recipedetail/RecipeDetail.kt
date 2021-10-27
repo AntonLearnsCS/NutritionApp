@@ -12,10 +12,12 @@ import com.example.nutritionapp.databinding.RecipeDetailBinding
 import com.example.nutritionapp.ingredientlist.IngredientViewModel
 import com.example.nutritionapp.recipe.RecipeIngredientResult
 import org.koin.android.ext.android.inject
+import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 
 class RecipeDetail : Fragment() {
     private lateinit var binding : RecipeDetailBinding
-     val viewModel: IngredientViewModel by inject()
+    //"by inject()" delegate is used to lazily inject dependencies
+     val viewModel: IngredientViewModel by sharedViewModel()
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -29,7 +31,7 @@ class RecipeDetail : Fragment() {
         Log.i("test","RecipeDetail: ${viewModel.navigateToRecipe.value?.title}")
 
         //TODO: In contrast, calling getRecipeInstructions here does not update the xml
-        //viewModel.getRecipeInstructions()
+        viewModel.getRecipeInstructions()
 
         return binding.root
     }

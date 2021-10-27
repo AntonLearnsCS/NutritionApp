@@ -17,6 +17,7 @@ import com.example.nutritionapp.recipe.ListSelectedIngredients
 import com.example.nutritionapp.util.wrapEspressoIdlingResource
 import org.koin.android.ext.android.bind
 import org.koin.android.ext.android.inject
+import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 import java.net.URLEncoder
 
 class IngredientListOverview : Fragment() {
@@ -35,7 +36,7 @@ class IngredientListOverview : Fragment() {
             })
 
     //Koin
-    val viewModel: IngredientViewModel by inject()
+    val viewModel: IngredientViewModel by sharedViewModel()
     private lateinit var binding: IngredientListRecyclerviewBinding
 
     override fun onCreateView(

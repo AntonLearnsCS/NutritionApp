@@ -3,6 +3,7 @@ package com.example.nutritionapp
 import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
 import android.app.Application
+import android.util.Log
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
@@ -43,16 +44,14 @@ object Adapters {
     @BindingAdapter("displaySteps")
     fun bindSteps(textView: TextView, mList : LiveData<List<String>>)
     {
+        Log.i("test","displaySteps called: ${mList.value?.size}")
         if (!mList.value.isNullOrEmpty()) {
-            var counter = 1
-            val mString = ""
-            for (step in mList.value!!) {
-                if (step.contains("Title")) {
-                    mString.plus("Sub-Recipe: ${step}\n")
-                }
-                mString.plus("${counter}${')'} ${step}\n")
-                counter++
-            }
+            Log.i("test","displaySteps not empty")
+
+            //Note: We can't use String.plus() to append strings to a base string i.e val mString.plus(mList[0]) since Strings are final objects
+            val mString = mList.value!!.joinToString(separator = "\n\n")
+
+
             textView.text = mString
         }
         else
