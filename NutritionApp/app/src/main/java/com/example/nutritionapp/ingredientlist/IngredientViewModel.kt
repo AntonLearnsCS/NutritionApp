@@ -197,11 +197,15 @@ class IngredientViewModel(
             }
         }
     }
+        private val _listOfIngredientNameInInstructionLiveData = MutableLiveData<List<String>>()
+        val listOfIngredientNameInInstructionLiveData : LiveData<List<String>>
+        get() = _listOfIngredientNameInInstructionLiveData
 
-        val listOfIngredientNameInInstruction = mutableListOf<String>()
         val mFlag = MutableLiveData(false)
     fun getRecipeInstructions()
     {
+        val listOfIngredientNameInInstruction = mutableListOf<String>()
+
         val listOfSteps = mutableListOf<String>()
 
         wrapEspressoIdlingResource {
@@ -233,6 +237,7 @@ class IngredientViewModel(
                             steps.step?.let { listOfSteps.add(it) }
                         }
                     }
+                    _listOfIngredientNameInInstructionLiveData.value = listOfIngredientNameInInstruction
                     _listOfStepsLiveData.value = listOfSteps
                     mFlag.value = true
 

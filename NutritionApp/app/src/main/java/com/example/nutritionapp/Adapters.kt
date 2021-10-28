@@ -42,18 +42,18 @@ object Adapters {
 
     @JvmStatic
     @BindingAdapter("displaySteps")
-    fun bindSteps(textView: TextView, mList : LiveData<List<String>>, listMissingIngredients : List<String>)
+    fun bindSteps(textView: TextView, mList : LiveData<List<String>>, listMissingIngredients : LiveData<List<String>>)
     {
         val sb = StringBuilder()
         sb.append("Missing Ingredients:\n")
 
-        if (listMissingIngredients.isNullOrEmpty())
+        if (listMissingIngredients.value.isNullOrEmpty())
         {
             sb.append("None")
         }
         else
         {
-            for (name in listMissingIngredients)
+            for (name in listMissingIngredients.value!!)
             {
                 sb.append(name)
             }
@@ -66,7 +66,6 @@ object Adapters {
             val mString = mList.value!!.joinToString(separator = "\n\n")
             sb.append("\n\n$mString")
         }
-
         textView.text = sb
     }
 
