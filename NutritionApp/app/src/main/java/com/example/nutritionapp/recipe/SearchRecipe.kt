@@ -28,7 +28,7 @@ private val adapter = recipeAdapter(recipeAdapter.RecipeIngredientListener { rec
 }
         )
 
-val viewModel : IngredientViewModel by sharedViewModel()
+val viewModel : IngredientViewModel by inject()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -37,8 +37,8 @@ val viewModel : IngredientViewModel by sharedViewModel()
     ): View? {
          super.onCreateView(inflater, container, savedInstanceState)
         //Q: How to inflate layout object in onViewCreated?
-        val args = arguments?.getString("ListOfIngredients")
-        Log.i("test","args: $args")
+        //val args = SearchRecipeArgs.fromBundle(requireArguments()).ListOfIngredients//arguments?.getString("ListOfIngredients")
+        //Log.i("test","args: $args")
         val mockText = "Apple,Oranges,Kiwi"
         Log.i("test","LiveData: ${viewModel.listOfRecipesLiveData?.value}")
         binding = DataBindingUtil.inflate(LayoutInflater.from(context), R.layout.recipe_layout, container,false)
@@ -61,24 +61,22 @@ val viewModel : IngredientViewModel by sharedViewModel()
             if (it)
             {
                 //TODO: Calling getRecipeInstructions() in addition to using a flag results in expected behavior
-                //viewModel.getRecipeInstructions()
-                findNavController().navigate(
-                    SearchRecipeDirections.actionSearchRecipeToRecipeDetail(
-                        viewModel.navigateToRecipe.value!!
-                    ))
-                viewModel.setNavigateToRecipeFlag(false)
+                viewModel.getRecipeInstructions()
+
                 //Once getRecipeInstructions() is complete it will set mFlag = true so that navigation happens only after the liveData in getRecipeInstructions is updated
                 viewModel.mFlag.observe(viewLifecycleOwner, Observer {
                     if (it) {
-
+                        findNavController().navigate(
+                            SearchRecipeDirections.actionSearchRecipeToRecipeDetail(
+                                viewModel.navigateToRecipe.value!!
+                            ))
+                        viewModel.setNavigateToRecipeFlag(false)
                     }
                 })
 
                 }
             }
         )
-
-
         return binding.root
     }
 }

@@ -42,20 +42,32 @@ object Adapters {
 
     @JvmStatic
     @BindingAdapter("displaySteps")
-    fun bindSteps(textView: TextView, mList : LiveData<List<String>>)
+    fun bindSteps(textView: TextView, mList : LiveData<List<String>>, listMissingIngredients : List<String>)
     {
+        val sb = StringBuilder()
+        sb.append("Missing Ingredients:\n")
+
+        if (listMissingIngredients.isNullOrEmpty())
+        {
+            sb.append("None")
+        }
+        else
+        {
+            for (name in listMissingIngredients)
+            {
+                sb.append(name)
+            }
+        }
         Log.i("test","displaySteps called: ${mList.value?.size}")
         if (!mList.value.isNullOrEmpty()) {
             Log.i("test","displaySteps not empty")
 
             //Note: We can't use String.plus() to append strings to a base string i.e val mString.plus(mList[0]) since Strings are final objects
             val mString = mList.value!!.joinToString(separator = "\n\n")
-
-
-            textView.text = mString
+            sb.append("\n\n$mString")
         }
-        else
-            textView.setText(R.string.app_name)
+
+        textView.text = sb
     }
 
     //animate changing the view visibility

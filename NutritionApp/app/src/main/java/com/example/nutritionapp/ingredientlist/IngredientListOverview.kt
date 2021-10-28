@@ -21,6 +21,8 @@ import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 import java.net.URLEncoder
 
 class IngredientListOverview : Fragment() {
+
+
     private val localIngredientAdapter =
         com.example.nutritionapp.ingredientlist.localIngredientAdapter(
             com.example.nutritionapp.ingredientlist.localIngredientAdapter.LocalIngredientListener { ingredientItem ->
@@ -36,7 +38,7 @@ class IngredientListOverview : Fragment() {
             })
 
     //Koin
-    val viewModel: IngredientViewModel by sharedViewModel()
+    val viewModel: IngredientViewModel by inject()
     private lateinit var binding: IngredientListRecyclerviewBinding
 
     override fun onCreateView(
@@ -45,6 +47,13 @@ class IngredientListOverview : Fragment() {
     ): View {
         super.onCreate(savedInstanceState)
 
+        val sb = StringBuilder()
+        val test0 = ""
+        val test1 = "test"
+        val test2 = test0.plus(test1)
+        Log.i("testString","test2: $test2")
+        sb.append(test1).append(test1)
+        Log.i("testStringAppend","testStringAppend: ${sb}")
         binding = DataBindingUtil.inflate(
             inflater,
             R.layout.ingredient_list_recyclerview,
@@ -92,7 +101,7 @@ class IngredientListOverview : Fragment() {
             //Returns list of ingredients i.e {"mushroom","flour","tomato"}
             viewModel.detectFoodInText(localIngredientAdapter.mListOfNames)
             //val foodDetected : String? = viewModel.listOfIngredientsString.value
-            val serialArg = viewModel.foodInText.toString()
+            //val serialArg = viewModel.foodInText.toString()
 
             localIngredientAdapter.mList.clear()
             //wait for flag to be true, indicating that the viewModelScope coroutine is done
@@ -101,7 +110,6 @@ class IngredientListOverview : Fragment() {
                     viewModel.setNavigatorFlag(false)
                     findNavController().navigate(
                         IngredientListOverviewDirections.actionIngredientListOverviewToSearchRecipe(
-                            serialArg
                         )
                     )
                     //once you navigate away, this fragment is destroyed, which destroys this method, so no need for return

@@ -30,9 +30,6 @@
         android:id="@+id/searchRecipe"
         android:name="com.example.nutritionapp.recipe.SearchRecipe"
         android:label="SearchRecipe" >
-        <argument
-            android:name="ListOfIngredients"
-            app:argType="string" />
         <action
             android:id="@+id/action_searchRecipe_to_recipeDetail"
             app:destination="@id/recipeDetail" />
