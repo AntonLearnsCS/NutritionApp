@@ -22,6 +22,7 @@ import androidx.core.app.ActivityCompat
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
+import com.example.nutritionapp.BuildConfig
 import com.example.nutritionapp.R
 import com.example.nutritionapp.databinding.MapBinding
 import com.google.android.gms.common.api.ResolvableApiException
@@ -51,6 +52,8 @@ class mapFragment : Fragment(), OnMapReadyCallback {
     private var locationFlag = false
     private lateinit var requestLocationSetting : ActivityResultLauncher<IntentSenderRequest>
 
+    //TODO: Get API KEY
+    //val apikey = BuildConfig.mMaps_API_KEY
 
 
 
@@ -60,9 +63,9 @@ class mapFragment : Fragment(), OnMapReadyCallback {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+
         binding = DataBindingUtil.inflate(inflater, R.layout.map,container,false)
         mapFragment = childFragmentManager.findFragmentById(R.id.map) as SupportMapFragment
-
         mapFragment.getMapAsync(this)
 
         binding.lifecycleOwner = requireActivity()

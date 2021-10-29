@@ -1,13 +1,13 @@
+
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-kapt'
 apply plugin: "androidx.navigation.safeargs.kotlin"
 apply plugin: 'com.google.gms.google-services'
-apply plugin: 'com.google.android.libraries.mapsplatform.secrets-gradle-plugin'
-
 android {
     compileSdkVersion 29
     buildToolsVersion "29.0.3"
+
 
     defaultConfig {
         applicationId "com.example.nutritionapp"
@@ -50,6 +50,9 @@ android {
     }
     buildFeatures {
         dataBinding true
+    }
+    buildTypes.each {
+        it.buildConfigField 'String', 'mMaps_API_KEY', 'MAPS_API_KEY'
     }
 }
 
