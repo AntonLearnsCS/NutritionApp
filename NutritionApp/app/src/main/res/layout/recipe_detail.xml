@@ -37,18 +37,20 @@
                     android:scaleType="fitXY"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintHorizontal_bias="0.0"
+                    app:layout_constraintHorizontal_bias="1.0"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintVertical_bias="0.456"
+                    app:layout_constraintVertical_bias="0.412"
                     app:srcCompat="@drawable/cooking_background_image" />
 
                 <ImageView
                     android:id="@+id/shopping_cart"
                     android:layout_width="120dp"
                     android:layout_height="120dp"
+                    android:contentDescription="@string/shopping_cart_image"
                     android:src="@drawable/food_shopping_cart"
-                    android:contentDescription="@string/shopping_cart_image" />
+                    tools:layout_editor_absoluteX="291dp"
+                    tools:layout_editor_absoluteY="16dp" />
 
                 <TextView
                     android:id="@+id/recipe_title"
@@ -65,20 +67,51 @@
         </com.google.android.material.appbar.AppBarLayout>
 
         <androidx.core.widget.NestedScrollView
+            android:id="@+id/nestedScrollView"
             android:layout_width="match_parent"
-            android:layout_height="663dp"
+            android:layout_height="match_parent"
+            android:fillViewport="true"
             app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <TextView
+                    android:id="@+id/missing_ingredients"
+                    android:layout_width="match_parent"
+                    android:lineSpacingExtra="20dp"
+                    android:layout_height="wrap_content"
+                    android:textSize="20sp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:listMissingIngredients="@{viewModel.missingIngredients}">
+                </TextView>
 
                 <TextView
                     android:id="@+id/recipe_steps"
-                    displaySteps="@{viewModel.listOfStepsLiveData,viewModel.listOfIngredientNameInInstructionLiveData}"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:textSize="20sp"
                     android:lineSpacingExtra="20dp"
-                    app:layout_anchorGravity="center"
-                    app:layout_constraintBottom_toBottomOf="parent" />
+                    android:textSize="20sp"
+                    app:displaySteps="@{viewModel.listOfStepsLiveData}"
+                    app:layout_constraintTop_toBottomOf="@+id/find_groceries"
+                    tools:layout_editor_absoluteX="0dp" />
 
+                <Button
+                    android:id="@+id/find_groceries"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:text="Find groceries"
+                    android:layout_marginBottom="8dp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.498"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/missing_ingredients" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
 
         </androidx.core.widget.NestedScrollView>
 

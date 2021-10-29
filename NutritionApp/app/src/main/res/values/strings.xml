@@ -8,7 +8,7 @@
 <string name="reminder_location">Reminder Location</string>
 <string name="save">Save</string>
     <string name="appbar_scrolling_view_behavior" translatable="false">com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior</string>
-
+<string name="no_instructions_provided"> No instructions provided</string>
     <string name="reminder_saved">Reminder Saved !</string>
 <string name="logout">Logout</string>
 <string name="welcome_to_the_location_reminder_app">Welcome to the location reminder app</string>
@@ -62,5 +62,7 @@
     <string name="grocery_cart_image">Grocery cart image</string>
     <string name="cooking_cartoon_image">cooking cartoon image</string>
     <string name="shopping_cart_image">Shopping cart Image</string>
+    <string name="google_maps">Google Maps</string>
+    <string name="about">About</string>
 
 </resources>

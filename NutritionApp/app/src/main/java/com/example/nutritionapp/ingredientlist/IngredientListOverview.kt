@@ -2,13 +2,13 @@ package com.example.nutritionapp.ingredientlist
 
 import android.os.Bundle
 import android.util.Log
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
+import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
+import androidx.navigation.ui.NavigationUI
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.nutritionapp.R
 import com.example.nutritionapp.database.IngredientDataClass
@@ -47,13 +47,6 @@ class IngredientListOverview : Fragment() {
     ): View {
         super.onCreate(savedInstanceState)
 
-        val sb = StringBuilder()
-        val test0 = ""
-        val test1 = "test"
-        val test2 = test0.plus(test1)
-        Log.i("testString","test2: $test2")
-        sb.append(test1).append(test1)
-        Log.i("testStringAppend","testStringAppend: ${sb}")
         binding = DataBindingUtil.inflate(
             inflater,
             R.layout.ingredient_list_recyclerview,
@@ -125,8 +118,23 @@ class IngredientListOverview : Fragment() {
                 findNavController().navigate(IngredientListOverviewDirections.actionIngredientListOverviewToIngredientDetail())
             }
         })
+
+        setHasOptionsMenu(true)
+
         return binding.root
     }
+
+    //override onCreateOptionsMenu() and onOptionsItemSelected() and implement setHasOptionsMenu(true) to allow for menu; also create menu xml
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        //Note: Must remove call to super to use navigation
+        //super.onCreateOptionsMenu(menu, inflater)
+        inflater.inflate(R.menu.overflow_menu, menu)
+
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return NavigationUI.onNavDestinationSelected(item, requireView().findNavController())
+                || super.onOptionsItemSelected(item)    }
 
     override fun onResume() {
         super.onResume()

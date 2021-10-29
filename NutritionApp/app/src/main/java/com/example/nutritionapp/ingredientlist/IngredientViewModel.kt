@@ -18,7 +18,6 @@ import com.example.nutritionapp.recipe.*
 import com.example.nutritionapp.util.wrapEspressoIdlingResource
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
-import kotlinx.coroutines.delay
 import okhttp3.*
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
@@ -197,11 +196,13 @@ class IngredientViewModel(
             }
         }
     }
-        private val _listOfIngredientNameInInstructionLiveData = MutableLiveData<List<String>>()
-        val listOfIngredientNameInInstructionLiveData : LiveData<List<String>>
-        get() = _listOfIngredientNameInInstructionLiveData
 
-        val mFlag = MutableLiveData(false)
+
+    val _missingIngredients = MutableLiveData<List<String>>()
+    val missingIngredients : MutableLiveData<List<String>>
+    get() = _missingIngredients
+
+    val mFlag = MutableLiveData(false)
     fun getRecipeInstructions()
     {
         val listOfIngredientNameInInstruction = mutableListOf<String>()
@@ -237,16 +238,21 @@ class IngredientViewModel(
                             steps.step?.let { listOfSteps.add(it) }
                         }
                     }
-                    _listOfIngredientNameInInstructionLiveData.value = listOfIngredientNameInInstruction
+
                     _listOfStepsLiveData.value = listOfSteps
                     mFlag.value = true
 
-                    Log.i("test","listOfSteps size: ${(_listOfStepsLiveData.value as MutableList<String>).size}")
+                    _missingIngredients.value = foodInText.filter { !listOfIngredientNameInInstruction.contains(it) }
+                    //Log.i("test","listOfSteps size: ${(_listOfStepsLiveData.value as MutableList<String>).size}")
                     for (i in _listOfStepsLiveData.value as MutableList<String>)
                     {
                         Log.i("test i", "i: $i")
                     }
                     for(i in listOfIngredientNameInInstruction)
+                    {
+                        Log.i("testName",i)
+                    }
+                    for(i in _missingIngredients.value!!)
                     {
                         Log.i("testName",i)
                     }

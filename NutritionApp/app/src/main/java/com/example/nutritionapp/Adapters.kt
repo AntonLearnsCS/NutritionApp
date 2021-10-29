@@ -2,7 +2,6 @@ package com.example.nutritionapp
 
 import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
-import android.app.Application
 import android.util.Log
 import android.view.View
 import android.widget.ImageView
@@ -10,10 +9,9 @@ import android.widget.TextView
 import androidx.core.net.toUri
 import androidx.databinding.BindingAdapter
 import androidx.lifecycle.LiveData
-import androidx.test.core.app.ApplicationProvider
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
-import org.w3c.dom.Text
+import java.lang.StringBuilder
 
 object Adapters {
     @JvmStatic
@@ -41,32 +39,39 @@ object Adapters {
     }
 
     @JvmStatic
-    @BindingAdapter("displaySteps")
-    fun bindSteps(textView: TextView, mList : LiveData<List<String>>, listMissingIngredients : LiveData<List<String>>)
+    @BindingAdapter("listMissingIngredients")
+    fun listMissingIngredients(textView: TextView, listMissingIngredients : LiveData<List<String>>)
     {
         val sb = StringBuilder()
         sb.append("Missing Ingredients:\n")
-
-        if (listMissingIngredients.value.isNullOrEmpty())
+        if(!listMissingIngredients.value.isNullOrEmpty())
         {
-            sb.append("None")
-        }
-        else
-        {
-            for (name in listMissingIngredients.value!!)
+            for (item in listMissingIngredients.value!!)
             {
-                sb.append(name)
+                sb.append("• ${item}\n")
             }
         }
-        Log.i("test","displaySteps called: ${mList.value?.size}")
-        if (!mList.value.isNullOrEmpty()) {
+        else
+            sb.append("None")
+        textView.text = sb
+    }
+
+
+    @JvmStatic
+    @BindingAdapter("displaySteps")
+    fun bindSteps(textView: TextView, listSteps : LiveData<List<String>>)
+    {
+
+        Log.i("test","displaySteps called: ${listSteps.value?.size}")
+        if (!listSteps.value.isNullOrEmpty()) {
             Log.i("test","displaySteps not empty")
 
             //Note: We can't use String.plus() to append strings to a base string i.e val mString.plus(mList[0]) since Strings are final objects
-            val mString = mList.value!!.joinToString(separator = "\n\n")
-            sb.append("\n\n$mString")
+            val mString = listSteps.value!!.joinToString(separator = "\n\n")
+            textView.text = mString
         }
-        textView.text = sb
+        else
+            textView.text = R.string.no_instructions_provided.toString()
     }
 
     //animate changing the view visibility

@@ -31,10 +31,11 @@ class RecipeDetail : Fragment() {
         binding.recipe = args
         Log.i("test","args: ${args.title}")
         Log.i("test","RecipeDetail: ${viewModel.navigateToRecipe.value?.title}")
-        val missingIngredients : List<String> = viewModel.foodInText.filter { !viewModel.listOfIngredientNameInInstruction.contains(it) }
         //TODO: In contrast, calling getRecipeInstructions here does not update the xml
        // viewModel.getRecipeInstructions()
+        binding.findGroceries.setOnClickListener {
 
+        }
         coordinateMotion()
         return binding.root
     }

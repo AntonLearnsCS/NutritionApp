@@ -42,4 +42,8 @@
             android:name="Recipe"
             app:argType="com.example.nutritionapp.recipe.RecipeIngredientResult" />
     </fragment>
+    <fragment
+        android:id="@+id/mapFragment"
+        android:name="com.example.nutritionapp.maps.mapFragment"
+        android:label="mapFragment" />
 </navigation>
