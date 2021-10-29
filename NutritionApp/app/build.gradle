@@ -51,9 +51,9 @@ android {
     buildFeatures {
         dataBinding true
     }
-    buildTypes.each {
+  /*  buildTypes.each {
         it.buildConfigField 'String', 'mMaps_API_KEY', 'MAPS_API_KEY'
-    }
+    }*/
 }
 
 dependencies {

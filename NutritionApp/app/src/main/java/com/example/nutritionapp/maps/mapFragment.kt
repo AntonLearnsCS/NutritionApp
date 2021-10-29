@@ -25,6 +25,7 @@ import androidx.navigation.fragment.findNavController
 import com.example.nutritionapp.BuildConfig
 import com.example.nutritionapp.R
 import com.example.nutritionapp.databinding.MapBinding
+import com.example.nutritionapp.ingredientlist.IngredientViewModel
 import com.google.android.gms.common.api.ResolvableApiException
 import com.google.android.gms.location.*
 import com.google.android.gms.maps.CameraUpdateFactory
@@ -35,6 +36,7 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
 import com.google.android.material.snackbar.Snackbar
+import org.koin.android.ext.android.inject
 import timber.log.Timber
 import java.util.*
 
@@ -51,11 +53,9 @@ class mapFragment : Fragment(), OnMapReadyCallback {
     private var backgroundFlag = false
     private var locationFlag = false
     private lateinit var requestLocationSetting : ActivityResultLauncher<IntentSenderRequest>
-
+    private val viewModel: IngredientViewModel by inject()
     //TODO: Get API KEY
     //val apikey = BuildConfig.mMaps_API_KEY
-
-
 
     @RequiresApi(Build.VERSION_CODES.Q)
     override fun onCreateView(
@@ -243,7 +243,7 @@ class mapFragment : Fragment(), OnMapReadyCallback {
             if ( it.isSuccessful && !isDetached) {
                 if (ActivityCompat.checkSelfPermission(
                         contxt,
-                        Manifest.permission.ACCESS_FINE_LOCATION
+                        Manifest.permission.ACCESS_BACKGROUND_LOCATION
                     ) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
                         contxt,
                         Manifest.permission.ACCESS_COARSE_LOCATION
@@ -313,7 +313,7 @@ class mapFragment : Fragment(), OnMapReadyCallback {
     {
         if (ActivityCompat.checkSelfPermission(
                 requireContext(),
-                Manifest.permission.ACCESS_FINE_LOCATION
+                Manifest.permission.ACCESS_BACKGROUND_LOCATION
             ) == PackageManager.PERMISSION_GRANTED || ActivityCompat.checkSelfPermission(
                 requireContext(),
                 Manifest.permission.ACCESS_COARSE_LOCATION
@@ -327,7 +327,7 @@ class mapFragment : Fragment(), OnMapReadyCallback {
             Log.i("test", "SelectLocation foreground permission not yet enabled")
 
             val mArray = arrayOf(
-                Manifest.permission.ACCESS_FINE_LOCATION,
+                Manifest.permission.ACCESS_BACKGROUND_LOCATION,
                 Manifest.permission.ACCESS_COARSE_LOCATION,
             )
             permissionCallback.launch(mArray)
@@ -381,7 +381,6 @@ class mapFragment : Fragment(), OnMapReadyCallback {
 
 
             println("SelectLocation: " + latLng.latitude.toString() + ", " + latLng.longitude.toString())
-            findNavController().popBackStack()
         }
     }
 
@@ -395,11 +394,9 @@ class mapFragment : Fragment(), OnMapReadyCallback {
                     .title(poi.name)
             )
             poiMarker.showInfoWindow()
-
-            findNavController().popBackStack()
-
         }
     }
+
     private val locationCallBack: LocationCallback = object : LocationCallback() {
         override fun onLocationResult(p0: LocationResult?) {
             p0 ?: return
@@ -419,7 +416,7 @@ class mapFragment : Fragment(), OnMapReadyCallback {
                     )
                     if (ActivityCompat.checkSelfPermission(
                             contxt,
-                            Manifest.permission.ACCESS_FINE_LOCATION
+                            Manifest.permission.ACCESS_BACKGROUND_LOCATION
                         ) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
                             contxt,
                             Manifest.permission.ACCESS_COARSE_LOCATION

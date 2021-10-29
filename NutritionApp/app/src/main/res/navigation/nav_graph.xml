@@ -45,5 +45,13 @@
     <fragment
         android:id="@+id/mapFragment"
         android:name="com.example.nutritionapp.maps.mapFragment"
-        android:label="mapFragment" />
+        android:label="mapFragment" >
+        <action
+            android:id="@+id/action_mapFragment_to_mapGroceryReminder"
+            app:destination="@id/mapGroceryReminder" />
+    </fragment>
+    <fragment
+        android:id="@+id/mapGroceryReminder"
+        android:name="com.example.nutritionapp.maps.mapGroceryReminder"
+        android:label="mapGroceryReminder" />
 </navigation>
