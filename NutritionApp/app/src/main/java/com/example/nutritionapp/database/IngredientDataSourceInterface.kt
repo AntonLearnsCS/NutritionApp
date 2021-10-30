@@ -1,7 +1,8 @@
 package com.example.nutritionapp.database
-import androidx.lifecycle.LiveData
 import com.example.nutritionapp.util.Result
 import com.example.nutritionapp.database.dto.IngredientDataClassDTO
+import com.example.nutritionapp.maps.NoneRecipeClass
+import com.example.nutritionapp.maps.RecipeNotificationClass
 
 interface IngredientDataSourceInterface {
 
@@ -12,4 +13,8 @@ interface IngredientDataSourceInterface {
     suspend fun getIngredient(id: Int): Result<IngredientDataClassDTO>
     suspend fun deleteAllIngredients()
     suspend fun deleteTaskIngredient(id: Int)
+    suspend fun getNoneRecipeById(key : String) : NoneRecipeClass?
+    suspend fun saveNoneRecipe (nonRecipe : NoneRecipeClass)
+    suspend fun getNotificationRecipeById (key: String) : RecipeNotificationClass?
+    suspend fun saveNotificationRecipe (recipe : RecipeNotificationClass)
 }

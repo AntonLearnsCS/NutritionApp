@@ -28,6 +28,7 @@ import androidx.navigation.fragment.findNavController
 import com.example.nutritionapp.R
 import com.example.nutritionapp.databinding.MapGroceryReminderBinding
 import com.example.nutritionapp.ingredientlist.IngredientViewModel
+import com.example.nutritionapp.notification.NotificationDescriptionActivity
 import com.google.android.gms.common.api.ResolvableApiException
 import com.google.android.gms.location.*
 import com.google.android.gms.maps.model.LatLng
@@ -46,6 +47,7 @@ private lateinit var binding : MapGroceryReminderBinding
     private val GEOFENCE_RADIUS_IN_METERS = 1600F
 
     private var mNoneRecipeClass : NoneRecipeClass? = null
+    private var recipeNotificationClass : RecipeNotificationClass? = null
 
     //Get the view model this time as a single to be shared with the another fragment, note the "override" tag
     //Note: We don't use "override val _viewModel: SaveReminderViewModel = get<SaveReminderViewModel>()"
@@ -60,7 +62,7 @@ private lateinit var binding : MapGroceryReminderBinding
     private var intent = Intent()
 
     private val geofencePendingIntent: PendingIntent by lazy {
-        intent = Intent(contxt, GeofenceBroadcastReceiver::class.java)
+        //intent = Intent(contxt, GeofenceBroadcastReceiver::class.java)
         intent.action = ACTION_GEOFENCE_EVENT
         //intent.putExtra()
         PendingIntent.getBroadcast(contxt, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT)
@@ -95,7 +97,7 @@ private lateinit var binding : MapGroceryReminderBinding
 
         //if coming from a selected Recipe then autofill the list with missing ingredients
         binding.missingIngredients.let {
-            if (_viewModel.mapGroceryReminderFlag.value == true)
+            if (_viewModel.comingFromRecipeFlag.value == true)
             {
                 it.setText(convertListStringToBulletedList(_viewModel.missingIngredients))
             }
@@ -168,16 +170,20 @@ private lateinit var binding : MapGroceryReminderBinding
             findNavController().navigate(mapGroceryReminderDirections.actionMapGroceryReminderToMapFragment())
         }
 
-
-
         binding.saveReminder.setOnClickListener {
-            //only create a NoneRecipeClass when we have
-            if (_viewModel.mapGroceryReminderFlag.value == true)
-            mNoneRecipeClass = NoneRecipeClass(binding.missingIngredients.toString())
-
+            val bundle = Bundle()
+            //TODO: Can potentially just use one class
+            if (_viewModel.comingFromRecipeFlag.value == true) {
+                recipeNotificationClass = RecipeNotificationClass(_viewModel.navigateToRecipe.value?.title!!, _viewModel.missingIngredients.value.toString())
+                bundle.putSerializable("RecipeNotificationClass", recipeNotificationClass)
+            }
+            else
+            {
+                recipeNotificationClass = RecipeNotificationClass("Recipe",binding.missingIngredients.toString())
+                bundle.putSerializable("RecipeNotificationClass", recipeNotificationClass)
+            }
+            intent.putExtras(bundle)
             checkPermission()
-
-//
         }
     }
 
@@ -249,14 +255,12 @@ private lateinit var binding : MapGroceryReminderBinding
             latLng?.longitude?.let { it1 ->
                 Geofence.Builder()
                     // Set the request ID, string to identify the geofence. Depends on whether we are selecting a recipe or a non-recipe
-                    .setRequestId((if (_viewModel.mapGroceryReminderFlag.value == true) _viewModel.navigateToRecipe.value?.id.toString()
-                    else mNoneRecipeClass?.id)) //reminderDataItem.id)//_viewModel.latLng.value?.latitude.toString())
+                    .setRequestId(recipeNotificationClass?.id) //reminderDataItem.id)//_viewModel.latLng.value?.latitude.toString())
                     // Set the circular region of this geofence.
                     .setCircularRegion(
                         it,
                         it1,
-                        GEOFENCE_RADIUS_IN_METERS
-                    )
+                        GEOFENCE_RADIUS_IN_METERS)
                     // Set the expiration duration of the geofence. This geofence gets
                     // automatically removed after this period of time.
                     .setExpirationDuration(Geofence.NEVER_EXPIRE)
@@ -283,11 +287,6 @@ private lateinit var binding : MapGroceryReminderBinding
 
         ) {
             Log.i("test","foreground permission not granted in addGeofence()")
-            /* val permissionObject = arrayOf(
-                 Manifest.permission.ACCESS_FINE_LOCATION,
-                 Manifest.permission.ACCESS_COARSE_LOCATION)
-
-             permissionCallback.launch(permissionObject)*/
         }
 
 
@@ -297,27 +296,18 @@ private lateinit var binding : MapGroceryReminderBinding
         //activity to start once the geofence is triggered (geofencePendingIntent), which in our case is BroadcastReceiver
         geofencingClient.addGeofences(geofencingRequest, geofencePendingIntent)?.run {
             addOnSuccessListener {
-                if (_viewModel.mapGroceryReminderFlag.value == true)
-                _viewModel.saveNoneRecipe(mNoneRecipeClass!!)
-                else
 
                 Toast.makeText(contxt, "Succesfully added geofence", Toast.LENGTH_SHORT).show()
                 Log.i("test", "added geofence")
-                //navigate back only once geofence is added
-                val intent = Intent(contxt, RemindersActivity::class.java)
-                val bundle = Bundle()
-                bundle.putSerializable("ReminderDataItem", reminderDataItem)
-                intent.putExtras(bundle)
-                _viewModel.cityNameForTwoWayBinding.value = "City"
-                startActivity(intent)
+                //findNavController().navigate(mapGroceryReminderDirections)
             }
             addOnFailureListener {
                 Toast.makeText(
-                    contxt, com.google.android.gms.location.R.string.geofences_not_added,
+                    contxt, R.string.geofences_not_added,
                     Toast.LENGTH_SHORT
                 ).show()
                 if ((it.message != null)) {
-                    Log.w(TAG, it.message!!)
+                    Log.w("test", it.message!!)
                 }
             }
         }
@@ -378,7 +368,7 @@ private lateinit var binding : MapGroceryReminderBinding
         super.onDestroy()
         println("test, is finishing?: " + requireActivity().isFinishing)
         //make sure to clear the view model after destroy, as it's a single view model.
-        _viewModel.onClear()
+       // _viewModel.onClear()
     }
 
     fun convertListStringToBulletedList( mList : LiveData<List<String>>) : String

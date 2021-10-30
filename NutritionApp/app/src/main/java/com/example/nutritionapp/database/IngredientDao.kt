@@ -1,6 +1,5 @@
 package com.example.nutritionapp.database
 
-import androidx.lifecycle.LiveData
 import androidx.room.*
 import com.example.nutritionapp.database.dto.IngredientDataClassDTO
 import androidx.room.Dao
@@ -8,6 +7,7 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import com.example.nutritionapp.maps.NoneRecipeClass
+import com.example.nutritionapp.maps.RecipeNotificationClass
 
 @Dao
 interface IngredientDao {
@@ -80,6 +80,14 @@ interface IngredientDao {
     suspend fun getNoneRecipeById(key: String): NoneRecipeClass?
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun saveNoneRecipe(ingredient: NoneRecipeClass)
+    suspend fun saveNoneRecipe(noneRecipe: NoneRecipeClass)
+
+    @Query("SELECT * from Ingredient_Entity WHERE id = :key")
+    suspend fun getNotificationRecipeById(key: String): RecipeNotificationClass?
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun saveNotificationRecipe(recipe: RecipeNotificationClass)
+
+
 }
 

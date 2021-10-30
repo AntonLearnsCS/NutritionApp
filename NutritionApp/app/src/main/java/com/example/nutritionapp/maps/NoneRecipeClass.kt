@@ -1,5 +1,8 @@
 package com.example.nutritionapp.maps
 
+import java.io.Serializable
 import java.util.*
 
-data class NoneRecipeClass(var mString : String, var id: String = UUID.randomUUID().toString())
+data class NoneRecipeClass(var mString : String, var id: String = UUID.randomUUID().toString()) : Serializable
+
+data class RecipeNotificationClass(var recipeName :String, var missingIngredients : String, var id: String = UUID.randomUUID().toString()) : Serializable

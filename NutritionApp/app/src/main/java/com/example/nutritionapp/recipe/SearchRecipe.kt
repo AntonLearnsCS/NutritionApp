@@ -25,6 +25,8 @@ private val adapter = recipeAdapter(recipeAdapter.RecipeIngredientListener { rec
         Log.i("test","Recipe selected name: ${recipe.title}")
         viewModel.setNavigateToRecipe(recipe)
         viewModel.setNavigateToRecipeFlag(true)
+    //need a seperate flag
+    viewModel.setComingFromRecipeFlag(true)
 }
         )
 

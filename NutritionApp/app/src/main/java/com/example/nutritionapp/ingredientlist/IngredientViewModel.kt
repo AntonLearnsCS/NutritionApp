@@ -13,7 +13,6 @@ import com.example.nutritionapp.util.Result
 import com.example.nutritionapp.database.IngredientDataSourceInterface
 import com.example.nutritionapp.database.dto.IngredientDataClassDTO
 import com.example.nutritionapp.ingredientlist.testNutritionApi.nutritionServicePost
-import com.example.nutritionapp.maps.NoneRecipeClass
 import com.example.nutritionapp.network.*
 import com.example.nutritionapp.recipe.*
 import com.example.nutritionapp.util.wrapEspressoIdlingResource
@@ -103,10 +102,14 @@ class IngredientViewModel(
     val foodInText = mutableListOf<String>()
     val listOfIngredientsString = MutableLiveData<String>()
 
-    val _mapGroceryReminderFlag = MutableLiveData(false)
-    val mapGroceryReminderFlag : LiveData<Boolean>
-    get() = _mapGroceryReminderFlag
+    val _comingFromRecipeFlag = MutableLiveData(false)
+    val comingFromRecipeFlag : LiveData<Boolean>
+    get() = _comingFromRecipeFlag
 
+    fun setComingFromRecipeFlag( boolean: Boolean)
+    {
+        _comingFromRecipeFlag.value = boolean
+    }
 
     //input is list of names i.e {"Snapple Apple flavored drink 4oz","Mott's Apple pudding 3oz"}
     fun detectFoodInText(listName: List<String>) {
@@ -307,12 +310,32 @@ class IngredientViewModel(
         }
     }
 
+    //Don't need to save noneRecipe and Recipe class to database since that information will be inserted into the pending intent and can be extracted from said intent without
+    //accessing the database
+/*
     fun saveNoneRecipe(noneRecipeClass: NoneRecipeClass)
     {
         viewModelScope.launch {
-            ingredientRepository.saveNoneRecipe(noneRecipeClass)
+            ingredientRepository.saveNoneRecipe (noneRecipeClass)
         }
     }
+
+    fun getNoneRecipeById (key : String)
+    {
+        viewModelScope.launch {
+            val result = ingredientRepository.getNoneRecipeById(key)
+        }
+
+    }
+
+    fun saveNotificationRecipe (recipeNotification : RecipeClassBroadcasts)
+    {
+        viewModelScope.launch {
+            ingredientRepository.saveNotificationRecipe(recipeNotification)
+        }
+    }*/
+
+
 
     private val _navigateToDetail = MutableLiveData<IngredientDataClass>()
     val navigateToDetail: LiveData<IngredientDataClass>
