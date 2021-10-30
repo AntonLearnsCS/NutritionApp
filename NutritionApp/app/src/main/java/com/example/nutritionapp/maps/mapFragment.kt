@@ -53,6 +53,7 @@ class mapFragment : Fragment(), OnMapReadyCallback {
     private var backgroundFlag = false
     private var locationFlag = false
     private lateinit var requestLocationSetting : ActivityResultLauncher<IntentSenderRequest>
+    private val runningQOrLater = android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.Q
     private val viewModel: IngredientViewModel by inject()
     //TODO: Get API KEY
     //val apikey = BuildConfig.mMaps_API_KEY
@@ -113,6 +114,7 @@ class mapFragment : Fragment(), OnMapReadyCallback {
 
                 //map.isMyLocationEnabled = true
                 backgroundFlag = true
+                //check if device's location setting is on
                 checkDeviceLocationSettings()
                 Log.i("test", "permission granted contract")
             }
@@ -201,8 +203,7 @@ class mapFragment : Fragment(), OnMapReadyCallback {
     @RequiresApi(Build.VERSION_CODES.Q)
     private fun checkDeviceLocationSettings(resolve: Boolean = true) {
         val locationRequest = LocationRequest.create().apply {
-            priority = LocationRequest.PRIORITY_LOW_POWER
-        }
+            priority = LocationRequest.PRIORITY_LOW_POWER }
 
         val builder = LocationSettingsRequest.Builder().addLocationRequest(locationRequest)
 
@@ -431,6 +432,7 @@ class mapFragment : Fragment(), OnMapReadyCallback {
             }
         }
     }
+
 
 
 }

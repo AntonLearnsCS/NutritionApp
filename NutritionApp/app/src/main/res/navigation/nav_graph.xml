@@ -41,17 +41,20 @@
         <argument
             android:name="Recipe"
             app:argType="com.example.nutritionapp.recipe.RecipeIngredientResult" />
+        <action
+            android:id="@+id/action_recipeDetail_to_mapGroceryReminder"
+            app:destination="@id/mapGroceryReminder" />
     </fragment>
     <fragment
         android:id="@+id/mapFragment"
         android:name="com.example.nutritionapp.maps.mapFragment"
-        android:label="mapFragment" >
-        <action
-            android:id="@+id/action_mapFragment_to_mapGroceryReminder"
-            app:destination="@id/mapGroceryReminder" />
-    </fragment>
+        android:label="mapFragment" />
     <fragment
         android:id="@+id/mapGroceryReminder"
         android:name="com.example.nutritionapp.maps.mapGroceryReminder"
-        android:label="mapGroceryReminder" />
+        android:label="mapGroceryReminder" >
+        <action
+            android:id="@+id/action_mapGroceryReminder_to_mapFragment"
+            app:destination="@id/mapFragment" />
+    </fragment>
 </navigation>

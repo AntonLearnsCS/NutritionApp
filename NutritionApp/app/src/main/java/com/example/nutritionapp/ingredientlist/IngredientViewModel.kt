@@ -13,6 +13,7 @@ import com.example.nutritionapp.util.Result
 import com.example.nutritionapp.database.IngredientDataSourceInterface
 import com.example.nutritionapp.database.dto.IngredientDataClassDTO
 import com.example.nutritionapp.ingredientlist.testNutritionApi.nutritionServicePost
+import com.example.nutritionapp.maps.NoneRecipeClass
 import com.example.nutritionapp.network.*
 import com.example.nutritionapp.recipe.*
 import com.example.nutritionapp.util.wrapEspressoIdlingResource
@@ -101,6 +102,10 @@ class IngredientViewModel(
     val selectedIngredient = MutableLiveData<IngredientDataClass>()
     val foodInText = mutableListOf<String>()
     val listOfIngredientsString = MutableLiveData<String>()
+
+    val _mapGroceryReminderFlag = MutableLiveData(false)
+    val mapGroceryReminderFlag : LiveData<Boolean>
+    get() = _mapGroceryReminderFlag
 
 
     //input is list of names i.e {"Snapple Apple flavored drink 4oz","Mott's Apple pudding 3oz"}
@@ -299,6 +304,13 @@ class IngredientViewModel(
                     }
                 }
             }
+        }
+    }
+
+    fun saveNoneRecipe(noneRecipeClass: NoneRecipeClass)
+    {
+        viewModelScope.launch {
+            ingredientRepository.saveNoneRecipe(noneRecipeClass)
         }
     }
 

@@ -7,6 +7,7 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
+import com.example.nutritionapp.maps.NoneRecipeClass
 
 @Dao
 interface IngredientDao {
@@ -74,4 +75,11 @@ interface IngredientDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun saveIngredient(ingredient: IngredientDataClassDTO)
+
+    @Query("SELECT * from Ingredient_Entity WHERE id = :key")
+    suspend fun getNoneRecipeById(key: String): NoneRecipeClass?
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun saveNoneRecipe(ingredient: NoneRecipeClass)
 }
+
