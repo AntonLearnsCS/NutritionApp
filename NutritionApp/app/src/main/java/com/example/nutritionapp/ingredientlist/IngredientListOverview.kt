@@ -81,7 +81,7 @@ class IngredientListOverview : Fragment() {
 
         binding.searchIngredientButton.setOnClickListener {
             //TODO: Clear the previous search results in recyclerView
-            networkIngredientAdapter.currentList.clear()
+            //networkIngredientAdapter.currentList.clear()
 
             viewModel.loadIngredientListByNetwork()
         }

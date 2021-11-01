@@ -102,7 +102,9 @@ class GeofenceTransitionsJobIntentService : JobIntentService(), CoroutineScope {
             //get the reminder with the request id
             val recipeNotification = ingredientRepository.getNotificationRecipeById(fenceId)
 
-
+            if (recipeNotification != null) {
+                com.example.nutritionapp.notification.sendNotification(this@GeofenceTransitionsJobIntentService,recipeNotification)
+            }
         /*      if (result is Result.Success<ReminderDTO>) {
                 val reminderDTO = result.data
                 //send a notification to the user with the reminder details

@@ -207,7 +207,7 @@ class IngredientViewModel(
 
 
     val _missingIngredients = MutableLiveData<List<String>>()
-    val missingIngredients : MutableLiveData<List<String>>
+    val missingIngredients : LiveData<List<String>>
     get() = _missingIngredients
 
     val mFlag = MutableLiveData(false)

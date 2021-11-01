@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.findNavController
 import com.example.nutritionapp.R
 import com.example.nutritionapp.databinding.RecipeDetailBinding
 import com.example.nutritionapp.ingredientlist.IngredientViewModel
@@ -34,7 +35,8 @@ class RecipeDetail : Fragment() {
         //TODO: In contrast, calling getRecipeInstructions here does not update the xml
        // viewModel.getRecipeInstructions()
         binding.findGroceries.setOnClickListener {
-
+            viewModel.setComingFromRecipeFlag(true)
+            findNavController().navigate(RecipeDetailDirections.actionRecipeDetailToMapGroceryReminder())
         }
         coordinateMotion()
         return binding.root

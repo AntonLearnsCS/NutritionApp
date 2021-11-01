@@ -66,6 +66,9 @@ class mapFragment : Fragment(), OnMapReadyCallback {
     ): View? {
 
         binding = DataBindingUtil.inflate(inflater, R.layout.map,container,false)
+        //Q: why can't I get this layout using binding?
+        //SupportMapFragment - A wrapper around a view of a map to automatically handle the necessary life cycle needs.
+        //A GoogleMap must be acquired using getMapAsync(OnMapReadyCallback).
         mapFragment = childFragmentManager.findFragmentById(R.id.map) as SupportMapFragment
         mapFragment.getMapAsync(this)
 
@@ -102,9 +105,6 @@ class mapFragment : Fragment(), OnMapReadyCallback {
             {
                 if (ActivityCompat.checkSelfPermission(
                         contxt,
-                        Manifest.permission.ACCESS_BACKGROUND_LOCATION
-                    ) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
-                        contxt,
                         Manifest.permission.ACCESS_COARSE_LOCATION
                     ) != PackageManager.PERMISSION_GRANTED
                 ) {
@@ -121,8 +121,7 @@ class mapFragment : Fragment(), OnMapReadyCallback {
             else
             {
                 //if user denies and dismisses future permission requests
-                if((shouldShowRequestPermissionRationale(Manifest.permission.ACCESS_BACKGROUND_LOCATION) == false
-                            || shouldShowRequestPermissionRationale(Manifest.permission.ACCESS_COARSE_LOCATION) == false))
+                if((shouldShowRequestPermissionRationale(Manifest.permission.ACCESS_COARSE_LOCATION) == false))
                 {
                     val mSnackbar = Snackbar.make(
                         binding.layout,
@@ -170,9 +169,6 @@ class mapFragment : Fragment(), OnMapReadyCallback {
 
         if (ActivityCompat.checkSelfPermission(
                 contxt,
-                Manifest.permission.ACCESS_BACKGROUND_LOCATION
-            ) == PackageManager.PERMISSION_GRANTED || ActivityCompat.checkSelfPermission(
-                contxt,
                 Manifest.permission.ACCESS_COARSE_LOCATION
             ) == PackageManager.PERMISSION_GRANTED
         ) {
@@ -186,9 +182,6 @@ class mapFragment : Fragment(), OnMapReadyCallback {
     fun locationPermissionGranted() : Boolean
     {
         if ((ActivityCompat.checkSelfPermission(
-                contxt,
-                Manifest.permission.ACCESS_BACKGROUND_LOCATION
-            ) == PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
                 contxt,
                 Manifest.permission.ACCESS_COARSE_LOCATION
             ) == PackageManager.PERMISSION_GRANTED
@@ -244,9 +237,6 @@ class mapFragment : Fragment(), OnMapReadyCallback {
             if ( it.isSuccessful && !isDetached) {
                 if (ActivityCompat.checkSelfPermission(
                         contxt,
-                        Manifest.permission.ACCESS_BACKGROUND_LOCATION
-                    ) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
-                        contxt,
                         Manifest.permission.ACCESS_COARSE_LOCATION
                     ) != PackageManager.PERMISSION_GRANTED
                 ) {
@@ -256,7 +246,6 @@ class mapFragment : Fragment(), OnMapReadyCallback {
 
                 //map.isMyLocationEnabled = true
                 Log.i("test","location settings is enabled")
-
             }
         }
     }
@@ -310,12 +299,11 @@ class mapFragment : Fragment(), OnMapReadyCallback {
             Log.e("Exception: %s", e.message, e)
         }
     }
+
+    @RequiresApi(Build.VERSION_CODES.Q)
     fun enableLocation()
     {
         if (ActivityCompat.checkSelfPermission(
-                requireContext(),
-                Manifest.permission.ACCESS_BACKGROUND_LOCATION
-            ) == PackageManager.PERMISSION_GRANTED || ActivityCompat.checkSelfPermission(
                 requireContext(),
                 Manifest.permission.ACCESS_COARSE_LOCATION
             ) == PackageManager.PERMISSION_GRANTED
@@ -328,7 +316,6 @@ class mapFragment : Fragment(), OnMapReadyCallback {
             Log.i("test", "SelectLocation foreground permission not yet enabled")
 
             val mArray = arrayOf(
-                Manifest.permission.ACCESS_BACKGROUND_LOCATION,
                 Manifest.permission.ACCESS_COARSE_LOCATION,
             )
             permissionCallback.launch(mArray)
@@ -344,9 +331,6 @@ class mapFragment : Fragment(), OnMapReadyCallback {
         val fusedLocationClient = LocationServices.getFusedLocationProviderClient(contxt)
         if (ActivityCompat.checkSelfPermission(
                 contxt,
-                Manifest.permission.ACCESS_BACKGROUND_LOCATION
-            ) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
-                contxt,
                 Manifest.permission.ACCESS_COARSE_LOCATION
             ) != PackageManager.PERMISSION_GRANTED
         ) {
@@ -355,6 +339,7 @@ class mapFragment : Fragment(), OnMapReadyCallback {
         Log.i("test","requestLocation called")
         fusedLocationClient.requestLocationUpdates(locationRequest, locationCallBack, Looper.myLooper())
     }
+
     private fun setMapLongClick(map: GoogleMap) {
 
         map.setOnMapLongClickListener { latLng ->
@@ -380,7 +365,7 @@ class mapFragment : Fragment(), OnMapReadyCallback {
              Source: https://stackoverflow.com/questions/54871649/mutablelivedata-sets-value-but-getvalue-returns-null
              */
 
-
+            findNavController().popBackStack()
             println("SelectLocation: " + latLng.latitude.toString() + ", " + latLng.longitude.toString())
         }
     }
@@ -395,6 +380,7 @@ class mapFragment : Fragment(), OnMapReadyCallback {
                     .title(poi.name)
             )
             poiMarker.showInfoWindow()
+            findNavController().popBackStack()
         }
     }
 
@@ -417,22 +403,14 @@ class mapFragment : Fragment(), OnMapReadyCallback {
                     )
                     if (ActivityCompat.checkSelfPermission(
                             contxt,
-                            Manifest.permission.ACCESS_BACKGROUND_LOCATION
-                        ) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
-                            contxt,
                             Manifest.permission.ACCESS_COARSE_LOCATION
                         ) != PackageManager.PERMISSION_GRANTED
                     ) {
                         return
                     }
                     map.setMyLocationEnabled(true)
-
-                    //map.isMyLocationEnabled = true
                 }
             }
         }
     }
-
-
-
 }

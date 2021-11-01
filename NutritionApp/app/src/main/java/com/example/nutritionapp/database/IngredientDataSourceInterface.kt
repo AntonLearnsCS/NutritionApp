@@ -13,8 +13,7 @@ interface IngredientDataSourceInterface {
     suspend fun getIngredient(id: Int): Result<IngredientDataClassDTO>
     suspend fun deleteAllIngredients()
     suspend fun deleteTaskIngredient(id: Int)
-    suspend fun getNoneRecipeById(key : String) : NoneRecipeClass?
-    suspend fun saveNoneRecipe (nonRecipe : NoneRecipeClass)
+
     suspend fun getNotificationRecipeById (key: String) : RecipeNotificationClass?
     suspend fun saveNotificationRecipe (recipe : RecipeNotificationClass)
 }

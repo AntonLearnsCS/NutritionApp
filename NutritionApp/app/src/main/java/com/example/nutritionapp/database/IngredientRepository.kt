@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.Transformations
 import com.example.nutritionapp.util.Result
 import com.example.nutritionapp.database.dto.IngredientDataClassDTO
+import com.example.nutritionapp.maps.RecipeNotificationClass
 import com.example.nutritionapp.util.wrapEspressoIdlingResource
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
@@ -94,4 +95,22 @@ class IngredientRepository(private val database: IngredientDatabase,
             }
         }
     }
+
+    override suspend fun getNotificationRecipeById(key: String): RecipeNotificationClass? {
+        wrapEspressoIdlingResource {
+            return withContext(IOdispatcher)
+            {
+                val result = database.IngredientDatabaseDao.getNotificationRecipeById(key)
+                return@withContext result
+            }
+        }
+    }
+
+    override suspend fun saveNotificationRecipe(recipe: RecipeNotificationClass) {
+wrapEspressoIdlingResource {
+    withContext(IOdispatcher)
+    {
+        database.IngredientDatabaseDao.saveNotificationRecipe(recipe)
+    }
+}    }
 }

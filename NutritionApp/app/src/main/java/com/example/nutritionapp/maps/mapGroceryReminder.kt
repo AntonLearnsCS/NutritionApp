@@ -64,7 +64,7 @@ private lateinit var binding : MapGroceryReminderBinding
     private val geofencePendingIntent: PendingIntent by lazy {
         //intent = Intent(contxt, GeofenceBroadcastReceiver::class.java)
         intent.action = ACTION_GEOFENCE_EVENT
-        //intent.putExtra()
+        //getBroadcast - Retrieve a PendingIntent that will perform a broadcast, like calling Context.sendBroadcast().
         PendingIntent.getBroadcast(contxt, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT)
     }
 
@@ -93,7 +93,6 @@ private lateinit var binding : MapGroceryReminderBinding
         binding.viewModel = _viewModel
 
         geofencingClient = LocationServices.getGeofencingClient(contxt)
-        //TODO: Strange, pressing add button after save button calls onCreateView
 
         //if coming from a selected Recipe then autofill the list with missing ingredients
         binding.missingIngredients.let {
@@ -116,13 +115,19 @@ private lateinit var binding : MapGroceryReminderBinding
                 //source: https://stackoverflow.com/questions/30729312/how-to-dismiss-a-snackbar-using-its-own-action-button
                 val mSnackbar = Snackbar.make(
                     binding.root,
-                    R.string.location_tracker_needed, Snackbar.LENGTH_LONG
-                )
+                    R.string.location_tracker_needed, Snackbar.LENGTH_LONG)
+
                 mSnackbar.setAction("Dismiss"){mSnackbar.dismiss()}
                 mSnackbar.show()
                 Log.i("Test", "location setting denied access")
             }
         }
+        /*=
+        registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted ->
+            if (isGranted) {
+                navController.navigate(R.id.grantedPermissionsFragment)
+            }
+        }*/
 
         val test = ActivityResultContracts.RequestMultiplePermissions()
         //TODO: Receiving Type Mismatch error in defining permissionCallback when
@@ -132,7 +137,7 @@ private lateinit var binding : MapGroceryReminderBinding
             //On Android <= 9, being granted location permission also grants background permission
             if(runningQOrLater && ActivityCompat.checkSelfPermission(
                     contxt,
-                    Manifest.permission.ACCESS_BACKGROUND_LOCATION
+                    Manifest.permission.ACCESS_COARSE_LOCATION
                 ) != PackageManager.PERMISSION_GRANTED )
             {
                 Log.i("test","Background permission is not granted")
@@ -182,6 +187,7 @@ private lateinit var binding : MapGroceryReminderBinding
                 recipeNotificationClass = RecipeNotificationClass("Recipe",binding.missingIngredients.toString())
                 bundle.putSerializable("RecipeNotificationClass", recipeNotificationClass)
             }
+
             intent.putExtras(bundle)
             checkPermission()
         }
@@ -243,8 +249,6 @@ private lateinit var binding : MapGroceryReminderBinding
         }
     }
 
-
-
     //call only once permission is granted
     @RequiresApi(Build.VERSION_CODES.Q)
     private fun addGeofenceForClue() {
@@ -255,7 +259,7 @@ private lateinit var binding : MapGroceryReminderBinding
             latLng?.longitude?.let { it1 ->
                 Geofence.Builder()
                     // Set the request ID, string to identify the geofence. Depends on whether we are selecting a recipe or a non-recipe
-                    .setRequestId(recipeNotificationClass?.id) //reminderDataItem.id)//_viewModel.latLng.value?.latitude.toString())
+                    .setRequestId(recipeNotificationClass?.mId) //reminderDataItem.id)//_viewModel.latLng.value?.latitude.toString())
                     // Set the circular region of this geofence.
                     .setCircularRegion(
                         it,
@@ -278,9 +282,6 @@ private lateinit var binding : MapGroceryReminderBinding
             .build()
 
         if ((ActivityCompat.checkSelfPermission(
-                contxt,
-                Manifest.permission.ACCESS_FINE_LOCATION
-            ) != PackageManager.PERMISSION_GRANTED || ActivityCompat.checkSelfPermission(
                 contxt,
                 Manifest.permission.ACCESS_COARSE_LOCATION
             ) != PackageManager.PERMISSION_GRANTED)
@@ -317,7 +318,7 @@ private lateinit var binding : MapGroceryReminderBinding
     @RequiresApi(Build.VERSION_CODES.Q)
     fun checkPermission() : Boolean
     {
-        if(!binding.missingIngredients.text.isEmpty()) {
+        if(binding.missingIngredients.text.isEmpty()) {
             Toast.makeText(contxt, "Missing information", Toast.LENGTH_SHORT).show()
             return false
         }
@@ -325,22 +326,16 @@ private lateinit var binding : MapGroceryReminderBinding
         if (runningQOrLater) {
             Log.i("test","runningQOrLater")
             requestBackgroundLocationPermissionLauncher.launch(Manifest.permission.ACCESS_BACKGROUND_LOCATION)
-            return false
+            //return false
         }
-
-        if ((ActivityCompat.checkSelfPermission(
-                contxt,
-                Manifest.permission.ACCESS_FINE_LOCATION
-            ) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
+        //we also request foreground permission since background location alone will only update the location every few hours
+        if (( ActivityCompat.checkSelfPermission(
                 contxt,
                 Manifest.permission.ACCESS_COARSE_LOCATION
             ) != PackageManager.PERMISSION_GRANTED)
         ) {
-
             val permissionObject = arrayOf(
-                Manifest.permission.ACCESS_FINE_LOCATION,
-                Manifest.permission.ACCESS_COARSE_LOCATION
-            )
+                Manifest.permission.ACCESS_COARSE_LOCATION)
             permissionCallback.launch(permissionObject)
             return false
         }
@@ -378,7 +373,7 @@ private lateinit var binding : MapGroceryReminderBinding
             if (!it.isNullOrEmpty()) {
                 for ( item in it)
                 {
-                    sb.append("• $item")
+                    sb.append("• $item\n")
                 }
             }
             else

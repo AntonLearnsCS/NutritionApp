@@ -40,13 +40,13 @@ object Adapters {
 
     @JvmStatic
     @BindingAdapter("listMissingIngredients")
-    fun listMissingIngredients(textView: TextView, listMissingIngredients : LiveData<List<String>>)
+    fun listMissingIngredients(textView: TextView, listMissingIngredients : LiveData<List<String>>?)
     {
         val sb = StringBuilder()
         sb.append("Missing Ingredients:\n")
-        if(!listMissingIngredients.value.isNullOrEmpty())
+        if(!listMissingIngredients?.value.isNullOrEmpty())
         {
-            for (item in listMissingIngredients.value!!)
+            for (item in listMissingIngredients?.value!!)
             {
                 sb.append("• ${item}\n")
             }
