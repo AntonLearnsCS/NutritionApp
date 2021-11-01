@@ -105,6 +105,9 @@ class mapFragment : Fragment(), OnMapReadyCallback {
             {
                 if (ActivityCompat.checkSelfPermission(
                         contxt,
+                        Manifest.permission.ACCESS_FINE_LOCATION
+                    ) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
+                        contxt,
                         Manifest.permission.ACCESS_COARSE_LOCATION
                     ) != PackageManager.PERMISSION_GRANTED
                 ) {
@@ -121,7 +124,9 @@ class mapFragment : Fragment(), OnMapReadyCallback {
             else
             {
                 //if user denies and dismisses future permission requests
-                if((shouldShowRequestPermissionRationale(Manifest.permission.ACCESS_COARSE_LOCATION) == false))
+                if((shouldShowRequestPermissionRationale(Manifest.permission.ACCESS_FINE_LOCATION) == false) &&
+                    shouldShowRequestPermissionRationale(Manifest.permission.ACCESS_COARSE_LOCATION) == false
+                )
                 {
                     val mSnackbar = Snackbar.make(
                         binding.layout,
@@ -169,6 +174,9 @@ class mapFragment : Fragment(), OnMapReadyCallback {
 
         if (ActivityCompat.checkSelfPermission(
                 contxt,
+                Manifest.permission.ACCESS_FINE_LOCATION
+            ) == PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
+                contxt,
                 Manifest.permission.ACCESS_COARSE_LOCATION
             ) == PackageManager.PERMISSION_GRANTED
         ) {
@@ -183,10 +191,14 @@ class mapFragment : Fragment(), OnMapReadyCallback {
     {
         if ((ActivityCompat.checkSelfPermission(
                 contxt,
+                Manifest.permission.ACCESS_FINE_LOCATION
+            ) == PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
+                contxt,
                 Manifest.permission.ACCESS_COARSE_LOCATION
             ) == PackageManager.PERMISSION_GRANTED
                     )
         ){
+            Log.i("test","Location permission is granted")
             return true
         }
         else
@@ -237,6 +249,9 @@ class mapFragment : Fragment(), OnMapReadyCallback {
             if ( it.isSuccessful && !isDetached) {
                 if (ActivityCompat.checkSelfPermission(
                         contxt,
+                        Manifest.permission.ACCESS_FINE_LOCATION
+                    ) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
+                        contxt,
                         Manifest.permission.ACCESS_COARSE_LOCATION
                     ) != PackageManager.PERMISSION_GRANTED
                 ) {
@@ -283,13 +298,13 @@ class mapFragment : Fragment(), OnMapReadyCallback {
                     }
                     else {
                         requestLocation()
-                        Log.i("test", "Current location is null. Using defaults.")
+                        Log.i("test", "0Current location is null. Using defaults.")
                     }
                 }
             }
             else
             {
-                Log.i("test", "Current location is null. Using defaults.")
+                Log.i("test", "1Current location is null. Using defaults.")
                 map.moveCamera(
                     CameraUpdateFactory
                     .newLatLngZoom(defaultLocation, zoomLevel))
@@ -305,6 +320,9 @@ class mapFragment : Fragment(), OnMapReadyCallback {
     {
         if (ActivityCompat.checkSelfPermission(
                 requireContext(),
+                Manifest.permission.ACCESS_FINE_LOCATION
+            ) == PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
+                contxt,
                 Manifest.permission.ACCESS_COARSE_LOCATION
             ) == PackageManager.PERMISSION_GRANTED
         )
@@ -316,7 +334,7 @@ class mapFragment : Fragment(), OnMapReadyCallback {
             Log.i("test", "SelectLocation foreground permission not yet enabled")
 
             val mArray = arrayOf(
-                Manifest.permission.ACCESS_COARSE_LOCATION,
+                Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION
             )
             permissionCallback.launch(mArray)
         }
@@ -330,6 +348,9 @@ class mapFragment : Fragment(), OnMapReadyCallback {
         locationRequest.numUpdates = 2
         val fusedLocationClient = LocationServices.getFusedLocationProviderClient(contxt)
         if (ActivityCompat.checkSelfPermission(
+                contxt,
+                Manifest.permission.ACCESS_FINE_LOCATION
+            ) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
                 contxt,
                 Manifest.permission.ACCESS_COARSE_LOCATION
             ) != PackageManager.PERMISSION_GRANTED
@@ -402,6 +423,9 @@ class mapFragment : Fragment(), OnMapReadyCallback {
                         )
                     )
                     if (ActivityCompat.checkSelfPermission(
+                            contxt,
+                            Manifest.permission.ACCESS_FINE_LOCATION
+                        ) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
                             contxt,
                             Manifest.permission.ACCESS_COARSE_LOCATION
                         ) != PackageManager.PERMISSION_GRANTED

@@ -44,7 +44,7 @@ private lateinit var binding : MapGroceryReminderBinding
     private lateinit var contxt: Context
     private val runningQOrLater =
         android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.Q
-    private val GEOFENCE_RADIUS_IN_METERS = 1600F
+    private val GEOFENCE_RADIUS_IN_METERS = 4800F
 
     private var mNoneRecipeClass : NoneRecipeClass? = null
     private var recipeNotificationClass : RecipeNotificationClass? = null
@@ -137,7 +137,7 @@ private lateinit var binding : MapGroceryReminderBinding
             //On Android <= 9, being granted location permission also grants background permission
             if(runningQOrLater && ActivityCompat.checkSelfPermission(
                     contxt,
-                    Manifest.permission.ACCESS_COARSE_LOCATION
+                    Manifest.permission.ACCESS_FINE_LOCATION
                 ) != PackageManager.PERMISSION_GRANTED )
             {
                 Log.i("test","Background permission is not granted")
@@ -189,7 +189,10 @@ private lateinit var binding : MapGroceryReminderBinding
             }
 
             intent.putExtras(bundle)
-            checkPermission()
+            if (checkPermission())
+            {
+                findNavController().navigate(mapGroceryReminderDirections.actionMapGroceryReminderToIngredientListOverview())
+            }
         }
     }
 
@@ -283,7 +286,7 @@ private lateinit var binding : MapGroceryReminderBinding
 
         if ((ActivityCompat.checkSelfPermission(
                 contxt,
-                Manifest.permission.ACCESS_COARSE_LOCATION
+                Manifest.permission.ACCESS_FINE_LOCATION
             ) != PackageManager.PERMISSION_GRANTED)
 
         ) {
@@ -331,11 +334,11 @@ private lateinit var binding : MapGroceryReminderBinding
         //we also request foreground permission since background location alone will only update the location every few hours
         if (( ActivityCompat.checkSelfPermission(
                 contxt,
-                Manifest.permission.ACCESS_COARSE_LOCATION
+                Manifest.permission.ACCESS_FINE_LOCATION
             ) != PackageManager.PERMISSION_GRANTED)
         ) {
             val permissionObject = arrayOf(
-                Manifest.permission.ACCESS_COARSE_LOCATION)
+                Manifest.permission.ACCESS_FINE_LOCATION)
             permissionCallback.launch(permissionObject)
             return false
         }

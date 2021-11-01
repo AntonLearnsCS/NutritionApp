@@ -100,7 +100,7 @@ class GeofenceTransitionsJobIntentService : JobIntentService(), CoroutineScope {
         //Interaction to the repository has to be through a coroutine scope
         CoroutineScope(coroutineContext).launch(SupervisorJob()) {
             //get the reminder with the request id
-            val recipeNotification = ingredientRepository.getNotificationRecipeById(fenceId)
+            val recipeNotification = ingredientRepository.getNotificationRecipeById(triggeringGeofences.requestId)
 
             if (recipeNotification != null) {
                 com.example.nutritionapp.notification.sendNotification(this@GeofenceTransitionsJobIntentService,recipeNotification)
