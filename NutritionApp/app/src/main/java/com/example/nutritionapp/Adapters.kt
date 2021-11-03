@@ -70,11 +70,11 @@ object Adapters {
     @BindingAdapter("app:foodInText")
     fun foodInText(editText: EditText, listMissingIngredients : MutableLiveData<String>?)
     {
-        if (boolean)
+    /*    if (boolean)
         {
             editText.text.append("boolean")
             return
-        }
+        }*/
         val sb = StringBuilder()
 
         if (!listMissingIngredients?.value.isNullOrEmpty()) {
