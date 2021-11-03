@@ -2,15 +2,22 @@ package com.example.nutritionapp
 
 import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
+import android.text.Editable
+import android.text.TextWatcher
 import android.util.Log
 import android.view.View
+import android.widget.EditText
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.core.net.toUri
 import androidx.databinding.BindingAdapter
+import androidx.databinding.InverseBindingAdapter
+import androidx.databinding.InverseBindingListener
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
+import org.w3c.dom.Text
 import java.lang.StringBuilder
 
 object Adapters {
@@ -40,10 +47,13 @@ object Adapters {
 
     @JvmStatic
     @BindingAdapter("listMissingIngredients")
-    fun listMissingIngredients(textView: TextView, listMissingIngredients : LiveData<List<String>>?)
+    fun listIngredients(textView: TextView, listMissingIngredients : LiveData<List<String>>?)
     {
         val sb = StringBuilder()
-        sb.append("Missing Ingredients:\n")
+
+        /*if (textView.tag != "recipe_layout_tag")
+        sb.append("Missing Ingredients:\n")*/
+
         if(!listMissingIngredients?.value.isNullOrEmpty())
         {
             for (item in listMissingIngredients?.value!!)
@@ -55,6 +65,62 @@ object Adapters {
             sb.append("None")
         textView.text = sb
     }
+
+    @JvmStatic
+    @BindingAdapter("app:foodInText")
+    fun foodInText(editText: EditText, listMissingIngredients : MutableLiveData<String>?)
+    {
+        if (boolean)
+        {
+            editText.text.append("boolean")
+            return
+        }
+        val sb = StringBuilder()
+
+        if (!listMissingIngredients?.value.isNullOrEmpty()) {
+            val strs = listMissingIngredients?.value?.split(",")?.toTypedArray()
+
+            if (strs != null) {
+                for (i in strs) {
+                    sb.append("$i\n")
+                }
+            }
+        }
+        else
+            sb.append("")
+
+        if (!editText.text.equals(listMissingIngredients?.value)) {
+            editText.text.clear()
+            val temp = sb.toString()
+            editText.text.append(temp)
+        }
+    }
+    @JvmStatic
+    @BindingAdapter("foodInTextAttrChanged")
+    fun setListener( editText : EditText, listener : InverseBindingListener) {
+        val textWatcher : TextWatcher = object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+                TODO("Not yet implemented")
+            }
+
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                TODO("Not yet implemented")
+            }
+
+            override fun afterTextChanged(s: Editable?) {
+                listener.onChange()
+            }
+
+        }
+        editText.addTextChangedListener(  textWatcher
+        )
+    }
+
+    @InverseBindingAdapter(attribute = "foodInText")
+    @JvmStatic fun getText(view: EditText) : String {
+        return view.text.toString()
+    }
+
 
 
     @JvmStatic
@@ -73,6 +139,8 @@ object Adapters {
         else
             textView.text = R.string.no_instructions_provided.toString()
     }
+
+
 
     //animate changing the view visibility
     fun View.fadeIn() {

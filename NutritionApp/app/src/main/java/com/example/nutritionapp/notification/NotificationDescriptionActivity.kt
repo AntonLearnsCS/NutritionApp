@@ -16,7 +16,7 @@ class NotificationDescriptionActivity : AppCompatActivity() {
 
         binding = DataBindingUtil.setContentView(this, R.layout.notification_description_activity)
 
-        val bundleItem = intent.getSerializableExtra("RecipeNotificationClass") as RecipeNotificationClass
+        val bundleItem = intent.getSerializableExtra("EXTRA_recipeNotification") as RecipeNotificationClass
 
         binding.recipeNotification = bundleItem
     }

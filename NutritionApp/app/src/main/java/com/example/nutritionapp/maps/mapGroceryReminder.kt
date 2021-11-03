@@ -5,6 +5,7 @@ import android.app.Activity
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
+import android.content.Intent.ACTION_VIEW
 import android.content.IntentSender
 import android.content.pm.PackageManager
 import android.os.Build
@@ -27,6 +28,7 @@ import androidx.lifecycle.LiveData
 import androidx.navigation.fragment.findNavController
 import com.example.nutritionapp.R
 import com.example.nutritionapp.databinding.MapGroceryReminderBinding
+import com.example.nutritionapp.geofence.GeofenceBroadcastReceiver
 import com.example.nutritionapp.ingredientlist.IngredientViewModel
 import com.example.nutritionapp.notification.NotificationDescriptionActivity
 import com.google.android.gms.common.api.ResolvableApiException
@@ -62,7 +64,7 @@ private lateinit var binding : MapGroceryReminderBinding
     private var intent = Intent()
 
     private val geofencePendingIntent: PendingIntent by lazy {
-        //intent = Intent(contxt, GeofenceBroadcastReceiver::class.java)
+        intent = Intent(contxt, GeofenceBroadcastReceiver::class.java)
         intent.action = ACTION_GEOFENCE_EVENT
         //getBroadcast - Retrieve a PendingIntent that will perform a broadcast, like calling Context.sendBroadcast().
         PendingIntent.getBroadcast(contxt, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT)
@@ -148,6 +150,9 @@ private lateinit var binding : MapGroceryReminderBinding
                 Log.i("test", "permission granted contract, running less than Q")
             }
         }
+
+        latLng = _viewModel.latLng.value
+
         return binding.root
     }
 
@@ -287,9 +292,11 @@ private lateinit var binding : MapGroceryReminderBinding
         if ((ActivityCompat.checkSelfPermission(
                 contxt,
                 Manifest.permission.ACCESS_FINE_LOCATION
+            ) != PackageManager.PERMISSION_GRANTED) && ActivityCompat.checkSelfPermission(
+                contxt,
+                Manifest.permission.ACCESS_COARSE_LOCATION
             ) != PackageManager.PERMISSION_GRANTED)
-
-        ) {
+         {
             Log.i("test","foreground permission not granted in addGeofence()")
         }
 
@@ -345,11 +352,11 @@ private lateinit var binding : MapGroceryReminderBinding
         return true
     }
 
+    //Note: The pattern in defining "ACTION_GEOFENCE_EVENT" is [Activity].[last name in package.action].[expected_action]
     companion object {
-        internal const val ACTION_GEOFENCE_EVENT =
-            "RemindersActivity.savereminder.action.ACTION_GEOFENCE_EVENT"
+        internal const val ACTION_GEOFENCE_EVENT = "IngredientListActivity.maps.action.ACTION_GEOFENCE_EVENT"
     }
-    //inspired by: https://github.com/yuriikonovalov/UdacityNanodegreeLocationReminderApp/blob/master/app/src/main/java/com/udacity/project4/locationreminders/savereminder/SaveReminderFragment.kt
+
     @RequiresApi(Build.VERSION_CODES.Q)
     private var requestBackgroundLocationPermissionLauncher = registerForActivityResult(
         ActivityResultContracts.RequestPermission()
@@ -376,7 +383,7 @@ private lateinit var binding : MapGroceryReminderBinding
             if (!it.isNullOrEmpty()) {
                 for ( item in it)
                 {
-                    sb.append("• $item\n")
+                    sb.append("• ${item}\n")
                 }
             }
             else

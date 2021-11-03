@@ -13,6 +13,8 @@ import org.koin.android.ext.android.inject
 import timber.log.Timber
 import kotlin.coroutines.CoroutineContext
 
+//Note: Services must be specified in the manifest
+
 class GeofenceTransitionsJobIntentService : JobIntentService(), CoroutineScope {
 
     /*
@@ -20,7 +22,7 @@ class GeofenceTransitionsJobIntentService : JobIntentService(), CoroutineScope {
      * and handle the geofencing in the background.
      * To do that you can use https://developer.android.com/reference/android/support/v4/app/JobIntentService to do that.
      */
-    private var fenceId : String = ""
+    //private var fenceId : String = ""
     private var coroutineJob: Job = Job()
     override val coroutineContext: CoroutineContext
         get() = Dispatchers.IO + coroutineJob
@@ -70,14 +72,14 @@ class GeofenceTransitionsJobIntentService : JobIntentService(), CoroutineScope {
 
         if (geofencingEvent.geofenceTransition == Geofence.GEOFENCE_TRANSITION_ENTER) {
             Log.v("test", applicationContext.getString(R.string.geofence_entered))
-            fenceId = when {
+           /* fenceId = when {
                 geofencingEvent.triggeringGeofences.isNotEmpty() ->
                     geofencingEvent.triggeringGeofences[0].requestId
                 else -> {
                     Log.e("test", "No Geofence Trigger Found! Abort mission!")
                     return
                 }
-            }
+            }*/
 
             // triggeringGeofences - Returns a list of geofences that triggered this geofence transition alert.
             val numberOfTriggers = geofencingEvent.triggeringGeofences.size
@@ -93,7 +95,7 @@ class GeofenceTransitionsJobIntentService : JobIntentService(), CoroutineScope {
 
     //TODO: get the request id of the current geofence
     private fun sendNotification(triggeringGeofences: Geofence) {
-        println("notification sent")
+        Log.i("test","notification sent")
 
         //Get the local repository instance
         val ingredientRepository: IngredientDataSourceInterface by inject()
@@ -105,6 +107,7 @@ class GeofenceTransitionsJobIntentService : JobIntentService(), CoroutineScope {
             if (recipeNotification != null) {
                 com.example.nutritionapp.notification.sendNotification(this@GeofenceTransitionsJobIntentService,recipeNotification)
             }
+
         /*      if (result is Result.Success<ReminderDTO>) {
                 val reminderDTO = result.data
                 //send a notification to the user with the reminder details

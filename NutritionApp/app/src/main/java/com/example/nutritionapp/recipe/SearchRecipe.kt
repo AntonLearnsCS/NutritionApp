@@ -5,6 +5,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.activity.OnBackPressedCallback
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
@@ -12,11 +13,12 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.nutritionapp.R
 import com.example.nutritionapp.databinding.RecipeLayoutBinding
+import com.example.nutritionapp.ingredientlist.IOnBackPressed
 import com.example.nutritionapp.ingredientlist.IngredientViewModel
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 
-class SearchRecipe : Fragment() {
+class SearchRecipe : Fragment(), IOnBackPressed {
 private lateinit var binding : RecipeLayoutBinding
 //viewModel is being initialized before the detectFoodText is done running in the background
  //val viewModel by lazy { ViewModelProvider(this).get(IngredientViewModel::class.java)}
@@ -25,10 +27,12 @@ private val adapter = recipeAdapter(recipeAdapter.RecipeIngredientListener { rec
         Log.i("test","Recipe selected name: ${recipe.title}")
         viewModel.setNavigateToRecipe(recipe)
         viewModel.setNavigateToRecipeFlag(true)
+        viewModel.foodInText.clear()
     //need a seperate flag
     viewModel.setComingFromRecipeFlag(true)
-}
-        )
+})
+
+
 
 val viewModel : IngredientViewModel by inject()
 
@@ -79,6 +83,41 @@ val viewModel : IngredientViewModel by inject()
                 }
             }
         )
+
+        requireActivity()
+            .onBackPressedDispatcher
+            .addCallback(viewLifecycleOwner, object : OnBackPressedCallback(true) {
+                override fun handleOnBackPressed() {
+                    //Log.d(TAG, "Fragment back pressed invoked")
+                    // Do custom work here
+                    viewModel.foodInText.clear()
+                    viewModel.listOfIngredientsString.value = null
+                    Log.i("test","onBackPressed called Search Recipe")
+                    // if you want onBackPressed() to be called as normal afterwards
+                    if (isEnabled) {
+                        Log.i("test","onBackPressed is Enabled")
+                        isEnabled = false
+                        requireActivity().onBackPressed()
+                    }
+                }
+            }
+            )
+
         return binding.root
+    }
+
+
+
+ override fun onBackPressed() : Boolean
+ {
+     Log.i("test","onBackPressed called")
+     return false
+ }
+
+    override fun onDestroy()
+    {
+        super.onDestroy()
+        Log.i("test","onDestroy called")
+        viewModel.listOfIngredientsString.value = null
     }
 }

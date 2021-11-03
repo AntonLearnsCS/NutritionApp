@@ -151,6 +151,7 @@ class mapFragment : Fragment(), OnMapReadyCallback {
 
         enableLocation()
 
+
         return binding.root
     }
 
@@ -267,6 +268,7 @@ class mapFragment : Fragment(), OnMapReadyCallback {
 
     //source: https://developers.google.com/maps/documentation/android-sdk/current-place-tutorial#kotlin_7
     private fun getDeviceLocation() {
+
         /*
          * Get the best and most recent location of the device, which may be null in rare
          * cases when a location is not available.
@@ -334,7 +336,8 @@ class mapFragment : Fragment(), OnMapReadyCallback {
             Log.i("test", "SelectLocation foreground permission not yet enabled")
 
             val mArray = arrayOf(
-                Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION
+                Manifest.permission.ACCESS_FINE_LOCATION,
+                Manifest.permission.ACCESS_COARSE_LOCATION
             )
             permissionCallback.launch(mArray)
         }
@@ -385,7 +388,7 @@ class mapFragment : Fragment(), OnMapReadyCallback {
              other Activities or Fragment
              Source: https://stackoverflow.com/questions/54871649/mutablelivedata-sets-value-but-getvalue-returns-null
              */
-
+            viewModel.setLatLng(latLng)
             findNavController().popBackStack()
             println("SelectLocation: " + latLng.latitude.toString() + ", " + latLng.longitude.toString())
         }
@@ -400,6 +403,8 @@ class mapFragment : Fragment(), OnMapReadyCallback {
                     .position(poi.latLng)
                     .title(poi.name)
             )
+
+            viewModel.setLatLng(poi.latLng)
             poiMarker.showInfoWindow()
             findNavController().popBackStack()
         }

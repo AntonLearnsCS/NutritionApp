@@ -16,6 +16,7 @@ import com.example.nutritionapp.ingredientlist.testNutritionApi.nutritionService
 import com.example.nutritionapp.network.*
 import com.example.nutritionapp.recipe.*
 import com.example.nutritionapp.util.wrapEspressoIdlingResource
+import com.google.android.gms.maps.model.LatLng
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import okhttp3.*
@@ -66,6 +67,15 @@ class IngredientViewModel(
     fun setViewVisibilityFlag(boolean: Boolean) {
         _viewVisibilityFlag.value = boolean
     }
+
+    private val _latLng = MutableLiveData<LatLng>()
+    val latLng : LiveData<LatLng>
+    get() = _latLng
+
+    fun setLatLng(latLng: LatLng)
+    {
+        _latLng.value = latLng
+    }
     //Q: Why does "val listOfRecipesLiveData = MutableLiveData<List<RecipeIngredientResult>>(listOfRecipes)" result in RecyclerView
     //being empty?
     //A: "val listOfRecipesLiveData : MutableLiveData<List<RecipeIngredientResult>>? = null" is explicitly setting the list<RecipeIngredientResult> value
@@ -100,6 +110,7 @@ class IngredientViewModel(
 
     val selectedIngredient = MutableLiveData<IngredientDataClass>()
     val foodInText = mutableListOf<String>()
+
     val listOfIngredientsString = MutableLiveData<String>()
 
     val _comingFromRecipeFlag = MutableLiveData(false)

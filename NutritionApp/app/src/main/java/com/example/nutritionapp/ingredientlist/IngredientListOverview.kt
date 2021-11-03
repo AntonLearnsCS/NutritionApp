@@ -90,7 +90,6 @@ class IngredientListOverview : Fragment() {
             localIngredientAdapter.getListName()
             //clear list of ingredient components before trying to detect new ingredients
             viewModel.foodInText.clear()
-
             //Returns list of ingredients i.e {"mushroom","flour","tomato"}
             viewModel.detectFoodInText(localIngredientAdapter.mListOfNames)
             //val foodDetected : String? = viewModel.listOfIngredientsString.value
@@ -121,6 +120,7 @@ class IngredientListOverview : Fragment() {
 
         setHasOptionsMenu(true)
 
+        viewModel.listOfIngredientsString.value = null
         return binding.root
     }
 
