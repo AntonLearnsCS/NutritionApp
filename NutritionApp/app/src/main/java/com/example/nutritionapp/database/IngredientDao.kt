@@ -88,6 +88,5 @@ interface IngredientDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun saveNotificationRecipe(recipe: RecipeNotificationClass)
 
-
 }
 

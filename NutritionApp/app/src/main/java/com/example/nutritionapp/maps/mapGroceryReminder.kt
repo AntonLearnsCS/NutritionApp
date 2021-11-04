@@ -189,7 +189,7 @@ private lateinit var binding : MapGroceryReminderBinding
             }
             else
             {
-                recipeNotificationClass = RecipeNotificationClass("Recipe",binding.missingIngredients.toString())
+                recipeNotificationClass = RecipeNotificationClass("Recipe", binding.missingIngredients.text.toString())
                 bundle.putSerializable("RecipeNotificationClass", recipeNotificationClass)
             }
 
