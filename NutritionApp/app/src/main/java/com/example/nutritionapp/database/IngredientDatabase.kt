@@ -21,7 +21,7 @@ import com.example.nutritionapp.database.dto.IngredientDataClassDTO
 import com.example.nutritionapp.maps.NoneRecipeClass
 import com.example.nutritionapp.maps.RecipeNotificationClass
 
-@Database(entities = [IngredientDataClassDTO::class, RecipeNotificationClass::class], version = 3, exportSchema = false)
+@Database(entities = [IngredientDataClassDTO::class, RecipeNotificationClass::class], version = 2, exportSchema = false)
 abstract class IngredientDatabase : RoomDatabase() {
 
     /**

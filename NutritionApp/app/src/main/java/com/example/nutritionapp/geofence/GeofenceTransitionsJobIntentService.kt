@@ -108,7 +108,7 @@ class GeofenceTransitionsJobIntentService : JobIntentService(), CoroutineScope {
                 com.example.nutritionapp.notification.sendNotification(this@GeofenceTransitionsJobIntentService,recipeNotification)
             }
             else
-                Log.i("test","recipeNotification is null")
+                Log.i("test","recipeNotification is null, id: ${triggeringGeofences.requestId}")
         }
     }
 

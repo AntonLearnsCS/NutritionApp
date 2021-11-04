@@ -193,6 +193,8 @@ private lateinit var binding : MapGroceryReminderBinding
                 bundle.putSerializable("RecipeNotificationClass", recipeNotificationClass)
             }
 
+            Log.i("test","RecipeNotificationClass Id: ${recipeNotificationClass!!.mId}")
+
             intent.putExtras(bundle)
             if (checkPermission())
             {
@@ -265,6 +267,7 @@ private lateinit var binding : MapGroceryReminderBinding
         // Build the Geofence Object
         val geofence = latLng?.latitude?.let {
             latLng?.longitude?.let { it1 ->
+                Log.i("test","requestId geofence: ${recipeNotificationClass?.mId}")
                 Geofence.Builder()
                     // Set the request ID, string to identify the geofence. Depends on whether we are selecting a recipe or a non-recipe
                     .setRequestId(recipeNotificationClass?.mId) //reminderDataItem.id)//_viewModel.latLng.value?.latitude.toString())
