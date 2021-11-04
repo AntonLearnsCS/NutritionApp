@@ -37,6 +37,10 @@
 <string name="err_select_location">Please select location</string>
 <string name="description_needed">Please enter description</string>
 <string name="location_tracker_needed">Location tracker needed for app use</string>
+    <string name="about_text">This app allows you to search grocery products and then combine different grocery products to
+    see what recipes you can make! The recipes listed will let you know which ingredients you are missing and gives you the
+    option to set a grocery reminder which will send a notification next time you are in the vicinity of your choosen grocery. Happy cooking!
+    </string>
 
 
 <!-- Error strings -->
