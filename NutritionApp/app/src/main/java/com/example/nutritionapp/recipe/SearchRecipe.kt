@@ -13,12 +13,11 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.nutritionapp.R
 import com.example.nutritionapp.databinding.RecipeLayoutBinding
-import com.example.nutritionapp.ingredientlist.IOnBackPressed
 import com.example.nutritionapp.ingredientlist.IngredientViewModel
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 
-class SearchRecipe : Fragment(), IOnBackPressed {
+class SearchRecipe : Fragment() {
 private lateinit var binding : RecipeLayoutBinding
 //viewModel is being initialized before the detectFoodText is done running in the background
  //val viewModel by lazy { ViewModelProvider(this).get(IngredientViewModel::class.java)}
@@ -27,7 +26,6 @@ private val adapter = recipeAdapter(recipeAdapter.RecipeIngredientListener { rec
         Log.i("test","Recipe selected name: ${recipe.title}")
         viewModel.setNavigateToRecipe(recipe)
         viewModel.setNavigateToRecipeFlag(true)
-        viewModel.foodInText.clear()
     //need a seperate flag
     viewModel.setComingFromRecipeFlag(true)
 })
@@ -45,8 +43,7 @@ val viewModel : IngredientViewModel by inject()
         //Q: How to inflate layout object in onViewCreated?
         //val args = SearchRecipeArgs.fromBundle(requireArguments()).ListOfIngredients//arguments?.getString("ListOfIngredients")
         //Log.i("test","args: $args")
-        val mockText = "Apple,Oranges,Kiwi"
-        Log.i("test","LiveData: ${viewModel.listOfRecipesLiveData?.value}")
+
         binding = DataBindingUtil.inflate(LayoutInflater.from(context), R.layout.recipe_layout, container,false)
 
         binding.viewModel = viewModel
@@ -84,18 +81,15 @@ val viewModel : IngredientViewModel by inject()
             }
         )
 
+        //source: https://stackoverflow.com/questions/55074497/how-to-add-onbackpressedcallback-to-fragment
         requireActivity()
             .onBackPressedDispatcher
             .addCallback(viewLifecycleOwner, object : OnBackPressedCallback(true) {
                 override fun handleOnBackPressed() {
-                    //Log.d(TAG, "Fragment back pressed invoked")
-                    // Do custom work here
-                    viewModel.foodInText.clear()
-                    viewModel.listOfIngredientsString.value = null
-                    Log.i("test","onBackPressed called Search Recipe")
+                    Log.i("test","SearchRecipe on back pressed")
+                    viewModel.searchRecipeEditTextFlag.value = true
                     // if you want onBackPressed() to be called as normal afterwards
                     if (isEnabled) {
-                        Log.i("test","onBackPressed is Enabled")
                         isEnabled = false
                         requireActivity().onBackPressed()
                     }
@@ -104,20 +98,5 @@ val viewModel : IngredientViewModel by inject()
             )
 
         return binding.root
-    }
-
-
-
- override fun onBackPressed() : Boolean
- {
-     Log.i("test","onBackPressed called")
-     return false
- }
-
-    override fun onDestroy()
-    {
-        super.onDestroy()
-        Log.i("test","onDestroy called")
-        viewModel.listOfIngredientsString.value = null
     }
 }

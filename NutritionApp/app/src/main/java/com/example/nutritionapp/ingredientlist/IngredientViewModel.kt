@@ -111,6 +111,16 @@ class IngredientViewModel(
     val selectedIngredient = MutableLiveData<IngredientDataClass>()
     val foodInText = mutableListOf<String>()
 
+
+    val searchRecipeEditTextFlag = MutableLiveData(false)
+
+    fun setSearchRecipeEditTextClear()
+    {
+        foodInText.clear()
+    }
+
+
+
     val listOfIngredientsString = MutableLiveData<String>()
 
     val _comingFromRecipeFlag = MutableLiveData(false)
@@ -144,6 +154,7 @@ class IngredientViewModel(
             } catch (e: java.lang.Exception) {
                 Log.i("Exception", "$e")
             }
+
             if (!foodInText.isEmpty()) {
                 listOfIngredientsString.value = foodInText.joinToString(separator = ",")
                 _navigatorFlag.value = true

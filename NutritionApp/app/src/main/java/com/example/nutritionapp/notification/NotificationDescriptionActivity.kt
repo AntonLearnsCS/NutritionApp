@@ -21,4 +21,5 @@ class NotificationDescriptionActivity : AppCompatActivity() {
         binding.recipeNotification = bundleItem
     }
 
+
 }

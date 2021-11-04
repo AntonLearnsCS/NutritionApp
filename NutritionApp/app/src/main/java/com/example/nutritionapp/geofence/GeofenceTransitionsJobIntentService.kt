@@ -28,7 +28,7 @@ class GeofenceTransitionsJobIntentService : JobIntentService(), CoroutineScope {
         get() = Dispatchers.IO + coroutineJob
 
     companion object {
-        private const val JOB_ID = 573
+        private const val JOB_ID = 574
         //So we need to start a job that will monitor our location to ensure that we are either still inside
         // or have left the geofence. We do this in the background since we don't know when the user will leave the area
         //TODO: call this to start the JobIntentService to handle the geofencing transition events i.e exit or enter geofence
@@ -107,22 +107,6 @@ class GeofenceTransitionsJobIntentService : JobIntentService(), CoroutineScope {
             if (recipeNotification != null) {
                 com.example.nutritionapp.notification.sendNotification(this@GeofenceTransitionsJobIntentService,recipeNotification)
             }
-
-        /*      if (result is Result.Success<ReminderDTO>) {
-                val reminderDTO = result.data
-                //send a notification to the user with the reminder details
-                println("Title: " + reminderDTO.title )
-                sendNotification(
-                    this@GeofenceTransitionsJobIntentService, ReminderDataItem(
-                        reminderDTO.title,
-                        reminderDTO.description,
-                        reminderDTO.location,
-                        reminderDTO.latitude,
-                        reminderDTO.longitude,
-                        reminderDTO.id
-                    )
-                )
-            }*/
         }
     }
 

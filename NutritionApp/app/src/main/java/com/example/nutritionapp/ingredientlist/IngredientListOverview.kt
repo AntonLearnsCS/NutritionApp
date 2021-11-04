@@ -120,7 +120,15 @@ class IngredientListOverview : Fragment() {
 
         setHasOptionsMenu(true)
 
-        viewModel.listOfIngredientsString.value = null
+        viewModel.searchRecipeEditTextFlag.observe(viewLifecycleOwner, Observer {
+            if (it == true) {
+                viewModel.setSearchRecipeEditTextClear()
+                localIngredientAdapter.mListOfNames.clear()
+            viewModel.searchRecipeEditTextFlag.value = false
+            }
+        })
+
+        //viewModel.listOfIngredientsString.value = null
         return binding.root
     }
 

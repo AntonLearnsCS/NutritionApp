@@ -91,33 +91,34 @@ object Adapters {
 
         if (!editText.text.equals(listMissingIngredients?.value)) {
             editText.text.clear()
-            val temp = sb.toString()
-            editText.text.append(temp)
+            editText.text.append(sb)
         }
     }
+    //Note: Suffix must be "AttrChanged"
+
     @JvmStatic
     @BindingAdapter("foodInTextAttrChanged")
     fun setListener( editText : EditText, listener : InverseBindingListener) {
         val textWatcher : TextWatcher = object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
-                TODO("Not yet implemented")
+                Log.i("test","beforeTextChanged called")
             }
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                TODO("Not yet implemented")
+                Log.i("test","onTextChanged called")
             }
 
             override fun afterTextChanged(s: Editable?) {
                 listener.onChange()
             }
-
         }
         editText.addTextChangedListener(  textWatcher
         )
     }
 
     @InverseBindingAdapter(attribute = "foodInText")
-    @JvmStatic fun getText(view: EditText) : String {
+    @JvmStatic
+    fun getText(view: EditText) : String {
         return view.text.toString()
     }
 
