@@ -137,7 +137,6 @@ class IngredientListOverview : Fragment() {
         //Note: Must remove call to super to use navigation
         //super.onCreateOptionsMenu(menu, inflater)
         inflater.inflate(R.menu.overflow_menu, menu)
-
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
