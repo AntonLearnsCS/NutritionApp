@@ -82,11 +82,16 @@ interface IngredientDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun saveNoneRecipe(noneRecipe: NoneRecipeClass)*/
 
+
+
+}
+
+@Dao
+interface recipeIngredient{
     @Query("SELECT * from RecipeEntity WHERE mId = :key")
     suspend fun getNotificationRecipeById(key: String): RecipeNotificationClass?
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun saveNotificationRecipe(recipe: RecipeNotificationClass)
-
 }
 

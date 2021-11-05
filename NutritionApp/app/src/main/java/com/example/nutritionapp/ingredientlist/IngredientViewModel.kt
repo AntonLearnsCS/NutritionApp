@@ -13,6 +13,7 @@ import com.example.nutritionapp.util.Result
 import com.example.nutritionapp.database.IngredientDataSourceInterface
 import com.example.nutritionapp.database.dto.IngredientDataClassDTO
 import com.example.nutritionapp.ingredientlist.testNutritionApi.nutritionServicePost
+import com.example.nutritionapp.maps.RecipeNotificationClass
 import com.example.nutritionapp.network.*
 import com.example.nutritionapp.recipe.*
 import com.example.nutritionapp.util.wrapEspressoIdlingResource
@@ -224,6 +225,23 @@ class IngredientViewModel(
                 }
                 this@IngredientViewModel._viewVisibilityFlag.value = false
             }
+        }
+    }
+    private val _saveRecipeNotificationFlag = MutableLiveData(false)
+    val saveRecipeNotificationFlag : LiveData<Boolean>
+    get() = _saveRecipeNotificationFlag
+
+    fun setSaveRecipeNotificationFlagBoolean(boolean: Boolean)
+    {
+        _saveRecipeNotificationFlag.value = boolean
+    }
+
+    fun saveRecipeNotification(recipeNotification : RecipeNotificationClass)
+    {
+
+        viewModelScope.launch {
+            ingredientRepository.saveNotificationRecipe(recipeNotification)
+            _saveRecipeNotificationFlag.value = true
         }
     }
 

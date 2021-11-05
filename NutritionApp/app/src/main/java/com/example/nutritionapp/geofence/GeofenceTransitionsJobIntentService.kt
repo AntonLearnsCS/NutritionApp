@@ -28,7 +28,7 @@ class GeofenceTransitionsJobIntentService : JobIntentService(), CoroutineScope {
         get() = Dispatchers.IO + coroutineJob
 
     companion object {
-        private const val JOB_ID = 574
+        private const val JOB_ID = 573
         //So we need to start a job that will monitor our location to ensure that we are either still inside
         // or have left the geofence. We do this in the background since we don't know when the user will leave the area
         //TODO: call this to start the JobIntentService to handle the geofencing transition events i.e exit or enter geofence

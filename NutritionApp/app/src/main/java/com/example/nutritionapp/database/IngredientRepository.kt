@@ -100,7 +100,7 @@ class IngredientRepository(private val database: IngredientDatabase,
         wrapEspressoIdlingResource {
             return withContext(IOdispatcher)
             {
-                val result = database.IngredientDatabaseDao.getNotificationRecipeById(key)
+                val result = database.RecipeIngredient.getNotificationRecipeById(key)
                 return@withContext result
             }
         }
@@ -110,7 +110,6 @@ class IngredientRepository(private val database: IngredientDatabase,
 wrapEspressoIdlingResource {
     withContext(IOdispatcher)
     {
-        database.IngredientDatabaseDao.saveNotificationRecipe(recipe)
-    }
-}    }
+        database.RecipeIngredient.saveNotificationRecipe(recipe)
+    } }}
 }

@@ -5,7 +5,6 @@ import android.app.Activity
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
-import android.content.Intent.ACTION_VIEW
 import android.content.IntentSender
 import android.content.pm.PackageManager
 import android.os.Build
@@ -25,12 +24,12 @@ import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import com.example.nutritionapp.R
 import com.example.nutritionapp.databinding.MapGroceryReminderBinding
 import com.example.nutritionapp.geofence.GeofenceBroadcastReceiver
 import com.example.nutritionapp.ingredientlist.IngredientViewModel
-import com.example.nutritionapp.notification.NotificationDescriptionActivity
 import com.google.android.gms.common.api.ResolvableApiException
 import com.google.android.gms.location.*
 import com.google.android.gms.maps.model.LatLng
@@ -198,7 +197,16 @@ private lateinit var binding : MapGroceryReminderBinding
             intent.putExtras(bundle)
             if (checkPermission())
             {
-                findNavController().navigate(mapGroceryReminderDirections.actionMapGroceryReminderToIngredientListOverview())
+                _viewModel.saveRecipeNotification(recipeNotificationClass!!)
+
+                _viewModel.saveRecipeNotificationFlag.observe(viewLifecycleOwner, Observer {
+                    if (it == true)
+                    {
+                        _viewModel.setSaveRecipeNotificationFlagBoolean(false)
+                        Log.i("test","recipeNotification body text: ${recipeNotificationClass!!.missingIngredients}")
+                        findNavController().navigate(mapGroceryReminderDirections.actionMapGroceryReminderToIngredientListOverview())
+                    }
+                })
             }
         }
     }

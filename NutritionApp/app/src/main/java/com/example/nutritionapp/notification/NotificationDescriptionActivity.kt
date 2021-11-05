@@ -13,13 +13,10 @@ class NotificationDescriptionActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?, persistentState: PersistableBundle?) {
         super.onCreate(savedInstanceState, persistentState)
 
-
         binding = DataBindingUtil.setContentView(this, R.layout.notification_description_activity)
 
-        val bundleItem = intent.getSerializableExtra("EXTRA_recipeNotification") as RecipeNotificationClass
+        val bundleItem = intent.extras//intent.getSerializableExtra("RecipeNotificationClass") as RecipeNotificationClass
 
-        binding.recipeNotification = bundleItem
+        binding.recipeNotification = bundleItem?.getSerializable("RecipeNotificationClass") as RecipeNotificationClass
     }
-
-
 }
