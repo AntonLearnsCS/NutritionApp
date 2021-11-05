@@ -18,7 +18,8 @@
         <com.google.android.material.appbar.AppBarLayout
             android:id="@+id/appBarLayout"
             android:layout_width="match_parent"
-            android:layout_height="180dp">
+            android:backgroundTint="@color/white"
+            android:layout_height="wrap_content">
 
             <androidx.constraintlayout.motion.widget.MotionLayout
                 android:id="@+id/motion_layout"
@@ -41,7 +42,7 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintVertical_bias="0.412"
-                    app:srcCompat="@drawable/cooking_background_image" />
+                    app:tint="@color/white" />
 
                 <ImageView
                     android:id="@+id/shopping_cart"
@@ -58,6 +59,7 @@
                     android:layout_height="wrap_content"
                     android:gravity="center"
                     android:text="@{recipe.title}"
+                    android:translationZ="2dp"
                     android:textSize="40sp"
                     app:layout_constraintBottom_toBottomOf="parent"
                     tools:layout_editor_absoluteX="206dp" />

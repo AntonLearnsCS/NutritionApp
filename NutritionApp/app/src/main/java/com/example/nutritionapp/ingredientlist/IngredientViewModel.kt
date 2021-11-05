@@ -298,11 +298,11 @@ class IngredientViewModel(
                     }
                     for(i in listOfIngredientNameInInstruction)
                     {
-                        Log.i("testName",i)
+                        Log.i("testNameInInstruction",i)
                     }
                     for(i in _missingIngredients.value!!)
                     {
-                        Log.i("testName",i)
+                        Log.i("testNameMissing",i)
                     }
                 }
             }

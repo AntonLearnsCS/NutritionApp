@@ -10,13 +10,15 @@ import com.example.nutritionapp.maps.RecipeNotificationClass
 
 class NotificationDescriptionActivity : AppCompatActivity() {
     private lateinit var binding : NotificationDescriptionActivityBinding
-    override fun onCreate(savedInstanceState: Bundle?, persistentState: PersistableBundle?) {
-        super.onCreate(savedInstanceState, persistentState)
-
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.notification_description_activity)
         binding = DataBindingUtil.setContentView(this, R.layout.notification_description_activity)
 
-        val bundleItem = intent.extras//intent.getSerializableExtra("RecipeNotificationClass") as RecipeNotificationClass
+        val bundleItem = intent.getSerializableExtra("EXTRA_recipeNotification") as RecipeNotificationClass//intent.getSerializableExtra("RecipeNotificationClass") as RecipeNotificationClass
 
-        binding.recipeNotification = bundleItem?.getSerializable("RecipeNotificationClass") as RecipeNotificationClass
+        binding.recipeNotification = bundleItem
+
+        binding.lifecycleOwner = this
     }
 }

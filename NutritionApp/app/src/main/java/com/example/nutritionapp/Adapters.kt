@@ -51,8 +51,8 @@ object Adapters {
     {
         val sb = StringBuilder()
 
-        /*if (textView.tag != "recipe_layout_tag")
-        sb.append("Missing Ingredients:\n")*/
+        if (textView.tag != "recipe_layout_tag")
+        sb.append("Missing Ingredients:\n")
 
         if(!listMissingIngredients?.value.isNullOrEmpty())
         {
@@ -139,6 +139,23 @@ object Adapters {
         }
         else
             textView.text = R.string.no_instructions_provided.toString()
+    }
+
+    @JvmStatic
+    @BindingAdapter("listIngredients")
+    fun listIngredients(textView: TextView, mString: String)
+    {
+        val sb = StringBuilder()
+
+        //convert string to list
+        val result: List<String> = mString.split(",").map { it.trim() }
+
+        for (i in result)
+        {
+            sb.append("$i\n")
+        }
+
+        textView.text = sb
     }
 
 

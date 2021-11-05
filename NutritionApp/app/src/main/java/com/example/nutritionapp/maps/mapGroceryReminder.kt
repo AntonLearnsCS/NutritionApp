@@ -194,7 +194,7 @@ private lateinit var binding : MapGroceryReminderBinding
 
             Log.i("test","RecipeNotificationClass Id: ${recipeNotificationClass!!.mId}")
 
-            intent.putExtras(bundle)
+            intent.putExtra("RecipeNotificationClass", recipeNotificationClass)
             if (checkPermission())
             {
                 _viewModel.saveRecipeNotification(recipeNotificationClass!!)
