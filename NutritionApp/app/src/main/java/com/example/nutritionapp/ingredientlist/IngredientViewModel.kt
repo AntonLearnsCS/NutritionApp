@@ -63,7 +63,7 @@ class IngredientViewModel(
 
     private val _viewVisibilityFlag = MutableLiveData<Boolean>(false)
     val viewVisibilityFlag: LiveData<Boolean>
-        get() = this._viewVisibilityFlag
+        get() = _viewVisibilityFlag
 
     fun setViewVisibilityFlag(boolean: Boolean) {
         _viewVisibilityFlag.value = boolean
@@ -90,7 +90,6 @@ class IngredientViewModel(
     val listOfRecipesLiveData: LiveData<List<RecipeIngredientResult>>
         get() = _listOfRecipesLiveData
 
-    val listOfRecipes = mutableListOf<RecipeIngredientResult>()
 
     private val _listOfStepsLiveData = MutableLiveData<List<String>>()
     val listOfStepsLiveData: LiveData<List<String>>
@@ -165,6 +164,8 @@ class IngredientViewModel(
     }
 
     fun findRecipeByIngredients() {
+        val listOfRecipes = mutableListOf<RecipeIngredientResult>()
+
         viewModelScope.launch {
             _viewVisibilityFlag.value = true
             try {
@@ -172,12 +173,14 @@ class IngredientViewModel(
                     NutritionAPI.nutritionService.findByIngredients(
                         listOfIngredientsString.value!!
                     )
-                Log.i("test", "recipe list size: ${resultWrapper.size}")
-                Log.i("test", "recipe[0]: ${resultWrapper[0].title}")
+                Log.i("testRecipeById", "recipe list size: ${resultWrapper.size}")
+                Log.i("testRecipeById", "recipe[0]: ${resultWrapper[0].title}")
                 for (i in resultWrapper) {
                     listOfRecipes.add(i)
                 }
+
                 _listOfRecipesLiveData.value = listOfRecipes
+
             } catch (e: java.lang.Exception) {
                 Log.i("Exception", "$e")
             }
@@ -223,7 +226,7 @@ class IngredientViewModel(
                         Toast.LENGTH_SHORT
                     ).show()
                 }
-                this@IngredientViewModel._viewVisibilityFlag.value = false
+                _viewVisibilityFlag.value = false
             }
         }
     }

@@ -53,7 +53,6 @@ val viewModel : IngredientViewModel by inject()
 
         binding.recipeRecyclerView.layoutManager = LinearLayoutManager(context)
 
-
         binding.recipeRecyclerView.adapter = adapter
 
         viewModel.listOfRecipesLiveData?.observe(viewLifecycleOwner, Observer{

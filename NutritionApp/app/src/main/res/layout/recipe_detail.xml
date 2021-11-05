@@ -19,12 +19,12 @@
             android:id="@+id/appBarLayout"
             android:layout_width="match_parent"
             android:backgroundTint="@color/white"
-            android:layout_height="wrap_content">
+            android:layout_height="200dp">
 
             <androidx.constraintlayout.motion.widget.MotionLayout
                 android:id="@+id/motion_layout"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 app:layoutDescription="@xml/motion_scene_recipe_detail"
                 app:motionDebug="SHOW_PATH"
                 android:minHeight="80dp"
