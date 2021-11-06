@@ -8,7 +8,6 @@ import androidx.databinding.PropertyChangeRegistry
 import androidx.lifecycle.*
 //import androidx.test.core.app.ApplicationProvider
 import com.example.nutritionapp.database.IngredientDataClass
-import kotlinx.coroutines.launch
 import com.example.nutritionapp.util.Result
 import com.example.nutritionapp.database.IngredientDataSourceInterface
 import com.example.nutritionapp.database.dto.IngredientDataClassDTO
@@ -20,14 +19,14 @@ import com.example.nutritionapp.util.wrapEspressoIdlingResource
 import com.google.android.gms.maps.model.LatLng
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.*
 import okhttp3.*
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
 import retrofit2.http.POST
 import java.io.IOException
 import java.net.URLEncoder
+import kotlin.concurrent.thread
 
 /*
 To get context inside a ViewModel we can either extend AndroidViewModel. Do not use ApplicationProvider in production code, only in tests
@@ -274,7 +273,11 @@ class IngredientViewModel(
         wrapEspressoIdlingResource {
             viewModelScope.launch {
                 Log.i("testFunctionID", "ID: ${_navigateToRecipe.value?.id}")
-                runBlocking {
+                //Note: So the issue here was that the coroutine has not finished running. The solution was to make the DAO function a regular function to make it blocking
+                // Since the DAO function was initially a suspend function, the rest of the code was proceeding under the assumption that "resultInstructions" was null. Even if
+                // "resultInstructions" returns a value the rest of the code logic had already ran. So the solution was to make "resultInstructions" blocking.
+                withContext(Dispatchers.IO)
+                {
                     val resultInstructions: List<RecipeInstruction>? =
                         _navigateToRecipe.value?.id?.let {
                             NutritionAPI.nutritionService.getRecipeInstructions(it, false)

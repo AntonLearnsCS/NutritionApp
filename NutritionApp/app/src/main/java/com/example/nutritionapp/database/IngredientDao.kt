@@ -71,7 +71,7 @@ interface IngredientDao {
 
     //delete ingredient
     @Query("DELETE from Ingredient_Entity WHERE id = :key")
-    fun deleteIngredientById(key: Int)
+     fun deleteIngredientById(key: Int)
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun saveIngredient(ingredient: IngredientDataClassDTO)
