@@ -34,7 +34,7 @@ class RecipeDetail : Fragment() {
         Log.i("test","RecipeDetail: ${viewModel.navigateToRecipe.value?.title}")
 
         //TODO: In contrast, calling getRecipeInstructions here does not update the xml
-       viewModel.getRecipeInstructions()
+       //viewModel.getRecipeInstructions()
 
         binding.findGroceries.setOnClickListener {
             viewModel.setComingFromRecipeFlag(true)
@@ -50,7 +50,6 @@ class RecipeDetail : Fragment() {
             val seekPosition = -verticalOffset / binding.appBarLayout.totalScrollRange.toFloat()
             binding.motionLayout.progress = seekPosition
         }
-
         binding.appBarLayout.addOnOffsetChangedListener(listener)
     }
 }

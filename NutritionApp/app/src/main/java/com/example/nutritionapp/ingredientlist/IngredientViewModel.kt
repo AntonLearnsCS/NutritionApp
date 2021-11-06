@@ -20,6 +20,8 @@ import com.example.nutritionapp.util.wrapEspressoIdlingResource
 import com.google.android.gms.maps.model.LatLng
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.runBlocking
 import okhttp3.*
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
@@ -262,6 +264,7 @@ class IngredientViewModel(
     val missingIngredients : LiveData<List<String>>
     get() = _missingIngredients
 
+    val mFlag = MutableLiveData(false)
     fun getRecipeInstructions()
     {
         val listOfIngredientNameInInstruction = mutableListOf<String>()
@@ -270,49 +273,53 @@ class IngredientViewModel(
 
         wrapEspressoIdlingResource {
             viewModelScope.launch {
-                Log.i("testFunctionID","ID: ${_navigateToRecipe.value?.id}")
-                val resultInstructions : List<RecipeInstruction>? = _navigateToRecipe.value?.id?.let {
-                    NutritionAPI.nutritionService.getRecipeInstructions(it,false)
-                }
-
-                //iterates over each sub recipe i.e recipe for cake and recipe for frosting
-                if (resultInstructions != null) {
-                    for(i in resultInstructions) {
-
-                        //adds title of sub recipes i.e frosting recipe in a cake recipe
-                        if (i.name?.length!! > 0)
-                            listOfSteps.add(i.name)
-
-                        //iterates over "RecipeInstruction" to add the instructions steps into a list
-                        for(steps in i.steps!!) {
-
-                            //collects the ingredients mentioned in the recipe instructions
-                            for(name in steps.ingredients!!)
-                            {
-                                if (!name.name.isNullOrEmpty())
-                                {
-                                    listOfIngredientNameInInstruction.add(name.name)
-                                }
-                            }
-                            steps.step?.let { listOfSteps.add(it) }
+                Log.i("testFunctionID", "ID: ${_navigateToRecipe.value?.id}")
+                runBlocking {
+                    val resultInstructions: List<RecipeInstruction>? =
+                        _navigateToRecipe.value?.id?.let {
+                            NutritionAPI.nutritionService.getRecipeInstructions(it, false)
                         }
-                    }
 
-                    _listOfStepsLiveData.value = listOfSteps
+                    //delay(3000)
+                    //TODO:resultInstructions is still running before this one finishes?
+                    //iterates over each sub recipe i.e recipe for cake and recipe for frosting
+                    if (!resultInstructions.isNullOrEmpty()) {
+                        Log.i("test", "resultInstructions not null or empty")
+                        for (i in resultInstructions) {
+                            //adds title of sub recipes i.e frosting recipe in a cake recipe
+                            if (i.name?.length!! > 0)
+                                listOfSteps.add(i.name)
 
-                    _missingIngredients.value = foodInText.filter { !listOfIngredientNameInInstruction.contains(it) }
-                    //Log.i("test","listOfSteps size: ${(_listOfStepsLiveData.value as MutableList<String>).size}")
-                    for (i in _listOfStepsLiveData.value as MutableList<String>)
-                    {
-                        Log.i("test i", "i: $i")
-                    }
-                    for(i in listOfIngredientNameInInstruction)
-                    {
-                        Log.i("testNameInInstruction",i)
-                    }
-                    for(i in _missingIngredients.value!!)
-                    {
-                        Log.i("testNameMissing",i)
+                            //iterates over "RecipeInstruction" to add the instructions steps into a list
+                            for (steps in i.steps!!) {
+
+                                //collects the ingredients mentioned in the recipe instructions
+                                for (name in steps.ingredients!!) {
+                                    if (!name.name.isNullOrEmpty()) {
+                                        listOfIngredientNameInInstruction.add(name.name)
+                                    }
+                                }
+                                steps.step?.let { listOfSteps.add(it) }
+                            }
+                        }
+
+                        _listOfStepsLiveData.value = listOfSteps
+
+                        _missingIngredients.value =
+                            foodInText.filter { listOfIngredientNameInInstruction.contains(it) }
+
+                        mFlag.value = true
+
+                        //Log.i("test","listOfSteps size: ${(_listOfStepsLiveData.value as MutableList<String>).size}")
+                        for (i in _listOfStepsLiveData.value as MutableList<String>) {
+                            Log.i("test i", "i: $i")
+                        }
+                        for (i in listOfIngredientNameInInstruction) {
+                            Log.i("testNameInInstruction", i)
+                        }
+                        for (i in _missingIngredients.value!!) {
+                            Log.i("testNameMissing", i)
+                        }
                     }
                 }
             }

@@ -128,7 +128,6 @@ object Adapters {
     @BindingAdapter("displaySteps")
     fun bindSteps(textView: TextView, listSteps : LiveData<List<String>>)
     {
-
         Log.i("test","displaySteps called: ${listSteps.value?.size}")
         if (!listSteps.value.isNullOrEmpty()) {
             Log.i("test","displaySteps not empty")
@@ -138,7 +137,7 @@ object Adapters {
             textView.text = mString
         }
         else
-            textView.text = R.string.no_instructions_provided.toString()
+            textView.setText(R.string.no_instructions_provided)
     }
 
     @JvmStatic

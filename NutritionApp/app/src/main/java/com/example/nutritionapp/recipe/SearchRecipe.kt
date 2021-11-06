@@ -61,12 +61,25 @@ val viewModel : IngredientViewModel by inject()
 
         viewModel.navigateToRecipeFlag.observe(viewLifecycleOwner, Observer {
             if (it) {
-                findNavController().navigate(
-                    SearchRecipeDirections.actionSearchRecipeToRecipeDetail(
-                        viewModel.navigateToRecipe.value!!
-                    )
-                )
-                viewModel.setNavigateToRecipeFlag(false)
+                //TODO: Calling getRecipeInstructions() in addition to using a flag results in expected behavior
+                //A: I think it's because the Job involving "getRecipeInstruction()" is not attached to the instance
+                // of the viewModel injected in RecipeDetail. The Job is ran on a different thread which will
+                //return
+
+                    viewModel.getRecipeInstructions()
+
+                //Once getRecipeInstructions() is complete it will set mFlag = true so that navigation happens only after the liveData in getRecipeInstructions is updated
+                viewModel.mFlag.observe(viewLifecycleOwner, Observer {
+                    if (it) {
+                        findNavController().navigate(
+                            SearchRecipeDirections.actionSearchRecipeToRecipeDetail(
+                                viewModel.navigateToRecipe.value!!
+                            )
+                        )
+                        viewModel.setNavigateToRecipeFlag(false)
+                    }
+                })
+
             }
         }
         )
