@@ -1,6 +1,7 @@
 package com.example.nutritionapp
 
 import android.app.Application
+import android.os.Bundle
 import androidx.test.core.app.ApplicationProvider
 import com.example.nutritionapp.ingredientlist.IngredientViewModel
 import com.example.nutritionapp.database.IngredientDataSourceInterface
@@ -13,6 +14,7 @@ import org.koin.dsl.module
 import timber.log.Timber
 
 class App : Application() {
+
     override fun onCreate() {
         super.onCreate()
         if (BuildConfig.DEBUG) {

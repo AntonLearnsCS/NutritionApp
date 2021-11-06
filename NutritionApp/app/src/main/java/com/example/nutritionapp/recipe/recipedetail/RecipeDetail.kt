@@ -32,8 +32,10 @@ class RecipeDetail : Fragment() {
         binding.recipe = args
         Log.i("test","args: ${args.title}")
         Log.i("test","RecipeDetail: ${viewModel.navigateToRecipe.value?.title}")
+
         //TODO: In contrast, calling getRecipeInstructions here does not update the xml
-       // viewModel.getRecipeInstructions()
+       viewModel.getRecipeInstructions()
+
         binding.findGroceries.setOnClickListener {
             viewModel.setComingFromRecipeFlag(true)
             findNavController().navigate(RecipeDetailDirections.actionRecipeDetailToMapGroceryReminder())

@@ -18,18 +18,17 @@
             android:id="@+id/search_recipe_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="44dp"
+            android:layout_marginTop="100dp"
             android:text="@string/search_recipe"
-            app:layout_constraintBottom_toTopOf="@+id/recipe_recycler_view"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.498"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/ingredient_list" />
+            app:layout_constraintTop_toTopOf="parent" />
 
         <EditText
             android:id="@+id/ingredient_list"
             android:layout_width="match_parent"
-
+            android:maxHeight="100dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
             android:layout_marginBottom="5dp"
@@ -42,16 +41,18 @@
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
-
+<!-- Set height = 0dp so that the height is constrained by the constraint arrows,
+which in this case is the "Search Recipe" button. -->
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recipe_recycler_view"
             android:layout_width="match_parent"
-            android:layout_height="470dp"
+            android:layout_height="0dp"
             android:foregroundGravity="center"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="1.0"
-            app:layout_constraintStart_toStartOf="parent">
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/search_recipe_button">
 
         </androidx.recyclerview.widget.RecyclerView>
 
@@ -59,8 +60,8 @@
             android:id="@+id/progress_circular"
             android:layout_width="84dp"
             android:layout_height="80dp"
-            android:fadeVisible="@{viewModel.viewVisibilityFlag}"
             android:elevation="2dp"
+            android:fadeVisible="@{viewModel.viewVisibilityFlag}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.498"

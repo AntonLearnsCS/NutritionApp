@@ -87,7 +87,12 @@ class IngredientListOverview : Fragment() {
         }
 
         binding.searchRecipe.setOnClickListener {
-            localIngredientAdapter.getListName()
+            val result = localIngredientAdapter.getListName()
+
+            if (result.size == 0)
+            {
+                viewModel.displayToast("Select at least one ingredient")
+            }
             //clear list of ingredient components before trying to detect new ingredients
             viewModel.foodInText.clear()
             //Returns list of ingredients i.e {"mushroom","flour","tomato"}

@@ -230,6 +230,15 @@ class IngredientViewModel(
             }
         }
     }
+
+    fun displayToast(mString: String)
+    {
+        Toast.makeText(
+            app,
+            "$mString",
+            Toast.LENGTH_SHORT
+        ).show()
+    }
     private val _saveRecipeNotificationFlag = MutableLiveData(false)
     val saveRecipeNotificationFlag : LiveData<Boolean>
     get() = _saveRecipeNotificationFlag
@@ -253,7 +262,6 @@ class IngredientViewModel(
     val missingIngredients : LiveData<List<String>>
     get() = _missingIngredients
 
-    val mFlag = MutableLiveData(false)
     fun getRecipeInstructions()
     {
         val listOfIngredientNameInInstruction = mutableListOf<String>()
@@ -291,7 +299,6 @@ class IngredientViewModel(
                     }
 
                     _listOfStepsLiveData.value = listOfSteps
-                    mFlag.value = true
 
                     _missingIngredients.value = foodInText.filter { !listOfIngredientNameInInstruction.contains(it) }
                     //Log.i("test","listOfSteps size: ${(_listOfStepsLiveData.value as MutableList<String>).size}")

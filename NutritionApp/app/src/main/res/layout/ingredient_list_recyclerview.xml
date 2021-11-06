@@ -14,7 +14,8 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/ingredient_list_constraint_layout"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:theme="@style/AppTheme">
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recycler_view_local"

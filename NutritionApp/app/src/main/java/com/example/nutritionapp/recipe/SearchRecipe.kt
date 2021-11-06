@@ -60,24 +60,15 @@ val viewModel : IngredientViewModel by inject()
         })
 
         viewModel.navigateToRecipeFlag.observe(viewLifecycleOwner, Observer {
-            if (it)
-            {
-                //TODO: Calling getRecipeInstructions() in addition to using a flag results in expected behavior
-                viewModel.getRecipeInstructions()
-
-                //Once getRecipeInstructions() is complete it will set mFlag = true so that navigation happens only after the liveData in getRecipeInstructions is updated
-                viewModel.mFlag.observe(viewLifecycleOwner, Observer {
-                    if (it) {
-                        findNavController().navigate(
-                            SearchRecipeDirections.actionSearchRecipeToRecipeDetail(
-                                viewModel.navigateToRecipe.value!!
-                            ))
-                        viewModel.setNavigateToRecipeFlag(false)
-                    }
-                })
-
-                }
+            if (it) {
+                findNavController().navigate(
+                    SearchRecipeDirections.actionSearchRecipeToRecipeDetail(
+                        viewModel.navigateToRecipe.value!!
+                    )
+                )
+                viewModel.setNavigateToRecipeFlag(false)
             }
+        }
         )
 
         //source: https://stackoverflow.com/questions/55074497/how-to-add-onbackpressedcallback-to-fragment

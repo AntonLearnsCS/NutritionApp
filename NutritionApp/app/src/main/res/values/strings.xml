@@ -55,7 +55,7 @@
 <string name="location">%1$s, %2$s</string>
     <string name="nullValue">null</string>
     <string name="recipe_image">recipe image</string>
-    <string name="welcome_to_nutrition_app">welcome to nutrition App</string>
+    <string name="welcome_to_nutrition_app">Welcome to Nutrition App</string>
     <string name="ingredient_image">Ingredient Image</string>
     <string name="search_ingredient">search ingredient</string>
     <string name="ingredients_at_home">Ingredients at Home</string>
