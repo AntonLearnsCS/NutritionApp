@@ -276,8 +276,7 @@ class IngredientViewModel(
                 //Note: So the issue here was that the coroutine has not finished running. The solution was to make the DAO function a regular function to make it blocking
                 // Since the DAO function was initially a suspend function, the rest of the code was proceeding under the assumption that "resultInstructions" was null. Even if
                 // "resultInstructions" returns a value the rest of the code logic had already ran. So the solution was to make "resultInstructions" blocking.
-                withContext(Dispatchers.IO)
-                {
+
                     val resultInstructions: List<RecipeInstruction>? =
                         _navigateToRecipe.value?.id?.let {
                             NutritionAPI.nutritionService.getRecipeInstructions(it, false)
@@ -324,7 +323,6 @@ class IngredientViewModel(
                             Log.i("testNameMissing", i)
                         }
                     }
-                }
             }
         }
     }
