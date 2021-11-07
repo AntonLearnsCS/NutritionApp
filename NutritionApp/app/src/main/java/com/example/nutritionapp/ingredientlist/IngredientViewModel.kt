@@ -286,6 +286,8 @@ class IngredientViewModel(
                 //finished first before proceeding.
                 //avoids NetworkOnMainThread exception error by running on a non-Main thread
                 //Q: Why is this working but not the previous network request format?
+
+
                 withContext(Dispatchers.IO)
                 {
                     //source: https://howtodoinjava.com/retrofit2/retrofit-sync-async-calls/
@@ -296,6 +298,7 @@ class IngredientViewModel(
 
                     try {
                         val response: Response<List<RecipeInstruction>>? = callSync?.execute()
+                        delay(2000)
                         apiResponse = response?.body()
 
                         //API response
@@ -303,12 +306,20 @@ class IngredientViewModel(
                     } catch (ex: java.lang.Exception) {
                         ex.printStackTrace()
                     }
+                    Log.i("test1","synchronous done running")
+                }
+                withContext(Dispatchers.Default){
+                    Log.i("test1","Default thread running")
+                }
+
+                Log.i("test1","viewModelScope now running")
 
                     Log.i("testFunctionID", "ID: ${_navigateToRecipe.value?.id}")
 
                     //iterates over each sub recipe i.e recipe for cake and recipe for frosting
                     if (!apiResponse.isNullOrEmpty()) {
-                        Log.i("test", "resultInstructions not null or empty")
+
+                        Log.i("test1", "resultInstructions not null or empty, size: ${apiResponse!!.size}, [0]: ${apiResponse!![0]}")
                         for (i in apiResponse!!) {
                             //adds title of sub recipes i.e frosting recipe in a cake recipe
                             if (i.name?.length!! > 0)
@@ -316,7 +327,6 @@ class IngredientViewModel(
 
                             //iterates over "RecipeInstruction" to add the instructions steps into a list
                             for (steps in i.steps!!) {
-
                                 //collects the ingredients mentioned in the recipe instructions
                                 for (name in steps.ingredients!!) {
                                     if (!name.name.isNullOrEmpty()) {
@@ -334,7 +344,7 @@ class IngredientViewModel(
 
                         mFlag.postValue(true)
                     }
-                }
+
             }
         }
     }
@@ -433,6 +443,7 @@ class IngredientViewModel(
         _navigateToRecipe.value = recipe }
 
     fun setNavigateToRecipeFlag(boolean: Boolean) {
+        Log.i("test1","setNavigateToRecipeFlag called")
         _navigateToRecipeFlag.value = boolean
     }
 
