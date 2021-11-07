@@ -67,19 +67,18 @@ val viewModel : IngredientViewModel by inject()
                 //return
 
                     viewModel.getRecipeInstructions()
-
+                findNavController().navigate(
+                    SearchRecipeDirections.actionSearchRecipeToRecipeDetail(
+                        viewModel.navigateToRecipe.value!!
+                    )
+                )
                 //Once getRecipeInstructions() is complete it will set mFlag = true so that navigation happens only after the liveData in getRecipeInstructions is updated
                 viewModel.mFlag.observe(viewLifecycleOwner, Observer {
                     if (it) {
-                        findNavController().navigate(
-                            SearchRecipeDirections.actionSearchRecipeToRecipeDetail(
-                                viewModel.navigateToRecipe.value!!
-                            )
-                        )
+
                         viewModel.setNavigateToRecipeFlag(false)
                     }
                 })
-
             }
         }
         )

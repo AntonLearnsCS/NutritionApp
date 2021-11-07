@@ -122,8 +122,6 @@ object Adapters {
         return view.text.toString()
     }
 
-
-
     @JvmStatic
     @BindingAdapter("displaySteps")
     fun bindSteps(textView: TextView, listSteps : LiveData<List<String>>)

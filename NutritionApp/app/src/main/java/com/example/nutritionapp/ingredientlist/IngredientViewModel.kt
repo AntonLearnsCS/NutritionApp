@@ -275,8 +275,17 @@ class IngredientViewModel(
         var apiResponse : List<RecipeInstruction>? = null
         wrapEspressoIdlingResource {
 
-
             viewModelScope.launch {
+
+                //Note: So the issue here was that the coroutine has not finished running. The solution was to make the network request function a
+                // regular function to make it blocking Since the network function was initially a suspend function, the rest of the code was
+                // proceeding under the assumption that "resultInstructions" was null. Even if "resultInstructions" returns a value the rest
+                // of the code logic had already ran. So the solution was to make "resultInstructions" blocking.
+
+                //Coroutines execute synchronously so the CoroutineScope of the Main thread will ensure that the job in Dispatchers.IO is
+                //finished first before proceeding.
+                //avoids NetworkOnMainThread exception error by running on a non-Main thread
+                //Q: Why is this working but not the previous network request format?
                 withContext(Dispatchers.IO)
                 {
                     //source: https://howtodoinjava.com/retrofit2/retrofit-sync-async-calls/
@@ -294,22 +303,9 @@ class IngredientViewModel(
                     } catch (ex: java.lang.Exception) {
                         ex.printStackTrace()
                     }
-                }
-                //runBlocking {
+
                     Log.i("testFunctionID", "ID: ${_navigateToRecipe.value?.id}")
-                    //Note: So the issue here was that the coroutine has not finished running. The solution was to make the DAO function a regular function to make it blocking
-                    // Since the DAO function was initially a suspend function, the rest of the code was proceeding under the assumption that "resultInstructions" was null. Even if
-                    // "resultInstructions" returns a value the rest of the code logic had already ran. So the solution was to make "resultInstructions" blocking.
-                    //TODO: if condition below is ran before resultInstructions completes the network request
 
-
-               /* val resultInstructions: List<RecipeInstruction>? =
-                        _navigateToRecipe.value?.id?.let {
-                            NutritionAPI.nutritionService.getRecipeInstructions(it, false) }*/
-
-
-                    //delay(3000)
-                    //Q:resultInstructions is still running before this one finishes?
                     //iterates over each sub recipe i.e recipe for cake and recipe for frosting
                     if (!apiResponse.isNullOrEmpty()) {
                         Log.i("test", "resultInstructions not null or empty")
@@ -331,24 +327,13 @@ class IngredientViewModel(
                             }
                         }
 
-                        _listOfStepsLiveData.value = listOfSteps
+                        _listOfStepsLiveData.postValue(listOfSteps)
 
-                        _missingIngredients.value =
-                            foodInText.filter { listOfIngredientNameInInstruction.contains(it) }
+                        _missingIngredients.postValue(
+                            foodInText.filter { listOfIngredientNameInInstruction.contains(it) })
 
-                        mFlag.value = true
-
-                        //Log.i("test","listOfSteps size: ${(_listOfStepsLiveData.value as MutableList<String>).size}")
-                        for (i in _listOfStepsLiveData.value as MutableList<String>) {
-                            Log.i("test i", "i: $i")
-                        }
-                        for (i in listOfIngredientNameInInstruction) {
-                            Log.i("testNameInInstruction", i)
-                        }
-                        for (i in _missingIngredients.value!!) {
-                            Log.i("testNameMissing", i)
-                        }
-                  //  }
+                        mFlag.postValue(true)
+                    }
                 }
             }
         }

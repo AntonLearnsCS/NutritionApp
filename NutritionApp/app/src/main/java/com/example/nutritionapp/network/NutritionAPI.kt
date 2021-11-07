@@ -97,7 +97,7 @@ val retrofitInstructions = Retrofit.Builder()
         @GET("recipes/findByIngredients")
         suspend fun findByIngredients(@Query("ingredients") list: String): List<RecipeIngredientResult>
 
-        //TODO: Removing suspend modifier to make calls to this function blocking
+        //run as blocking function by omitting suspend modifier
         @GET("recipes/{id}/analyzedInstructions")
         fun getRecipeInstructions(@Path("id") id : Long, @Query("stepBreakdown") boolean: Boolean) : Call<List<RecipeInstruction>>
     }
