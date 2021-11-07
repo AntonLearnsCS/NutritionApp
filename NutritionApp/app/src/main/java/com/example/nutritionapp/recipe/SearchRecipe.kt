@@ -61,7 +61,6 @@ val viewModel : IngredientViewModel by sharedViewModel()
 
         viewModel.navigateToRecipeFlag.observe(viewLifecycleOwner, Observer {
             if (it) {
-
                     viewModel.getRecipeInstructions()
                 //TODO: Placing the navigation step outside of the flag results in the destination fragment's viewModel
                 // not having the updated value.
