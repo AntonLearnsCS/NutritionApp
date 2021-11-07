@@ -32,7 +32,7 @@ private val adapter = recipeAdapter(recipeAdapter.RecipeIngredientListener { rec
 
 
 
-val viewModel : IngredientViewModel by inject()
+val viewModel : IngredientViewModel by sharedViewModel()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -61,21 +61,21 @@ val viewModel : IngredientViewModel by inject()
 
         viewModel.navigateToRecipeFlag.observe(viewLifecycleOwner, Observer {
             if (it) {
-                //TODO: Calling getRecipeInstructions() in addition to using a flag results in expected behavior
-                //A: I think it's because the Job involving "getRecipeInstruction()" is not attached to the instance
-                // of the viewModel injected in RecipeDetail. The Job is ran on a different thread which will
-                //return
 
                     viewModel.getRecipeInstructions()
-
+                //TODO: Placing the navigation step outside of the flag results in the destination fragment's viewModel
+                // not having the updated value.
+                findNavController().navigate(
+                    SearchRecipeDirections.actionSearchRecipeToRecipeDetail(
+                        viewModel.navigateToRecipe.value!!
+                    )
+                )
                 //Once getRecipeInstructions() is complete it will set mFlag = true so that navigation happens only after the liveData in getRecipeInstructions is updated
                 viewModel.mFlag.observe(viewLifecycleOwner, Observer {
                     if (it) {
-                        findNavController().navigate(
-                            SearchRecipeDirections.actionSearchRecipeToRecipeDetail(
-                                viewModel.navigateToRecipe.value!!
-                            )
-                        )
+                        //TODO: navigation initially inside this flag call; results in the viewModel inside the destination having
+                        // the updated values
+
                         viewModel.setNavigateToRecipeFlag(false)
                     }
                 })

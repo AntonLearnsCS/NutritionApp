@@ -99,7 +99,7 @@ val retrofitInstructions = Retrofit.Builder()
 
         //run as blocking function by omitting suspend modifier
         @GET("recipes/{id}/analyzedInstructions")
-        fun getRecipeInstructions(@Path("id") id : Long, @Query("stepBreakdown") boolean: Boolean) : Call<List<RecipeInstruction>>
+        suspend fun getRecipeInstructions(@Path("id") id : Long, @Query("stepBreakdown") boolean: Boolean) : List<RecipeInstruction>
     }
 
 //we want to expose the retrofit instance because creating a Retrofit instance is expensive

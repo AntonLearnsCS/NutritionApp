@@ -272,7 +272,6 @@ class IngredientViewModel(
 
         val listOfSteps = mutableListOf<String>()
 
-        var apiResponse : List<RecipeInstruction>? = null
         wrapEspressoIdlingResource {
 
             viewModelScope.launch {
@@ -286,42 +285,17 @@ class IngredientViewModel(
                 //finished first before proceeding.
                 //avoids NetworkOnMainThread exception error by running on a non-Main thread
                 //Q: Why is this working but not the previous network request format?
-
-
-                withContext(Dispatchers.IO)
-                {
-                    //source: https://howtodoinjava.com/retrofit2/retrofit-sync-async-calls/
-                    val callSync: Call<List<RecipeInstruction>>? =
-                        _navigateToRecipe.value?.id?.let {
-                            NutritionAPI.nutritionService.getRecipeInstructions(it, false)
-                        }
-
-                    try {
-                        val response: Response<List<RecipeInstruction>>? = callSync?.execute()
-                        apiResponse = response?.body()
-
-                        //API response
-                        println(apiResponse)
-                    } catch (ex: java.lang.Exception) {
-                        ex.printStackTrace()
+                val networkResult: List<RecipeInstruction>? =
+                    _navigateToRecipe.value?.id?.let {
+                        NutritionAPI.nutritionService.getRecipeInstructions(it, false)
                     }
-                    Log.i("test1","synchronous done running")
-                }
-                Log.i("test1","Current thread: ${Thread.currentThread()}")
-
-                withContext(Dispatchers.Default){
-                    Log.i("test1","Default thread running")
-                }
-
-                Log.i("test1","viewModelScope now running")
 
                     Log.i("testFunctionID", "ID: ${_navigateToRecipe.value?.id}")
 
                     //iterates over each sub recipe i.e recipe for cake and recipe for frosting
-                    if (!apiResponse.isNullOrEmpty()) {
+                    if (!networkResult.isNullOrEmpty()) {
 
-                        Log.i("test1", "resultInstructions not null or empty, size: ${apiResponse!!.size}, [0]: ${apiResponse!![0]}")
-                        for (i in apiResponse!!) {
+                        for (i in networkResult) {
                             //adds title of sub recipes i.e frosting recipe in a cake recipe
                             if (i.name?.length!! > 0)
                                 listOfSteps.add(i.name)
@@ -338,14 +312,13 @@ class IngredientViewModel(
                             }
                         }
 
-                        _listOfStepsLiveData.postValue(listOfSteps)
+                        _listOfStepsLiveData.value = listOfSteps
 
-                        _missingIngredients.postValue(
+                        _missingIngredients.value = (
                             foodInText.filter { listOfIngredientNameInInstruction.contains(it) })
 
-                        mFlag.postValue(true)
+                        mFlag.value = true
                     }
-
             }
         }
     }
