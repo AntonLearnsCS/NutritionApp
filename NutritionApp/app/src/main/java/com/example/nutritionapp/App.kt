@@ -2,6 +2,7 @@ package com.example.nutritionapp
 
 import android.app.Application
 import android.os.Bundle
+//import androidx.databinding.library.BuildConfig
 import androidx.test.core.app.ApplicationProvider
 import com.example.nutritionapp.ingredientlist.IngredientViewModel
 import com.example.nutritionapp.database.IngredientDataSourceInterface
@@ -37,8 +38,7 @@ class App : Application() {
             //Declare a ViewModel - be later inject into Fragment with dedicated injector using by viewModel()
             viewModel {
                 IngredientViewModel(
-                    get(),get() as IngredientDataSourceInterface
-                )
+                    get(),get() as IngredientDataSourceInterface)
             }
             single { IngredientRepository(get()) as IngredientDataSourceInterface }
             single { IngredientDatabase.getInstance(this@App) }            //Declare singleton definitions to be later injected using by inject()
