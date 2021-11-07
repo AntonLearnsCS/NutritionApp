@@ -5,10 +5,12 @@ import com.example.nutritionapp.recipe.RecipeInstruction
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import okhttp3.*
+import retrofit2.Call
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
 import retrofit2.http.*
 import java.io.IOException
+
 private const val BASE_URL = "https://spoonacular-recipe-food-nutrition-v1.p.rapidapi.com/"
 
 
@@ -78,9 +80,6 @@ val retrofitInstructions = Retrofit.Builder()
         .client(clientGetRequest)
         .build()
 
-
-
-
     /**
      * A public interface that exposes the [getIngredients] method
      */
@@ -98,8 +97,9 @@ val retrofitInstructions = Retrofit.Builder()
         @GET("recipes/findByIngredients")
         suspend fun findByIngredients(@Query("ingredients") list: String): List<RecipeIngredientResult>
 
+        //TODO: Removing suspend modifier to make calls to this function blocking
         @GET("recipes/{id}/analyzedInstructions")
-        suspend fun getRecipeInstructions(@Path("id") id : Long, @Query("stepBreakdown") boolean: Boolean) : List<RecipeInstruction>
+        fun getRecipeInstructions(@Path("id") id : Long, @Query("stepBreakdown") boolean: Boolean) : Call<List<RecipeInstruction>>
     }
 
 //we want to expose the retrofit instance because creating a Retrofit instance is expensive

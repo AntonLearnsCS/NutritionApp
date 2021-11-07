@@ -1,32 +1,34 @@
 package com.example.nutritionapp.ingredientlist
 
+//import androidx.test.core.app.ApplicationProvider
 import android.app.Application
 import android.util.Log
 import android.widget.Toast
 import androidx.databinding.Observable
 import androidx.databinding.PropertyChangeRegistry
 import androidx.lifecycle.*
-//import androidx.test.core.app.ApplicationProvider
 import com.example.nutritionapp.database.IngredientDataClass
-import com.example.nutritionapp.util.Result
 import com.example.nutritionapp.database.IngredientDataSourceInterface
 import com.example.nutritionapp.database.dto.IngredientDataClassDTO
 import com.example.nutritionapp.ingredientlist.testNutritionApi.nutritionServicePost
 import com.example.nutritionapp.maps.RecipeNotificationClass
 import com.example.nutritionapp.network.*
 import com.example.nutritionapp.recipe.*
+import com.example.nutritionapp.util.Result
 import com.example.nutritionapp.util.wrapEspressoIdlingResource
 import com.google.android.gms.maps.model.LatLng
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import kotlinx.coroutines.*
 import okhttp3.*
+import retrofit2.Call
+import retrofit2.Response
+
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
 import retrofit2.http.POST
 import java.io.IOException
 import java.net.URLEncoder
-import kotlin.concurrent.thread
 
 /*
 To get context inside a ViewModel we can either extend AndroidViewModel. Do not use ApplicationProvider in production code, only in tests
@@ -128,7 +130,7 @@ class IngredientViewModel(
     val comingFromRecipeFlag : LiveData<Boolean>
     get() = _comingFromRecipeFlag
 
-    fun setComingFromRecipeFlag( boolean: Boolean)
+    fun setComingFromRecipeFlag(boolean: Boolean)
     {
         _comingFromRecipeFlag.value = boolean
     }
@@ -249,7 +251,7 @@ class IngredientViewModel(
         _saveRecipeNotificationFlag.value = boolean
     }
 
-    fun saveRecipeNotification(recipeNotification : RecipeNotificationClass)
+    fun saveRecipeNotification(recipeNotification: RecipeNotificationClass)
     {
 
         viewModelScope.launch {
@@ -270,24 +272,48 @@ class IngredientViewModel(
 
         val listOfSteps = mutableListOf<String>()
 
+        var apiResponse : List<RecipeInstruction>? = null
         wrapEspressoIdlingResource {
-            viewModelScope.launch {
-                Log.i("testFunctionID", "ID: ${_navigateToRecipe.value?.id}")
-                //Note: So the issue here was that the coroutine has not finished running. The solution was to make the DAO function a regular function to make it blocking
-                // Since the DAO function was initially a suspend function, the rest of the code was proceeding under the assumption that "resultInstructions" was null. Even if
-                // "resultInstructions" returns a value the rest of the code logic had already ran. So the solution was to make "resultInstructions" blocking.
 
-                    val resultInstructions: List<RecipeInstruction>? =
+
+            viewModelScope.launch {
+                withContext(Dispatchers.IO)
+                {
+                    //source: https://howtodoinjava.com/retrofit2/retrofit-sync-async-calls/
+                    val callSync: Call<List<RecipeInstruction>>? =
                         _navigateToRecipe.value?.id?.let {
                             NutritionAPI.nutritionService.getRecipeInstructions(it, false)
                         }
 
+                    try {
+                        val response: Response<List<RecipeInstruction>>? = callSync?.execute()
+                        apiResponse = response?.body()
+
+                        //API response
+                        println(apiResponse)
+                    } catch (ex: java.lang.Exception) {
+                        ex.printStackTrace()
+                    }
+                }
+                //runBlocking {
+                    Log.i("testFunctionID", "ID: ${_navigateToRecipe.value?.id}")
+                    //Note: So the issue here was that the coroutine has not finished running. The solution was to make the DAO function a regular function to make it blocking
+                    // Since the DAO function was initially a suspend function, the rest of the code was proceeding under the assumption that "resultInstructions" was null. Even if
+                    // "resultInstructions" returns a value the rest of the code logic had already ran. So the solution was to make "resultInstructions" blocking.
+                    //TODO: if condition below is ran before resultInstructions completes the network request
+
+
+               /* val resultInstructions: List<RecipeInstruction>? =
+                        _navigateToRecipe.value?.id?.let {
+                            NutritionAPI.nutritionService.getRecipeInstructions(it, false) }*/
+
+
                     //delay(3000)
-                    //TODO:resultInstructions is still running before this one finishes?
+                    //Q:resultInstructions is still running before this one finishes?
                     //iterates over each sub recipe i.e recipe for cake and recipe for frosting
-                    if (!resultInstructions.isNullOrEmpty()) {
+                    if (!apiResponse.isNullOrEmpty()) {
                         Log.i("test", "resultInstructions not null or empty")
-                        for (i in resultInstructions) {
+                        for (i in apiResponse!!) {
                             //adds title of sub recipes i.e frosting recipe in a cake recipe
                             if (i.name?.length!! > 0)
                                 listOfSteps.add(i.name)
@@ -322,7 +348,8 @@ class IngredientViewModel(
                         for (i in _missingIngredients.value!!) {
                             Log.i("testNameMissing", i)
                         }
-                    }
+                  //  }
+                }
             }
         }
     }
@@ -420,7 +447,7 @@ class IngredientViewModel(
     fun setNavigateToRecipe(recipe: RecipeIngredientResult) {
         _navigateToRecipe.value = recipe }
 
-    fun setNavigateToRecipeFlag( boolean: Boolean) {
+    fun setNavigateToRecipeFlag(boolean: Boolean) {
         _navigateToRecipeFlag.value = boolean
     }
 
@@ -484,7 +511,7 @@ fun setBody() {
 val clientPostRequest by lazy {
     OkHttpClient.Builder().addInterceptor(object : Interceptor {
         @Throws(IOException::class)
-        override fun intercept(chain: Interceptor.Chain): Response? {
+        override fun intercept(chain: Interceptor.Chain): okhttp3.Response {
             val newRequest: Request = chain.request().newBuilder()
                 .post(body!!)
                 .addHeader("content-type", "application/x-www-form-urlencoded")
