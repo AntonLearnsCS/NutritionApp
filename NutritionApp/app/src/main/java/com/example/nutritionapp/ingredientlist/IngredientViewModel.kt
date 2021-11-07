@@ -298,7 +298,6 @@ class IngredientViewModel(
 
                     try {
                         val response: Response<List<RecipeInstruction>>? = callSync?.execute()
-                        delay(2000)
                         apiResponse = response?.body()
 
                         //API response
@@ -308,6 +307,8 @@ class IngredientViewModel(
                     }
                     Log.i("test1","synchronous done running")
                 }
+                Log.i("test1","Current thread: ${Thread.currentThread()}")
+
                 withContext(Dispatchers.Default){
                     Log.i("test1","Default thread running")
                 }
