@@ -85,8 +85,7 @@ private lateinit var binding : MapGroceryReminderBinding
             inflater,
             R.layout.map_grocery_reminder,
             container,
-            false
-        )
+            false)
 
         //Q: Culprit?
         //references the fragment instead of activity
@@ -181,16 +180,13 @@ private lateinit var binding : MapGroceryReminderBinding
         }
 
         binding.saveReminder.setOnClickListener {
-            val bundle = Bundle()
-            //TODO: Can potentially just use one class
+
             if (_viewModel.comingFromRecipeFlag.value == true) {
                 recipeNotificationClass = RecipeNotificationClass(_viewModel.navigateToRecipe.value?.title!!, _viewModel.missingIngredients.value.toString())
-                bundle.putSerializable("RecipeNotificationClass", recipeNotificationClass)
             }
             else
             {
                 recipeNotificationClass = RecipeNotificationClass("Recipe", binding.missingIngredients.text.toString())
-                bundle.putSerializable("RecipeNotificationClass", recipeNotificationClass)
             }
 
             Log.i("test","RecipeNotificationClass Id: ${recipeNotificationClass!!.mId}")
