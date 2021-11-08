@@ -7,15 +7,12 @@ import android.view.ViewGroup
 import androidx.annotation.LayoutRes
 import androidx.annotation.NonNull
 import androidx.databinding.DataBindingUtil
-import androidx.lifecycle.MutableLiveData
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.example.nutritionapp.R
 import com.example.nutritionapp.database.IngredientDataClass
 import com.example.nutritionapp.databinding.IngredientItemLocalBinding
-import com.example.nutritionapp.recipe.ListSelectedIngredients
-import org.koin.android.ext.android.inject
 
 
 class localIngredientAdapter(val onClickListener: LocalIngredientListener) : ListAdapter<IngredientDataClass, localIngredientAdapter.ViewHolder>(

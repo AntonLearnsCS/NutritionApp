@@ -1,7 +1,6 @@
 package com.example.nutritionapp.ingredientlist
 
 import android.os.Bundle
-import android.util.Log
 import android.view.*
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
@@ -11,14 +10,9 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.NavigationUI
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.nutritionapp.R
-import com.example.nutritionapp.database.IngredientDataClass
 import com.example.nutritionapp.databinding.IngredientListRecyclerviewBinding
-import com.example.nutritionapp.recipe.ListSelectedIngredients
 import com.example.nutritionapp.util.wrapEspressoIdlingResource
-import org.koin.android.ext.android.bind
-import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
-import java.net.URLEncoder
 
 class IngredientListOverview : Fragment() {
 

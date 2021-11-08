@@ -35,6 +35,7 @@ import com.google.android.gms.location.*
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.material.snackbar.Snackbar
 import org.koin.android.ext.android.inject
+import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 import timber.log.Timber
 import java.lang.StringBuilder
 
@@ -54,7 +55,7 @@ private lateinit var binding : MapGroceryReminderBinding
     //Note: We don't use "override val _viewModel: SaveReminderViewModel = get<SaveReminderViewModel>()"
     //because we are setting up our code in a fragment, if it was in an activity it would be allowed
     //https://stackoverflow.com/questions/53332832/unresolved-reference-none-of-the-following-candidates-is-applicable-because-of
-     val _viewModel: IngredientViewModel by inject()
+     val _viewModel: IngredientViewModel by sharedViewModel()
     //alternatively:
     //override val _viewModel by sharedViewModel<SaveReminderViewModel>()
 

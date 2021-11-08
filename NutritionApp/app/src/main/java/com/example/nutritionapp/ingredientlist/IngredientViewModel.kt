@@ -273,7 +273,6 @@ class IngredientViewModel(
         val listOfSteps = mutableListOf<String>()
 
         wrapEspressoIdlingResource {
-
             viewModelScope.launch {
 
                 //Note: So the issue here was that the coroutine has not finished running. The solution was to make the network request function a
@@ -314,8 +313,7 @@ class IngredientViewModel(
 
                         _listOfStepsLiveData.value = listOfSteps
 
-                        _missingIngredients.value = (
-                            foodInText.filter { listOfIngredientNameInInstruction.contains(it) })
+                        _missingIngredients.value = (foodInText.filter { listOfIngredientNameInInstruction.contains(it) })
 
                         mFlag.value = true
                     }

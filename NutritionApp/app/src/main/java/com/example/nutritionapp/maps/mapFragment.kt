@@ -37,6 +37,7 @@ import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
 import com.google.android.material.snackbar.Snackbar
 import org.koin.android.ext.android.inject
+import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 import timber.log.Timber
 import java.util.*
 
@@ -54,7 +55,7 @@ class mapFragment : Fragment(), OnMapReadyCallback {
     private var locationFlag = false
     private lateinit var requestLocationSetting : ActivityResultLauncher<IntentSenderRequest>
     private val runningQOrLater = android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.Q
-    private val viewModel: IngredientViewModel by inject()
+    private val viewModel: IngredientViewModel by sharedViewModel()
     //TODO: Get API KEY
     //val apikey = BuildConfig.mMaps_API_KEY
 

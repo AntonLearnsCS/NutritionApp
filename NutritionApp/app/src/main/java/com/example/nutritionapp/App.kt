@@ -2,7 +2,7 @@ package com.example.nutritionapp
 
 import android.app.Application
 import android.os.Bundle
-//import androidx.databinding.library.BuildConfig
+import androidx.databinding.library.BuildConfig
 import androidx.test.core.app.ApplicationProvider
 import com.example.nutritionapp.ingredientlist.IngredientViewModel
 import com.example.nutritionapp.database.IngredientDataSourceInterface

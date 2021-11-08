@@ -31,7 +31,7 @@
             android:layout_marginTop="204dp"
             android:ems="10"
             listMissingIngredients="@{viewModel.missingIngredients}"
-            android:inputType="textPersonName"
+            android:inputType="textMultiLine"
             android:hint="Missing Ingredients"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.497"
