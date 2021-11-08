@@ -20,7 +20,7 @@ import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 class RecipeDetail : Fragment() {
     private lateinit var binding : RecipeDetailBinding
     //"by inject()" delegate is used to lazily inject dependencies
-     val viewModel: IngredientViewModel by sharedViewModel()
+     val viewModel by sharedViewModel<IngredientViewModel>()
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,

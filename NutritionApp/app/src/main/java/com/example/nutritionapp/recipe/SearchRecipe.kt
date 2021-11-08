@@ -30,9 +30,7 @@ private val adapter = recipeAdapter(recipeAdapter.RecipeIngredientListener { rec
     viewModel.setComingFromRecipeFlag(true)
 })
 
-
-
-val viewModel : IngredientViewModel by sharedViewModel()
+val viewModel by sharedViewModel<IngredientViewModel>()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -97,7 +95,6 @@ val viewModel : IngredientViewModel by sharedViewModel()
                 }
             }
             )
-
         return binding.root
     }
 }

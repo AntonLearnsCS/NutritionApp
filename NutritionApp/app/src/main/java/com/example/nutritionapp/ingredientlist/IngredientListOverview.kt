@@ -38,7 +38,7 @@ class IngredientListOverview : Fragment() {
             })
 
     //Koin
-    val viewModel: IngredientViewModel by inject()
+    val viewModel by sharedViewModel<IngredientViewModel>()
     private lateinit var binding: IngredientListRecyclerviewBinding
 
     override fun onCreateView(
