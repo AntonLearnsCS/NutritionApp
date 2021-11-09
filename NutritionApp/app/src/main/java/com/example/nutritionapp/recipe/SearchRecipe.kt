@@ -27,7 +27,6 @@ private val adapter = recipeAdapter(recipeAdapter.RecipeIngredientListener { rec
         viewModel.setNavigateToRecipe(recipe)
         viewModel.setNavigateToRecipeFlag(true)
     //need a seperate flag
-    viewModel.setComingFromRecipeFlag(true)
 })
 
 val viewModel by sharedViewModel<IngredientViewModel>()

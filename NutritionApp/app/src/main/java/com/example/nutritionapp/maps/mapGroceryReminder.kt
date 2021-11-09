@@ -95,6 +95,7 @@ private lateinit var binding : MapGroceryReminderBinding
 
         geofencingClient = LocationServices.getGeofencingClient(contxt)
 
+        //TODO: investigate
         //if coming from a selected Recipe then autofill the list with missing ingredients
         binding.missingIngredients.let {
             if (_viewModel.comingFromRecipeFlag.value == true)
@@ -109,6 +110,7 @@ private lateinit var binding : MapGroceryReminderBinding
             ActivityResultContracts.StartIntentSenderForResult()) {
                 result: ActivityResult ->
             if (result.resultCode == Activity.RESULT_OK) {
+                Log.i("test","requestLocationSetting result code Ok")
                 checkDeviceLocationSettingsAndStartGeofence()
             }
             else
@@ -134,15 +136,22 @@ private lateinit var binding : MapGroceryReminderBinding
         //TODO: Receiving Type Mismatch error in defining permissionCallback when
         // following: https://developer.android.com/training/permissions/requesting#allow-system-manage-request-code
         permissionCallback = registerForActivityResult(test) { permissions: Map<String, Boolean> ->
-
             //On Android <= 9, being granted location permission also grants background permission
-            if(runningQOrLater && ActivityCompat.checkSelfPermission(
+            /*if(runningQOrLater && ActivityCompat.checkSelfPermission(
                     contxt,
                     Manifest.permission.ACCESS_FINE_LOCATION
-                ) != PackageManager.PERMISSION_GRANTED )
+                ) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
+                    contxt,
+                    Manifest.permission.ACCESS_COARSE_LOCATION
+                ) != PackageManager.PERMISSION_GRANTED)
             {
                 Log.i("test","Background permission is not granted")
                 requestBackgroundLocationPermissionLauncher.launch(Manifest.permission.ACCESS_BACKGROUND_LOCATION)
+            }*/
+            if (permissions.containsValue(true))
+                {
+                    checkDeviceLocationSettingsAndStartGeofence()
+                    Log.i("test", "permission granted contract")
             }
             else {
                 checkDeviceLocationSettingsAndStartGeofence()
@@ -192,19 +201,20 @@ private lateinit var binding : MapGroceryReminderBinding
             Log.i("test","RecipeNotificationClass Id: ${recipeNotificationClass!!.mId}")
 
             intent.putExtra("RecipeNotificationClass", recipeNotificationClass)
-            if (checkPermission())
-            {
+
+            _viewModel.setComingFromRecipeFlag(false)
+
                 _viewModel.saveRecipeNotification(recipeNotificationClass!!)
 
-                _viewModel.saveRecipeNotificationFlag.observe(viewLifecycleOwner, Observer {
+            /*    _viewModel.saveRecipeNotificationFlag.observe(viewLifecycleOwner, Observer {
                     if (it == true)
                     {
                         _viewModel.setSaveRecipeNotificationFlagBoolean(false)
                         Log.i("test","recipeNotification body text: ${recipeNotificationClass!!.missingIngredients}")
                         findNavController().navigate(mapGroceryReminderDirections.actionMapGroceryReminderToIngredientListOverview())
                     }
-                })
-            }
+                })*/
+            checkPermission()
         }
     }
 
@@ -215,6 +225,7 @@ private lateinit var binding : MapGroceryReminderBinding
 
     @RequiresApi(Build.VERSION_CODES.Q)
     private fun checkDeviceLocationSettingsAndStartGeofence(resolve: Boolean = true) {
+        Log.i("test","checkDeviceLocation called")
         val locationRequest = LocationRequest.create().apply {
             priority = LocationRequest.PRIORITY_LOW_POWER
         }
@@ -240,9 +251,10 @@ private lateinit var binding : MapGroceryReminderBinding
                             IntentSenderRequest.Builder(exception.resolution).build()
                         requestLocationSetting.launch(intentSenderRequest)
                     }
-                    return@addOnFailureListener
+                    //return@addOnFailureListener
                 }
                 catch (sendEx: IntentSender.SendIntentException) {
+                    Log.i("test","sendEx message: ${sendEx.message}")
                     Timber.i("Error getting location settings resolution:" + sendEx.message)
                     //Log.d(TAG, "Error geting location settings resolution: " + sendEx.message)
                 }
@@ -258,9 +270,13 @@ private lateinit var binding : MapGroceryReminderBinding
         }
 
         locationSettingsResponseTask.addOnCompleteListener {
-            if ( it.isSuccessful && !isDetached) {
+            Log.i("test","locationSettingsResponseTask not failed")
+            if ( it.isSuccessful) {
+                Log.i("test","locationSettingsResponse success")
                 addGeofenceForClue()
             }
+            else
+                Log.i("test","exception: ${it.exception?.message}")
         }
     }
 
@@ -300,12 +316,10 @@ private lateinit var binding : MapGroceryReminderBinding
         if ((ActivityCompat.checkSelfPermission(
                 contxt,
                 Manifest.permission.ACCESS_FINE_LOCATION
-            ) != PackageManager.PERMISSION_GRANTED) && ActivityCompat.checkSelfPermission(
-                contxt,
-                Manifest.permission.ACCESS_COARSE_LOCATION
-            ) != PackageManager.PERMISSION_GRANTED)
+            ) != PackageManager.PERMISSION_GRANTED) )
          {
             Log.i("test","foreground permission not granted in addGeofence()")
+
         }
 
 
@@ -318,7 +332,7 @@ private lateinit var binding : MapGroceryReminderBinding
 
                 Toast.makeText(contxt, "Succesfully added geofence", Toast.LENGTH_SHORT).show()
                 Log.i("test", "added geofence")
-                //findNavController().navigate(mapGroceryReminderDirections)
+                findNavController().navigate(mapGroceryReminderDirections.actionMapGroceryReminderToIngredientListOverview())
             }
             addOnFailureListener {
                 Toast.makeText(
@@ -353,7 +367,7 @@ private lateinit var binding : MapGroceryReminderBinding
             ) != PackageManager.PERMISSION_GRANTED)
         ) {
             val permissionObject = arrayOf(
-                Manifest.permission.ACCESS_FINE_LOCATION)
+                Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION)
             permissionCallback.launch(permissionObject)
             return false
         }
@@ -370,6 +384,7 @@ private lateinit var binding : MapGroceryReminderBinding
         ActivityResultContracts.RequestPermission()
     ) { permissionGranted ->
         if (permissionGranted) {
+            Log.i("test","backgroundLocation permission granted")
             backgroundFlag = true
             checkDeviceLocationSettingsAndStartGeofence()
         }
@@ -399,4 +414,5 @@ private lateinit var binding : MapGroceryReminderBinding
         }
         return sb.toString()
     }
+
 }
