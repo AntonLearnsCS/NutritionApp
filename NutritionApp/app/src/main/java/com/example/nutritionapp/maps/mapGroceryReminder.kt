@@ -30,6 +30,7 @@ import com.example.nutritionapp.R
 import com.example.nutritionapp.databinding.MapGroceryReminderBinding
 import com.example.nutritionapp.geofence.GeofenceBroadcastReceiver
 import com.example.nutritionapp.ingredientlist.IngredientViewModel
+import com.example.nutritionapp.recipe.RecipeIngredientResult
 import com.google.android.gms.common.api.ResolvableApiException
 import com.google.android.gms.location.*
 import com.google.android.gms.maps.model.LatLng
@@ -41,14 +42,12 @@ import java.lang.StringBuilder
 
 class mapGroceryReminder : Fragment() {
 private lateinit var binding : MapGroceryReminderBinding
-    private var counter = 0
-    private val REQUEST_LOCATION_PERMISSION = 1
+
     private lateinit var contxt: Context
     private val runningQOrLater =
         android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.Q
     private val GEOFENCE_RADIUS_IN_METERS = 4800F
 
-    private var mNoneRecipeClass : NoneRecipeClass? = null
     private var recipeNotificationClass : RecipeNotificationClass? = null
 
     //Get the view model this time as a single to be shared with the another fragment, note the "override" tag
@@ -56,12 +55,11 @@ private lateinit var binding : MapGroceryReminderBinding
     //because we are setting up our code in a fragment, if it was in an activity it would be allowed
     //https://stackoverflow.com/questions/53332832/unresolved-reference-none-of-the-following-candidates-is-applicable-because-of
      val _viewModel: IngredientViewModel by sharedViewModel()
-    //alternatively:
-    //override val _viewModel by sharedViewModel<SaveReminderViewModel>()
 
     private var latLng: LatLng? = LatLng(33.0, -118.1)
     private lateinit var geofencingClient: GeofencingClient
     private var intent = Intent()
+    private var recipeIngredientResult : RecipeIngredientResult? = null
 
     private val geofencePendingIntent: PendingIntent by lazy {
         intent = Intent(contxt, GeofenceBroadcastReceiver::class.java)
@@ -93,18 +91,12 @@ private lateinit var binding : MapGroceryReminderBinding
 
         binding.viewModel = _viewModel
 
+        recipeIngredientResult = mapGroceryReminderArgs.fromBundle(requireArguments()).recipeIngredientResult
+
         geofencingClient = LocationServices.getGeofencingClient(contxt)
 
-        //TODO: investigate
         //if coming from a selected Recipe then autofill the list with missing ingredients
-        binding.missingIngredients.let {
-            if (_viewModel.comingFromRecipeFlag.value == true)
-            {
-                it.setText(convertListStringToBulletedList(_viewModel.missingIngredients))
-            }
-            else
-                it.setText("")
-        }
+        binding.missingIngredients.setText(convertListStringToBulletedList(_viewModel.missingIngredients))
 
         requestLocationSetting  = registerForActivityResult(
             ActivityResultContracts.StartIntentSenderForResult()) {
@@ -125,12 +117,7 @@ private lateinit var binding : MapGroceryReminderBinding
                 Log.i("Test", "location setting denied access")
             }
         }
-        /*=
-        registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted ->
-            if (isGranted) {
-                navController.navigate(R.id.grantedPermissionsFragment)
-            }
-        }*/
+
 
         val test = ActivityResultContracts.RequestMultiplePermissions()
         //TODO: Receiving Type Mismatch error in defining permissionCallback when
@@ -190,8 +177,8 @@ private lateinit var binding : MapGroceryReminderBinding
 
         binding.saveReminder.setOnClickListener {
 
-            if (_viewModel.comingFromRecipeFlag.value == true) {
-                recipeNotificationClass = RecipeNotificationClass(_viewModel.navigateToRecipe.value?.title!!, _viewModel.missingIngredients.value.toString())
+            if (recipeIngredientResult != null) {
+                recipeNotificationClass = RecipeNotificationClass(recipeIngredientResult!!.title, _viewModel.missingIngredients.value.toString())
             }
             else
             {
@@ -202,18 +189,11 @@ private lateinit var binding : MapGroceryReminderBinding
 
             intent.putExtra("RecipeNotificationClass", recipeNotificationClass)
 
-            _viewModel.setComingFromRecipeFlag(false)
+            //set to null so that user can go to Maps from menu and have empty list instead of pre-filled list
+            _viewModel.setMissingIngredientsNull()
 
-                _viewModel.saveRecipeNotification(recipeNotificationClass!!)
+            _viewModel.saveRecipeNotification(recipeNotificationClass!!)
 
-            /*    _viewModel.saveRecipeNotificationFlag.observe(viewLifecycleOwner, Observer {
-                    if (it == true)
-                    {
-                        _viewModel.setSaveRecipeNotificationFlagBoolean(false)
-                        Log.i("test","recipeNotification body text: ${recipeNotificationClass!!.missingIngredients}")
-                        findNavController().navigate(mapGroceryReminderDirections.actionMapGroceryReminderToIngredientListOverview())
-                    }
-                })*/
             checkPermission()
         }
     }
@@ -270,13 +250,9 @@ private lateinit var binding : MapGroceryReminderBinding
         }
 
         locationSettingsResponseTask.addOnCompleteListener {
-            Log.i("test","locationSettingsResponseTask not failed")
             if ( it.isSuccessful) {
-                Log.i("test","locationSettingsResponse success")
                 addGeofenceForClue()
             }
-            else
-                Log.i("test","exception: ${it.exception?.message}")
         }
     }
 

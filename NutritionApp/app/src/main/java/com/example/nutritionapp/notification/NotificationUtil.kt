@@ -34,9 +34,7 @@ fun sendNotification(context: Context, recipeNotification: RecipeNotificationCla
     }
 
     val intent = Intent(context,NotificationDescriptionActivity::class.java)//ReminderDescriptionActivity.newIntent(context, reminderDataItem)
-    val bundle = Bundle()
-    bundle.putSerializable("EXTRA_recipeNotification",recipeNotification)
-    intent.putExtra("Bundle",bundle)
+    intent.putExtra("EXTRA_recipeNotification",recipeNotification)
     //create a pending intent that opens NotificationDescriptionActivity when the user clicks on the notification
     val stackBuilder = TaskStackBuilder.create(context)
         .addParentStack(NotificationDescriptionActivity::class.java)

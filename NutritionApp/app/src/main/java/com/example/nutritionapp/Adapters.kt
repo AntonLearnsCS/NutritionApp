@@ -47,16 +47,16 @@ object Adapters {
 
     @JvmStatic
     @BindingAdapter("listMissingIngredients")
-    fun listIngredients(textView: TextView, listMissingIngredients : LiveData<List<String>>?)
+    fun listIngredients(textView: TextView, listMissingIngredients : List<String>?)
     {
         val sb = StringBuilder()
 
         if (textView.tag != "recipe_layout_tag")
         sb.append("Missing Ingredients:\n")
 
-        if(!listMissingIngredients?.value.isNullOrEmpty())
+        if(listMissingIngredients?.isNullOrEmpty() == false)
         {
-            for (item in listMissingIngredients?.value!!)
+            for (item in listMissingIngredients)
             {
                 sb.append("• ${item}\n")
             }
@@ -70,11 +70,6 @@ object Adapters {
     @BindingAdapter("app:foodInText")
     fun foodInText(editText: EditText, listMissingIngredients : MutableLiveData<String>?)
     {
-    /*    if (boolean)
-        {
-            editText.text.append("boolean")
-            return
-        }*/
         val sb = StringBuilder()
 
         if (!listMissingIngredients?.value.isNullOrEmpty()) {
@@ -122,16 +117,16 @@ object Adapters {
         return view.text.toString()
     }
 
+    //Note: You should not be passing LiveData types for BindingAdapter as DataBinding supports observing them by default.
     @JvmStatic
     @BindingAdapter("displaySteps")
-    fun bindSteps(textView: TextView, listSteps : LiveData<List<String>>)
+    fun bindSteps(textView: TextView, listSteps : List<String>?)
     {
-        Log.i("test","displaySteps called: ${listSteps.value?.size}")
-        if (!listSteps.value.isNullOrEmpty()) {
+        Log.i("test","displaySteps called: ${listSteps?.size}")
+        if (!listSteps.isNullOrEmpty()) {
             Log.i("test","displaySteps not empty")
-
             //Note: We can't use String.plus() to append strings to a base string i.e val mString.plus(mList[0]) since Strings are final objects
-            val mString = listSteps.value!!.joinToString(separator = "\n\n")
+            val mString = listSteps.joinToString(separator = "\n\n")
             textView.text = mString
         }
         else

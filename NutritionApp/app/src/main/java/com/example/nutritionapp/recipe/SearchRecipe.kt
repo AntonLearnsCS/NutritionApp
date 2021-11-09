@@ -61,15 +61,17 @@ val viewModel by sharedViewModel<IngredientViewModel>()
                     viewModel.getRecipeInstructions()
                 //TODO: Placing the navigation step outside of the flag results in the destination fragment's viewModel
                 // not having the updated value.
+                findNavController().navigate(
+                    SearchRecipeDirections.actionSearchRecipeToRecipeDetail(
+                        viewModel.navigateToRecipe.value!!))
 
+                Log.i("test","food in text size: ${viewModel.foodInText.size}")
                 //Once getRecipeInstructions() is complete it will set mFlag = true so that navigation happens only after the liveData in getRecipeInstructions is updated
                 viewModel.mFlag.observe(viewLifecycleOwner, Observer {
                     if (it) {
                         //TODO: navigation initially inside this flag call; results in the viewModel inside the destination having
                         // the updated values
-                        findNavController().navigate(
-                            SearchRecipeDirections.actionSearchRecipeToRecipeDetail(
-                                viewModel.navigateToRecipe.value!!))
+
                         viewModel.setNavigateToRecipeFlag(false)
                     }
                 })
@@ -93,5 +95,10 @@ val viewModel by sharedViewModel<IngredientViewModel>()
             }
             )
         return binding.root
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        viewModel.setMissingIngredientsNull()
     }
 }

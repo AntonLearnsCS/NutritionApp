@@ -59,5 +59,10 @@
         <action
             android:id="@+id/action_mapGroceryReminder_to_ingredientListOverview"
             app:destination="@id/ingredientListOverview" />
+        <argument
+            android:name="recipeIngredientResult"
+            app:argType="com.example.nutritionapp.recipe.RecipeIngredientResult"
+            app:nullable="true"
+            android:defaultValue="@null" />
     </fragment>
 </navigation>

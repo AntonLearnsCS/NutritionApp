@@ -126,15 +126,6 @@ class IngredientViewModel(
 
     val listOfIngredientsString = MutableLiveData<String>()
 
-    val _comingFromRecipeFlag = MutableLiveData(false)
-    val comingFromRecipeFlag : LiveData<Boolean>
-    get() = _comingFromRecipeFlag
-
-    fun setComingFromRecipeFlag(boolean: Boolean)
-    {
-        _comingFromRecipeFlag.value = boolean
-    }
-
     //input is list of names i.e {"Snapple Apple flavored drink 4oz","Mott's Apple pudding 3oz"}
     fun detectFoodInText(listName: List<String>) {
         viewModelScope.launch {
@@ -261,9 +252,14 @@ class IngredientViewModel(
     }
 
 
-    val _missingIngredients = MutableLiveData<List<String>>()
+    private val _missingIngredients = MutableLiveData<List<String>>()
     val missingIngredients : LiveData<List<String>>
     get() = _missingIngredients
+
+    fun setMissingIngredientsNull()
+    {
+        _missingIngredients.value = null
+    }
 
     val mFlag = MutableLiveData(false)
     fun getRecipeInstructions()
@@ -313,7 +309,7 @@ class IngredientViewModel(
 
                         _listOfStepsLiveData.value = listOfSteps
 
-                        _missingIngredients.value = (foodInText.filter { listOfIngredientNameInInstruction.contains(it) })
+                        _missingIngredients.value = listOfIngredientNameInInstruction.minus(foodInText)
 
                         mFlag.value = true
                     }
@@ -413,6 +409,11 @@ class IngredientViewModel(
 
     fun setNavigateToRecipe(recipe: RecipeIngredientResult) {
         _navigateToRecipe.value = recipe }
+
+    fun setNavigateToRecipeNull()
+    {
+        _navigateToRecipe.value = null
+    }
 
     fun setNavigateToRecipeFlag(boolean: Boolean) {
         Log.i("test1","setNavigateToRecipeFlag called")

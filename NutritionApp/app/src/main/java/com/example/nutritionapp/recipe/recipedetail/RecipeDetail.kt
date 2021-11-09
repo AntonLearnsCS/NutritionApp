@@ -28,6 +28,7 @@ class RecipeDetail : Fragment() {
     ): View? {
         binding = DataBindingUtil.inflate(inflater, R.layout.recipe_detail,container,false)
         binding.viewModel = viewModel
+        binding.lifecycleOwner = viewLifecycleOwner
         val args  = RecipeDetailArgs.fromBundle(requireArguments()).Recipe
         binding.recipe = args
         Log.i("test","args: ${args.title}")
@@ -37,8 +38,7 @@ class RecipeDetail : Fragment() {
        //viewModel.getRecipeInstructions()
 
         binding.findGroceries.setOnClickListener {
-            viewModel.setComingFromRecipeFlag(true)
-            findNavController().navigate(RecipeDetailDirections.actionRecipeDetailToMapGroceryReminder())
+            findNavController().navigate(RecipeDetailDirections.actionRecipeDetailToMapGroceryReminder(args))
         }
         coordinateMotion()
         return binding.root
@@ -51,5 +51,11 @@ class RecipeDetail : Fragment() {
             binding.motionLayout.progress = seekPosition
         }
         binding.appBarLayout.addOnOffsetChangedListener(listener)
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        //if user presses back button or basically does not set a reminder
+        viewModel.setNavigateToRecipeNull()
     }
 }
