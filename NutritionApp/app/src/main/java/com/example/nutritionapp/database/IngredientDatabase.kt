@@ -28,7 +28,6 @@ abstract class IngredientDatabase : RoomDatabase() {
      * Connects the database to the DAO.
      */
     abstract val IngredientDatabaseDao: IngredientDao
-    abstract val RecipeIngredient : recipeIngredient
     /**
      * Define a companion object, this allows us to add functions on the IngredientDatabase class.
      *

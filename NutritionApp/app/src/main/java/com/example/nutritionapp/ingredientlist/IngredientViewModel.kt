@@ -68,9 +68,6 @@ class IngredientViewModel(
     val viewVisibilityFlag: LiveData<Boolean>
         get() = _viewVisibilityFlag
 
-    fun setViewVisibilityFlag(boolean: Boolean) {
-        _viewVisibilityFlag.value = boolean
-    }
 
     private val _latLng = MutableLiveData<LatLng>()
     val latLng : LiveData<LatLng>
@@ -128,57 +125,60 @@ class IngredientViewModel(
 
     //input is list of names i.e {"Snapple Apple flavored drink 4oz","Mott's Apple pudding 3oz"}
     fun detectFoodInText(listName: List<String>) {
-        viewModelScope.launch {
-            _viewVisibilityFlag.value = true
-            try {
-                for (i in listName) {
-                    //Note: For a post request, you can either provide a request body, passing in your text to the request body or you
-                    //can provide a text parameter within the suspend function in your API Interface.
-                    selectedProductName.value = URLEncoder.encode(i, "utf-8").toString()
-                    setBody()
-                    Log.i("testURLEncoded: ", selectedProductName.value.toString())
-                    val listOfIngredients: PostRequestResultWrapper =
-                        nutritionServicePost.detectFoodInText(
-                        )
-                    for (g in listOfIngredients.annotations) {
-                        Log.i("testURLAnnotation", g.annotation)
-                        foodInText.add(g.annotation)
+        wrapEspressoIdlingResource {
+            viewModelScope.launch {
+                _viewVisibilityFlag.value = true
+                try {
+                    for (i in listName) {
+                        //Note: For a post request, you can either provide a request body, passing in your text to the request body or you
+                        //can provide a text parameter within the suspend function in your API Interface.
+                        selectedProductName.value = URLEncoder.encode(i, "utf-8").toString()
+                        setBody()
+                        Log.i("testURLEncoded: ", selectedProductName.value.toString())
+                        val listOfIngredients: PostRequestResultWrapper =
+                            nutritionServicePost.detectFoodInText(
+                            )
+                        for (g in listOfIngredients.annotations) {
+                            Log.i("testURLAnnotation", g.annotation)
+                            foodInText.add(g.annotation)
+                        }
                     }
+                } catch (e: java.lang.Exception) {
+                    Log.i("Exception", "$e")
                 }
-            } catch (e: java.lang.Exception) {
-                Log.i("Exception", "$e")
-            }
 
-            if (!foodInText.isEmpty()) {
-                listOfIngredientsString.value = foodInText.joinToString(separator = ",")
-                _navigatorFlag.value = true
+                if (!foodInText.isEmpty()) {
+                    listOfIngredientsString.value = foodInText.joinToString(separator = ",")
+                    _navigatorFlag.value = true
+                }
+                _viewVisibilityFlag.value = false
             }
-            _viewVisibilityFlag.value = false
         }
     }
 
     fun findRecipeByIngredients() {
         val listOfRecipes = mutableListOf<RecipeIngredientResult>()
+        wrapEspressoIdlingResource {
+            viewModelScope.launch {
+                _viewVisibilityFlag.value = true
+                try {
+                    val resultWrapper: List<RecipeIngredientResult> =
+                        NutritionAPI.nutritionService.findByIngredients(
+                            listOfIngredientsString.value!!
+                        )
+                    Log.i("testRecipeById", "recipe list size: ${resultWrapper.size}")
+                    Log.i("testRecipeById", "recipe[0]: ${resultWrapper[0].title}")
+                    for (i in resultWrapper) {
+                        listOfRecipes.add(i)
+                    }
 
-        viewModelScope.launch {
-            _viewVisibilityFlag.value = true
-            try {
-                val resultWrapper: List<RecipeIngredientResult> =
-                    NutritionAPI.nutritionService.findByIngredients(
-                        listOfIngredientsString.value!!
-                    )
-                Log.i("testRecipeById", "recipe list size: ${resultWrapper.size}")
-                Log.i("testRecipeById", "recipe[0]: ${resultWrapper[0].title}")
-                for (i in resultWrapper) {
-                    listOfRecipes.add(i)
+                    _listOfRecipesLiveData.value = listOfRecipes
+
+                } catch (e: java.lang.Exception) {
+                    Log.i("Exception", "$e")
                 }
-
-                _listOfRecipesLiveData.value = listOfRecipes
-
-            } catch (e: java.lang.Exception) {
-                Log.i("Exception", "$e")
+                _viewVisibilityFlag.value = false
             }
-            _viewVisibilityFlag.value = false
         }
     }
 

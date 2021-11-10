@@ -2,6 +2,7 @@ package com.example.nutritionapp.ViewModelTest
 
 import android.os.Build
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.SmallTest
 import com.example.nutritionapp.MainCoroutineRule
@@ -37,7 +38,7 @@ class IngredientListViewModelTest {
     @Test
     fun IngredientListViewModel_searchIngredient_ReturnArraySize() = mainCoroutineRule.runBlockingTest {
         //Given - view model
-        val viewModel = IngredientViewModel(MockRepository)
+        val viewModel = IngredientViewModel(ApplicationProvider.getApplicationContext(),MockRepository)
         //When - user searches "Apple"
             viewModel.loadIngredientListByNetwork()
 

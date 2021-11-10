@@ -1,4 +1,3 @@
-/*
 package com.example.nutritionapp
 
 
@@ -13,14 +12,13 @@ import androidx.test.espresso.IdlingResource
 import androidx.test.espresso.idling.CountingIdlingResource
 import java.util.UUID
 
-*/
 /**
  * An espresso idling resource implementation that reports idle status for all data binding
  * layouts. Data Binding uses a mechanism to post messages which Espresso doesn't track yet.
  *
  * Since this application only uses fragments, the resource only checks the fragments and their
  * children instead of the whole view tree.
- *//*
+ */
 class DataBindingIdlingResource : IdlingResource {
     // List of registered callbacks
     private val idlingCallbacks = mutableListOf<IdlingResource.ResourceCallback>()
@@ -58,10 +56,9 @@ class DataBindingIdlingResource : IdlingResource {
         idlingCallbacks.add(callback)
     }
 
-    */
 /**
      * Find all binding classes in all currently available fragments.
-     *//*
+     */
 
     private fun getBindings(): List<ViewDataBinding> {
         val fragments = (activity as? FragmentActivity)
@@ -81,10 +78,9 @@ class DataBindingIdlingResource : IdlingResource {
 
 private fun View.getBinding(): ViewDataBinding? = DataBindingUtil.getBinding(this)
 
-*/
 /**
  * Sets the activity from an [ActivityScenario] to be used from [DataBindingIdlingResource].
- *//*
+ */
 
 fun DataBindingIdlingResource.monitorActivity(
     activityScenario: ActivityScenario<out FragmentActivity>
@@ -94,13 +90,12 @@ fun DataBindingIdlingResource.monitorActivity(
     }
 }
 
-*/
 /**
  * Sets the fragment from a [FragmentScenario] to be used from [DataBindingIdlingResource].
- *//*
+ */
 
 fun DataBindingIdlingResource.monitorFragment(fragmentScenario: FragmentScenario<out Fragment>) {
     fragmentScenario.onFragment {
         this.activity = it.requireActivity()
     }
-}*/
+}

@@ -42,6 +42,8 @@ interface IngredientDao {
     @Query("DELETE FROM Ingredient_Entity")
     suspend fun clear()
 
+    @Query("DELETE FROM RecipeEntity")
+    suspend fun clearEntity()
     /**
      * Selects and returns all rows in the table,
      *
@@ -75,6 +77,12 @@ interface IngredientDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun saveIngredient(ingredient: IngredientDataClassDTO)
+
+    @Query("SELECT * from RecipeEntity WHERE mId = :key")
+    suspend fun getNotificationRecipeById(key: String): RecipeNotificationClass?
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun saveNotificationRecipe(recipe: RecipeNotificationClass)
 /*
     @Query("SELECT * from Ingredient_Entity WHERE id = :key")
     suspend fun getNoneRecipeById(key: String): NoneRecipeClass?
@@ -86,12 +94,4 @@ interface IngredientDao {
 
 }
 
-@Dao
-interface recipeIngredient{
-    @Query("SELECT * from RecipeEntity WHERE mId = :key")
-    suspend fun getNotificationRecipeById(key: String): RecipeNotificationClass?
-
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun saveNotificationRecipe(recipe: RecipeNotificationClass)
-}
 

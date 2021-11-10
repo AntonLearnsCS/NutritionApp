@@ -176,6 +176,7 @@ object Adapters {
     /**
      * Use this binding adapter to show and hide the views using boolean variables
      */
+
     @BindingAdapter("android:fadeVisible")
     @JvmStatic
     fun setFadeVisible(view: View, visible: Boolean? = true) {

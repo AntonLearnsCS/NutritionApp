@@ -16,7 +16,6 @@ import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 
 class IngredientListOverview : Fragment() {
 
-
     private val localIngredientAdapter =
         com.example.nutritionapp.ingredientlist.localIngredientAdapter(
             com.example.nutritionapp.ingredientlist.localIngredientAdapter.LocalIngredientListener { ingredientItem ->
@@ -64,7 +63,6 @@ class IngredientListOverview : Fragment() {
             viewModel.getLocalIngredientList()
         }
 
-        //TODO: Not observing properly or listOfSavedIngredients is not being passed in correctly?
         viewModel.listOfSavedIngredients.observe(viewLifecycleOwner, Observer {
             localIngredientAdapter.submitList(it)
         })

@@ -10,7 +10,7 @@ import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
-class IngredientRepository(private val database: IngredientDatabase,
+class IngredientRepository(private val dao: IngredientDao,
                            private val IOdispatcher: CoroutineDispatcher = Dispatchers.IO) : IngredientDataSourceInterface {
     //will get ingredient searches directly from network and not the repository
 
@@ -22,7 +22,7 @@ class IngredientRepository(private val database: IngredientDatabase,
 
         return withContext(IOdispatcher)
         {
-            resultGetIngredients = database.IngredientDatabaseDao.getAllIngredients()
+            resultGetIngredients = dao.getAllIngredients()
 
             if (!resultGetIngredients.isNullOrEmpty()) {
                 //https://stackoverflow.com/questions/46040027/how-to-convert-livedatalistfoo-into-livedatalistbar
@@ -37,7 +37,7 @@ class IngredientRepository(private val database: IngredientDatabase,
 
     override suspend fun saveNewIngredient(ingredient: IngredientDataClass) {
         wrapEspressoIdlingResource {
-            database.IngredientDatabaseDao.saveIngredient(
+            dao.saveIngredient(
                 IngredientDataClassDTO(
                     name = ingredient.name,
                     quantity = ingredient.quantity,
@@ -51,7 +51,7 @@ class IngredientRepository(private val database: IngredientDatabase,
 
     override suspend fun update(ingredient: IngredientDataClass) {
         wrapEspressoIdlingResource {
-            database.IngredientDatabaseDao.update(
+            dao.update(
                 IngredientDataClassDTO(
                     name = ingredient.name,
                     quantity = ingredient.quantity,
@@ -68,7 +68,7 @@ class IngredientRepository(private val database: IngredientDatabase,
                 return withContext(IOdispatcher)
                 {
                     //return Result.Success(database.IngredientDatabaseDao.getIngredientById(id))
-                    val resultGetIngredients = database.IngredientDatabaseDao.getIngredientById(id)
+                    val resultGetIngredients = dao.getIngredientById(id)
                     if (resultGetIngredients == null) {
                         return@withContext Result.Error("Could not find ingredient")
                     } else {
@@ -82,7 +82,8 @@ class IngredientRepository(private val database: IngredientDatabase,
         wrapEspressoIdlingResource {
             withContext(IOdispatcher)
             {
-                database.IngredientDatabaseDao.clear()
+                dao.clear()
+                dao.clearEntity()
             }
         }
     }
@@ -91,7 +92,7 @@ class IngredientRepository(private val database: IngredientDatabase,
         wrapEspressoIdlingResource {
             withContext(IOdispatcher)
             {
-                database.IngredientDatabaseDao.deleteIngredientById(id)
+                dao.deleteIngredientById(id)
             }
         }
     }
@@ -100,7 +101,7 @@ class IngredientRepository(private val database: IngredientDatabase,
         wrapEspressoIdlingResource {
             return withContext(IOdispatcher)
             {
-                val result = database.RecipeIngredient.getNotificationRecipeById(key)
+                val result = dao.getNotificationRecipeById(key)
                 return@withContext result
             }
         }
@@ -110,6 +111,6 @@ class IngredientRepository(private val database: IngredientDatabase,
 wrapEspressoIdlingResource {
     withContext(IOdispatcher)
     {
-        database.RecipeIngredient.saveNotificationRecipe(recipe)
+        dao.saveNotificationRecipe(recipe)
     } }}
 }

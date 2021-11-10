@@ -8,6 +8,7 @@ import com.example.nutritionapp.ingredientlist.IngredientViewModel
 import com.example.nutritionapp.database.IngredientDataSourceInterface
 import com.example.nutritionapp.database.IngredientDatabase
 import com.example.nutritionapp.database.IngredientRepository
+import com.example.nutritionapp.database.LocalDatabase
 import org.koin.android.ext.koin.androidContext
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.core.context.startKoin
@@ -15,6 +16,10 @@ import org.koin.dsl.module
 import timber.log.Timber
 
 class App : Application() {
+    //We create this variable so that we ensure we only have one instance of the repository by always getting an instance of said
+    //repository from MyApp
+    val taskRepository: IngredientDataSourceInterface
+        get() = ServiceLocator.provideTasksRepository(this)
 
     override fun onCreate() {
         super.onCreate()
@@ -42,6 +47,9 @@ class App : Application() {
             }
             single { IngredientRepository(get()) as IngredientDataSourceInterface }
             single { IngredientDatabase.getInstance(this@App) }            //Declare singleton definitions to be later injected using by inject()
+
+            single { LocalDatabase.createIngredientDao(this@App) }
+
             //"single" is in contrast to "factory", which creates a new instance every time
 
 /*            single {
