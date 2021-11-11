@@ -431,6 +431,30 @@ class IngredientViewModel(
         _navigateToRecipeFlag.value = boolean
     }
 
+    private val _quantityCounter = MutableLiveData<Int>(1)
+    val quantityCounter : LiveData<Int>
+    get() = _quantityCounter
+
+    fun increaseQuantityCounter() {
+        val temp = _quantityCounter.value?.plus(1)
+        _quantityCounter.value = temp
+        selectedIngredient.value?.quantity = temp!!
+    }
+
+    fun decreaseQuantityCounter()
+    {
+        Log.i("test","decrease button called, ")
+        if (_quantityCounter.value!! > 0)
+        {
+            //note - we need to reassign the mutableLiveData to a new variable for observers to observe a change in value
+                //you can't just update the existing value inside the mutableLiveData
+            val temp = _quantityCounter.value!!.minus(1)
+            _quantityCounter.value = temp
+            selectedIngredient.value?.quantity = temp
+        }
+
+    }
+
     @Override
     override fun onCleared() {
         super.onCleared()

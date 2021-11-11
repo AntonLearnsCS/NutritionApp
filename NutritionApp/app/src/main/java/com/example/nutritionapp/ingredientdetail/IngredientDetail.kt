@@ -29,16 +29,16 @@ class IngredientDetail : Fragment() {
         //val arg = arguments?.let { IngredientDetailArgs.fromBundle(it) }//arguments?.getSerializable("IngredientItem") as IngredientDataClass
         binding = DataBindingUtil.inflate(inflater, R.layout.ingredient_detail, container, false)
         //binding.ingredientItem = arg.IngredientItem
-        binding.lifecycleOwner = this
+        binding.lifecycleOwner = viewLifecycleOwner
 
-        binding.decreaseButton.setOnClickListener{decreaseQuantity()}
-        binding.increaseButton.setOnClickListener { increaseQuantity() }
+        binding.decreaseButton.setOnClickListener{viewModel.decreaseQuantityCounter()}
+        binding.increaseButton.setOnClickListener {viewModel.increaseQuantityCounter()}
         binding.selectedIngredientViewModel = viewModel
 
         binding.addIngredientFAB.setOnClickListener {
             viewModel.saveIngredientItem()
-            findNavController().navigate(IngredientDetailDirections.actionIngredientDetailToIngredientListOverview())
-        }
+            findNavController().navigate(IngredientDetailDirections.actionIngredientDetailToIngredientListOverview()) }
+
         return binding.root
     }
 

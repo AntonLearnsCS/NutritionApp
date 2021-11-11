@@ -97,17 +97,18 @@ val instantTaskExecutorRule = InstantTaskExecutorRule()
         onView(withId(R.id.recycler_view_local)).check(matches(isDisplayed()))
 
         delay(2000)
-        //onView(withId(R.id.recycler_view_local)).check(matches((hasItem(hasDescendant(withText("TitleZ"))))))
 
         onView(withId(R.id.recycler_view_local)).check(matches(hasDescendant(withText("DescriptionQ"))))
 
+
+        //TODO: not sure why receiving PerformException
         onView(withId(R.id.recycler_view_local)).perform(
-            RecyclerViewActions.actionOnItem<RecyclerView.ViewHolder>
-            (
-                ViewMatchers.hasDescendant(ViewMatchers.withText("DescriptionM")),
-                ViewActions.click()
-            ))
-        //verify(navController).navigate(IngredientListOverviewDirections.actionIngredientListOverviewToIngredientDetail())
+            RecyclerViewActions.actionOnItem<localIngredientAdapter.ViewHolder>
+            (hasDescendant(withText("DescriptionQ")), ViewActions.click()))
+
+        //onView(withId(R.id.recycler_view_local)).perform(RecyclerViewActions.scrollTo<localIngredientAdapter.ViewHolder> (hasDescendant (withText ("DescriptionQ"))))
+
+        verify(navController).navigate(IngredientListOverviewDirections.actionIngredientListOverviewToIngredientDetail())
 
         delay(2000)
 

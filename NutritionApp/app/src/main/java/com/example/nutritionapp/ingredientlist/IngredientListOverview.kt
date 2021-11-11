@@ -1,6 +1,7 @@
 package com.example.nutritionapp.ingredientlist
 
 import android.os.Bundle
+import android.util.Log
 import android.view.*
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
@@ -112,9 +113,10 @@ class IngredientListOverview : Fragment() {
         }
 
         viewModel.navigateToDetail.observe(viewLifecycleOwner, Observer {
-            if (viewModel.navigateToDetail.value != null) {
+            if (it != null) {
                 viewModel.selectedIngredient.value = it
                 viewModel.setNavigateToDetailNull()
+                Log.i("test","selectedIngredient: ${viewModel.selectedIngredient.value!!.name}")
                 findNavController().navigate(IngredientListOverviewDirections.actionIngredientListOverviewToIngredientDetail())
             }
         })

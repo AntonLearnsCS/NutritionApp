@@ -20,6 +20,8 @@
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recycler_view_local"
             android:layout_width="wrap_content"
+            android:focusedByDefault="true"
+            android:clickable="true"
             android:layout_height="wrap_content"
             android:layout_marginBottom="36dp"
             android:textColor="@color/black"
@@ -29,7 +31,8 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.501"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/search_recipe">
+            app:layout_constraintTop_toBottomOf="@+id/search_recipe"
+            android:focusable="true">
         </androidx.recyclerview.widget.RecyclerView>
 
         <androidx.recyclerview.widget.RecyclerView
