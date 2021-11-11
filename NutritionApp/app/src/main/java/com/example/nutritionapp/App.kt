@@ -45,7 +45,7 @@ class App : Application() {
                 IngredientViewModel(
                     get(),get() as IngredientDataSourceInterface)
             }
-            single { IngredientRepository(get()) as IngredientDataSourceInterface }
+            single { taskRepository}// IngredientRepository(get()) as IngredientDataSourceInterface
             single { IngredientDatabase.getInstance(this@App) }            //Declare singleton definitions to be later injected using by inject()
 
             single { LocalDatabase.createIngredientDao(this@App) }

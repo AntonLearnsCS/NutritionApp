@@ -31,8 +31,7 @@ interface IngredientDao {
      */
     //Note: When returning a LiveData from a DAO function, you do not need to call suspend on said function as suspend and LiveData
     //are incompatible (source:https://stackoverflow.com/questions/46445964/room-not-sure-how-to-convert-a-cursor-to-this-methods-return-type-which-meth)
-    @Query("SELECT * from Ingredient_Entity WHERE id = :key")
-    suspend fun get(key: Int): IngredientDataClassDTO?
+
 
     /**
      * Deletes all values from the table.
@@ -40,10 +39,10 @@ interface IngredientDao {
      * This does not delete the table, only its contents.
      */
     @Query("DELETE FROM Ingredient_Entity")
-    suspend fun clear()
+    suspend fun clearIngredientEntity()
 
     @Query("DELETE FROM RecipeEntity")
-    suspend fun clearEntity()
+    suspend fun clearRecipeEntity()
     /**
      * Selects and returns all rows in the table,
      *
@@ -78,19 +77,21 @@ interface IngredientDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun saveIngredient(ingredient: IngredientDataClassDTO)
 
+
+
+
+
     @Query("SELECT * from RecipeEntity WHERE mId = :key")
     suspend fun getNotificationRecipeById(key: String): RecipeNotificationClass?
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun saveNotificationRecipe(recipe: RecipeNotificationClass)
-/*
-    @Query("SELECT * from Ingredient_Entity WHERE id = :key")
-    suspend fun getNoneRecipeById(key: String): NoneRecipeClass?
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun saveNoneRecipe(noneRecipe: NoneRecipeClass)*/
+    @Query("SELECT * FROM RecipeEntity")
+    suspend fun getAllRecipeNotification() : List<RecipeNotificationClass>?
 
-
+    @Query("DELETE FROM RecipeEntity WHERE mId = :key")
+    suspend fun deleteRecipeNotificationById(key : String)
 
 }
 

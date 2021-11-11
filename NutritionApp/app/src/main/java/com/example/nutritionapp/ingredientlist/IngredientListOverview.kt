@@ -38,7 +38,11 @@ class IngredientListOverview : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
+
         super.onCreate(savedInstanceState)
+
+        //load the reminders list on the ui
+        wrapEspressoIdlingResource { viewModel.getLocalIngredientList() }
 
         binding = DataBindingUtil.inflate(
             inflater,
@@ -140,10 +144,4 @@ class IngredientListOverview : Fragment() {
         return NavigationUI.onNavDestinationSelected(item, requireView().findNavController())
                 || super.onOptionsItemSelected(item)    }
 
-    override fun onResume() {
-        super.onResume()
-        //load the reminders list on the ui
-        wrapEspressoIdlingResource { viewModel.getLocalIngredientList() }
-        //viewModel.setNavigateToDetailNull()
-    }
 }

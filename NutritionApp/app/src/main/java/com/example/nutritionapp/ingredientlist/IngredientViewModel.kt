@@ -7,8 +7,10 @@ import android.widget.Toast
 import androidx.databinding.Observable
 import androidx.databinding.PropertyChangeRegistry
 import androidx.lifecycle.*
+import androidx.test.core.app.ApplicationProvider
 import com.example.nutritionapp.database.IngredientDataClass
 import com.example.nutritionapp.database.IngredientDataSourceInterface
+import com.example.nutritionapp.database.IngredientRepository
 import com.example.nutritionapp.database.dto.IngredientDataClassDTO
 import com.example.nutritionapp.ingredientlist.testNutritionApi.nutritionServicePost
 import com.example.nutritionapp.maps.RecipeNotificationClass
@@ -101,8 +103,7 @@ class IngredientViewModel(
     //Note: Don't set the MutableLiveData to null, b/c technically it is not initialized so any assignment will not change the null value
     //and variable observing this MutableLiveData will return null
     var mutableLiveDataList: MutableLiveData<List<IngredientDataClass>> = MutableLiveData()
-    var listOfSavedIngredients: MutableLiveData<List<IngredientDataClass>> =
-        MutableLiveData()//null//getLocalIngredientList()
+    var listOfSavedIngredients: MutableLiveData<List<IngredientDataClass>> = MutableLiveData()
 
     //two-way binding
     //no need to add "?query=" since the getIngredients() of the IngredientsApiInterface will do that
@@ -329,6 +330,7 @@ class IngredientViewModel(
     }
 
     fun getLocalIngredientList() { //need DAO and repository
+        Log.i("test","getLocalList called")
         wrapEspressoIdlingResource {
             viewModelScope.launch {
 
@@ -354,6 +356,15 @@ class IngredientViewModel(
 //                Toast.makeText(ApplicationProvider.getApplicationContext(),"${ingredientResult.message}",Toast.LENGTH_SHORT).show()
                     }
                 }
+            }
+        }
+    }
+
+    fun clearRecipeNotificationTable()
+    {
+        wrapEspressoIdlingResource {
+            viewModelScope.launch {
+                ingredientRepository.clearNotificationRecipe()
             }
         }
     }
@@ -507,6 +518,14 @@ interface IngredientsApiInterfacePost {
     @POST("food/detect")
     suspend fun detectFoodInText(): PostRequestResultWrapper
     //fun addUser(@Body userData: UserInfo): Call<UserInfo>
+}
+
+@Suppress("UNCHECKED_CAST")
+class IngredientViewModelFactory (
+    private val ingredientRepository: IngredientDataSourceInterface
+) : ViewModelProvider.NewInstanceFactory() {
+    override fun <T : ViewModel> create(modelClass: Class<T>) =
+        (IngredientViewModel(ApplicationProvider.getApplicationContext(), ingredientRepository) as T)
 }
 
 object testNutritionApi {

@@ -24,6 +24,7 @@
             android:layout_marginBottom="36dp"
             android:textColor="@color/black"
             app:layout_constrainedHeight="true"
+            android:liveData="@{ingredientViewModel.listOfSavedIngredients}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.501"
@@ -63,7 +64,7 @@
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintVertical_bias="0.139" />
 
-        <!--<ProgressBar
+        <ProgressBar
             android:id="@+id/progress_circular"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -77,7 +78,7 @@
             app:layout_constraintTop_toBottomOf="@+id/searchIngredientButton"
             app:layout_constraintVertical_bias="0.262">
 
-        </ProgressBar>-->
+        </ProgressBar>
 
         <TextView
             android:id="@+id/Ingredients_at_Home"
@@ -113,7 +114,7 @@
             app:layout_constraintVertical_bias="0.025"
             style="@style/list_view_button_style" />
 
-     <!--   <ImageView
+        <ImageView
             android:id="@+id/shopping_cart"
             android:layout_width="271dp"
             android:layout_height="221dp"
@@ -125,7 +126,7 @@
             app:layout_constraintTop_toBottomOf="@+id/searchIngredientButton"
             app:layout_constraintVertical_bias="0.434"
             app:srcCompat="@drawable/food_shopping_cart"
-            android:contentDescription="@string/grocery_cart_image" />-->
+            android:contentDescription="@string/grocery_cart_image" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

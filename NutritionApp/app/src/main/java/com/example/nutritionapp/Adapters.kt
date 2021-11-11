@@ -15,8 +15,11 @@ import androidx.databinding.InverseBindingAdapter
 import androidx.databinding.InverseBindingListener
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
+import com.example.nutritionapp.database.IngredientDataClass
+import com.example.nutritionapp.ingredientlist.localIngredientAdapter
 import org.w3c.dom.Text
 import java.lang.StringBuilder
 
@@ -149,7 +152,19 @@ object Adapters {
 
         textView.text = sb
     }
-
+    @BindingAdapter("android:liveData")
+    @JvmStatic
+    fun recyclerViewLiveData(recyclerView: RecyclerView, items : List<IngredientDataClass>?)
+    {
+        if (!items.isNullOrEmpty()) {
+            items.let { itemList ->
+                (recyclerView.adapter as? localIngredientAdapter)?.apply {
+                    //clear() //clears the previous list
+                    submitList(itemList)
+                }
+            }
+        }
+    }
 
 
     //animate changing the view visibility

@@ -18,6 +18,5 @@ object LocalDatabase {
 
             //we call .reminderDao() so that we don't have to call "abstract fun reminderDao(): RemindersDao" whenever we
             //want to access DAO methods when referencing a database instance
-
     }
 }

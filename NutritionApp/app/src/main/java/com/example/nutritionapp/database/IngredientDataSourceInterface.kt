@@ -16,4 +16,5 @@ interface IngredientDataSourceInterface {
 
     suspend fun getNotificationRecipeById (key: String) : RecipeNotificationClass?
     suspend fun saveNotificationRecipe (recipe : RecipeNotificationClass)
+    suspend fun clearNotificationRecipe()
 }

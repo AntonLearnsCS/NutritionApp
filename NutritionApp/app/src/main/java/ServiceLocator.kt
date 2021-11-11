@@ -47,6 +47,7 @@ object ServiceLocator {
         synchronized(lock) {
             runBlocking {
                 ingredientRepository?.deleteAllIngredients()
+                ingredientRepository?.clearNotificationRecipe()
             }
             // Clear all data to avoid test pollution.
             database?.apply {

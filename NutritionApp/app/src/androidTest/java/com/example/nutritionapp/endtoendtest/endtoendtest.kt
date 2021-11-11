@@ -3,8 +3,6 @@ package com.example.nutritionapp.endtoendtest
 import android.view.View
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.fragment.app.testing.launchFragmentInContainer
-import androidx.navigation.NavController
-import androidx.navigation.Navigation
 import androidx.recyclerview.widget.RecyclerView
 import androidx.room.Room
 import androidx.test.core.app.ActivityScenario
@@ -31,7 +29,6 @@ import com.example.nutritionapp.database.IngredientDatabase
 import com.example.nutritionapp.database.dto.IngredientDataClassDTO
 import com.example.nutritionapp.ingredientlist.IngredientListActivity
 import com.example.nutritionapp.ingredientlist.IngredientListOverview
-import com.example.nutritionapp.ingredientlist.IngredientListOverviewDirections
 import com.example.nutritionapp.ingredientlist.IngredientViewModel
 import com.example.nutritionapp.monitorActivity
 //import com.example.nutritionapp.monitorActivity
@@ -45,12 +42,11 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.mockito.Mockito.mock
-import org.mockito.Mockito.verify
 
 @LargeTest
 @RunWith(AndroidJUnit4::class)
 class endtoendtest {
+
 @get:Rule
 val instanceTaskExecutorRule = InstantTaskExecutorRule()
 
@@ -66,13 +62,17 @@ val instanceTaskExecutorRule = InstantTaskExecutorRule()
     @ExperimentalCoroutinesApi
     @Before
     fun init() = runBlocking{
+        //this may cause UI to hang
         database = Room.inMemoryDatabaseBuilder(
             getApplicationContext(),
             IngredientDatabase::class.java
-        ).setTransactionExecutor(mainCoroutineRule.dispatcher.asExecutor())
+        ).build()
+/*
+Q: Could be causing UI to hang?
+.setTransactionExecutor(mainCoroutineRule.dispatcher.asExecutor())
             .setQueryExecutor(mainCoroutineRule.dispatcher.asExecutor())
-            .allowMainThreadQueries().build()
-
+            .allowMainThreadQueries()
+ */
         database.clearAllTables()
         //database.IngredientDatabaseDao.clear()
         repository = ((ApplicationProvider.getApplicationContext()) as App).taskRepository
@@ -82,7 +82,7 @@ val instanceTaskExecutorRule = InstantTaskExecutorRule()
 
     @After
     fun close() = runBlocking {
-        database.IngredientDatabaseDao.clear()
+        database.IngredientDatabaseDao.clearIngredientEntity()
     }
 
     @Before
@@ -104,14 +104,14 @@ val instanceTaskExecutorRule = InstantTaskExecutorRule()
 
     @ExperimentalCoroutinesApi
     @Test
-    fun endToEndTest(): Unit = mainCoroutineRule.runBlockingTest {
+    fun endToEndTest(): Unit = runBlocking{
         //activityScenario is part of AndroidX testing
-        val testIngredient = IngredientDataClassDTO(9,"name",2,"http/someUrl","JPEG")
+       /* val testIngredient = IngredientDataClassDTO(9,"name",2,"http/someUrl","JPEG")
         database.IngredientDatabaseDao.saveIngredient(testIngredient)
 
         //TODO: Returns correctly when called directly from database
         val returnedItemDatabase = database.IngredientDatabaseDao.getAllIngredients()
-        assertThat(returnedItemDatabase?.size, `is`(1))
+        assertThat(returnedItemDatabase?.size, `is`(1))*/
 
         /*
          val activityScenario = ActivityScenario.launch(AuthenticationActivity::class.java)
@@ -124,7 +124,6 @@ val instanceTaskExecutorRule = InstantTaskExecutorRule()
 
         onView(withId(R.id.loginButton)).check(matches(isDisplayed()))
         onView(withId(R.id.loginButton)).perform(click())
-        delay(3000)
         //onView(withId(R.id.ingredient_list_constraint_layout)).check(matches(isDisplayed()))
 //        onView(withId(R.id.search_view)).check(matches(isDisplayed()))
         //recyclerview did not display b/c there was no data to display so the recyclerview collapsed on itself since height/width is
@@ -148,11 +147,12 @@ val instanceTaskExecutorRule = InstantTaskExecutorRule()
         onView(withId(R.id.searchIngredientButton)).perform(click())
 
         //waitUntilCondition(withId(R.id.recycler_view_network), timeout = 10000L, {it != null})
-
-        Thread.sleep(3000)
+        //Thread.sleep(3000)
         onView(withId(R.id.recycler_view_network)).check(matches(isDisplayed()))
-        onView(withId(R.id.recycler_view_network)).perform(RecyclerViewActions.actionOnItem<RecyclerView.ViewHolder>
-            (ViewMatchers.hasDescendant(ViewMatchers.withText("Snapple Apple, 16 fl oz glass bottles, 12 pack")), click()))
+        onView(withId(R.id.recycler_view_local))
+            .check(matches(hasDescendant(withText("DescriptionQ"))))
+       /* onView(withId(R.id.recycler_view_network)).perform(RecyclerViewActions.actionOnItem<RecyclerView.ViewHolder>
+            (ViewMatchers.hasDescendant(ViewMatchers.withText("Snapple Apple, 16 fl oz glass bottles, 12 pack")), click()))*/
 
         onView(withId(R.id.addIngredientFAB)).perform(click())
         //verify(mockNavController).navigate(IngredientListOverviewDirections.actionIngredientListOverviewToIngredientDetail())

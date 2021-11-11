@@ -1,7 +1,6 @@
 package com.example.nutritionapp.database
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.Transformations
+import android.util.Log
 import com.example.nutritionapp.util.Result
 import com.example.nutritionapp.database.dto.IngredientDataClassDTO
 import com.example.nutritionapp.maps.RecipeNotificationClass
@@ -15,6 +14,7 @@ class IngredientRepository(private val dao: IngredientDao,
     //will get ingredient searches directly from network and not the repository
 
     override suspend fun getIngredients(): Result<List<IngredientDataClassDTO>> {
+        Log.i("test","getIngredients real repo called")
         wrapEspressoIdlingResource {
         //make the function main-safe by switching thread to IO thread; also we maintain structured concurrency by not declaring a new
         //coroutine scope
@@ -82,8 +82,17 @@ class IngredientRepository(private val dao: IngredientDao,
         wrapEspressoIdlingResource {
             withContext(IOdispatcher)
             {
-                dao.clear()
-                dao.clearEntity()
+                dao.clearIngredientEntity()
+                dao.clearRecipeEntity()
+            }
+        }
+    }
+
+    override suspend fun clearNotificationRecipe() {
+        wrapEspressoIdlingResource {
+            withContext(IOdispatcher)
+            {
+                dao.clearRecipeEntity()
             }
         }
     }
