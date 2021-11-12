@@ -23,6 +23,7 @@ import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import kotlinx.coroutines.*
 import okhttp3.*
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import retrofit2.Call
 import retrofit2.Response
 
@@ -503,7 +504,7 @@ private val moshi = Moshi.Builder()
 
 
 //----------------------------------------POST Request--------------------------------------------------------------------------------
-val mediaType = MediaType.parse("application/x-www-form-urlencoded")
+val mediaType = "application/x-www-form-urlencoded".toMediaTypeOrNull()
 
 //Q: What is the purpose of ".post(body)" in the OkHttpClient?
 //A: To input your text that will be acted upon by the API POST function

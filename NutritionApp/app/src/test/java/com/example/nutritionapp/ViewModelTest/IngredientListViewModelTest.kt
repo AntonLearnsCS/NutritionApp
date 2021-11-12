@@ -8,6 +8,7 @@ import androidx.test.filters.SmallTest
 import com.example.nutritionapp.MainCoroutineRule
 import com.example.nutritionapp.ingredientlist.IngredientViewModel
 import com.example.nutritionapp.MockRepository
+import com.example.nutritionapp.network.mNutritionApi
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runBlockingTest
 import org.hamcrest.MatcherAssert.assertThat
@@ -24,7 +25,7 @@ import org.robolectric.annotation.Config
 @ExperimentalCoroutinesApi
 @SmallTest
 class IngredientListViewModelTest {
-
+    private val nutritionApi = mNutritionApi()
     @get: Rule
     val instanceTaskExecutorRule = InstantTaskExecutorRule()
     @get: Rule
@@ -38,7 +39,7 @@ class IngredientListViewModelTest {
     @Test
     fun IngredientListViewModel_searchIngredient_ReturnArraySize() = mainCoroutineRule.runBlockingTest {
         //Given - view model
-       /* val viewModel = IngredientViewModel(ApplicationProvider.getApplicationContext(), MockRepository)
+        val viewModel = IngredientViewModel(ApplicationProvider.getApplicationContext(), MockRepository, nutritionApi)
         //When - user searches "Apple"
 
             //save for testing Network data layer //viewModel.loadIngredientListByNetwork()
@@ -46,6 +47,6 @@ class IngredientListViewModelTest {
         //Then - returns the number of apple results from spoonacular API, should return "8"
         val networkRequestFailed = viewModel.listOfNetworkRequestedIngredients == null
         println("Network list size: ${viewModel.listOfNetworkRequestedIngredients?.size}")
-        assertThat(networkRequestFailed,`is`(false))*/
+        assertThat(networkRequestFailed,`is`(false))
     }
 }

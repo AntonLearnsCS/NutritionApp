@@ -9,26 +9,20 @@ import androidx.navigation.Navigation
 import androidx.recyclerview.widget.RecyclerView
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
-import androidx.test.espresso.action.ViewActions
+import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.matches
-import androidx.test.espresso.contrib.RecyclerViewActions
+import androidx.test.espresso.contrib.RecyclerViewActions.actionOnHolderItem
 import androidx.test.espresso.matcher.BoundedMatcher
-import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.espresso.matcher.ViewMatchers.*
 import com.example.nutritionapp.App
 import com.example.nutritionapp.R
 import com.example.nutritionapp.database.IngredientDataClass
 import com.example.nutritionapp.database.IngredientDataSourceInterface
-import com.example.nutritionapp.database.IngredientRepository
-import com.example.nutritionapp.database.dto.IngredientDataClassDTO
-import com.example.nutritionapp.localdatatest.fakeIngredientRepository
 import com.example.nutritionapp.util.Result
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.runBlockingTest
-import org.hamcrest.CoreMatchers.hasItem
-import org.hamcrest.CoreMatchers.hasItems
 import org.hamcrest.Description
 import org.hamcrest.Matcher
 import org.junit.After
@@ -100,19 +94,49 @@ val instantTaskExecutorRule = InstantTaskExecutorRule()
 
         onView(withId(R.id.recycler_view_local)).check(matches(hasDescendant(withText("DescriptionQ"))))
 
+        //Q: not sure why receiving PerformException
 
-        //TODO: not sure why receiving PerformException
-        onView(withId(R.id.recycler_view_local)).perform(
-            RecyclerViewActions.actionOnItem<localIngredientAdapter.ViewHolder>
-            (hasDescendant(withText("DescriptionQ")), ViewActions.click()))
+       /* onView(withId(R.id.recycler_view_local)).perform(RecyclerViewActions.actionOnItem<localIngredientAdapter.ViewHolder>(
+            (hasDescendant(withText("DescriptionQ"))), ViewActions.click()))
+*/
+
+       onView(withId(R.id.recycler_view_local)).perform(actionOnHolderItem(customViewMatcher("DescriptionQ"), click()))
+
+//previous answer
+  /*      onView(withId(R.id.recycler_view_local))
+            .perform(
+                RecyclerViewActions.actionOnItem<RecyclerView.ViewHolder>(
+                    hasDescendant(withText("DescriptionQ")), click()
+                )
+            )*/
+
+        //suggested by mentor:
+/*        onView(withId(R.id.recycler_view_local)).perform(
+            RecyclerViewActions.actionOnItemAtPosition<localIngredientAdapter.ViewHolder>
+                (0,ViewActions.click()))*/
 
         //onView(withId(R.id.recycler_view_local)).perform(RecyclerViewActions.scrollTo<localIngredientAdapter.ViewHolder> (hasDescendant (withText ("DescriptionQ"))))
 
         verify(navController).navigate(IngredientListOverviewDirections.actionIngredientListOverviewToIngredientDetail())
 
-        delay(2000)
 
     }
+
+    //source: https://sisik.eu/blog/android/tests/recyclerview-custom-matcher
+    fun customViewMatcher(packageName: String): Matcher<RecyclerView.ViewHolder> {
+        return object : BoundedMatcher<RecyclerView.ViewHolder, localIngredientAdapter.ViewHolder>(
+            localIngredientAdapter.ViewHolder::class.java
+        ){
+            override fun describeTo(description: Description?) {
+                description?.appendText("with item package name " + packageName)
+            }
+
+            override fun matchesSafely(item: localIngredientAdapter.ViewHolder?): Boolean {
+                return item?.binding?.ingredientName.toString().equals(packageName)
+            }
+        }
+    }
+
 
     fun hasItem(matcher: Matcher<View?>): Matcher<View?> {
         return object : BoundedMatcher<View?, RecyclerView>(RecyclerView::class.java) {
@@ -135,4 +159,8 @@ val instantTaskExecutorRule = InstantTaskExecutorRule()
             }
         }
     }
+
+
 }
+
+

@@ -31,6 +31,7 @@ import com.example.nutritionapp.ingredientlist.IngredientListActivity
 import com.example.nutritionapp.ingredientlist.IngredientListOverview
 import com.example.nutritionapp.ingredientlist.IngredientViewModel
 import com.example.nutritionapp.monitorActivity
+import com.example.nutritionapp.network.mNutritionApi
 //import com.example.nutritionapp.monitorActivity
 import com.example.nutritionapp.util.EspressoIdleResource
 import kotlinx.coroutines.*
@@ -54,7 +55,7 @@ val instanceTaskExecutorRule = InstantTaskExecutorRule()
     private lateinit var database: IngredientDatabase
     private lateinit var repository: IngredientDataSourceInterface
     private val dataBindingIdlingResource = DataBindingIdlingResource()
-
+    private val nutritionApi = mNutritionApi()
     @ExperimentalCoroutinesApi
     @get:Rule
     val mainCoroutineRule = MainCoroutineRule()
@@ -77,7 +78,7 @@ Q: Could be causing UI to hang?
         //database.IngredientDatabaseDao.clear()
         repository = ((ApplicationProvider.getApplicationContext()) as App).taskRepository
 
-        viewModel = IngredientViewModel(ApplicationProvider.getApplicationContext(),repository)
+        viewModel = IngredientViewModel(ApplicationProvider.getApplicationContext(),repository, nutritionApi)
     }
 
     @After

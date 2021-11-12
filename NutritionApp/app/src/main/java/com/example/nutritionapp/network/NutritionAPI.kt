@@ -1,10 +1,13 @@
 package com.example.nutritionapp.network
 
+import androidx.annotation.VisibleForTesting
+import com.example.nutritionapp.ingredientlist.clientPostRequest
 import com.example.nutritionapp.recipe.RecipeIngredientResult
 import com.example.nutritionapp.recipe.RecipeInstruction
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import okhttp3.*
+import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Call
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
@@ -37,9 +40,12 @@ source: https://stackoverflow.com/questions/42491733/passing-api-key-in-retrofit
 
     //Separate client and Retrofit object for @GET and @POST requests since they have different headers
 //                .addHeader("content-type", "application/json")
+
+
     var clientGetRequest = OkHttpClient.Builder().addInterceptor(object : Interceptor {
         @Throws(IOException::class)
-        override fun intercept(chain: Interceptor.Chain): Response? {
+        override fun intercept(chain: Interceptor.Chain): Response {
+
             val newRequest: Request = chain.request().newBuilder()
                 .get()
                 .addHeader("x-rapidapi-host", "spoonacular-recipe-food-nutrition-v1.p.rapidapi.com")
@@ -48,9 +54,12 @@ source: https://stackoverflow.com/questions/42491733/passing-api-key-in-retrofit
                     "743dd97869msh559abee3f899bd4p131dd1jsn866e00036c54"
                 )//Error: HTTP 401 Unauthorized
                 .build()
+
             return chain.proceed(newRequest)
         }
+
     }).build()
+
 
 /*var clientGetRequestInstructions = OkHttpClient.Builder().addInterceptor(object : Interceptor {
     @Throws(IOException::class)
@@ -83,6 +92,7 @@ val retrofitInstructions = Retrofit.Builder()
     val nutritionService: IngredientsApiInterface by lazy {
         retrofit.create(IngredientsApiInterface::class.java)
     }
+
 }
     /**
      * A public interface that exposes the [getIngredients] method
