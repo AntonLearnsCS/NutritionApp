@@ -13,7 +13,7 @@ import java.io.IOException
 
 private const val BASE_URL = "https://spoonacular-recipe-food-nutrition-v1.p.rapidapi.com/"
 
-
+open class mNutritionApi() {
     /**
      * Build the Moshi object that Retrofit will be using, making sure to add the Kotlin adapter for
      * full Kotlin compatibility.
@@ -80,6 +80,10 @@ val retrofitInstructions = Retrofit.Builder()
         .client(clientGetRequest)
         .build()
 
+    val nutritionService: IngredientsApiInterface by lazy {
+        retrofit.create(IngredientsApiInterface::class.java)
+    }
+}
     /**
      * A public interface that exposes the [getIngredients] method
      */
@@ -102,14 +106,19 @@ val retrofitInstructions = Retrofit.Builder()
         suspend fun getRecipeInstructions(@Path("id") id : Long, @Query("stepBreakdown") boolean: Boolean) : List<RecipeInstruction>
     }
 
+
+
+
 //we want to expose the retrofit instance because creating a Retrofit instance is expensive
-object NutritionAPI {
-    val nutritionService: IngredientsApiInterface by lazy {
-        retrofit.create(
-            IngredientsApiInterface::class.java
-        )
-    }
+//but we also want to do dependency injection for testing Nutrition Api
+
+//TODO: Is this the best way to test or can I pass a singleton as a class parameter?
+object NutritionAPI : mNutritionApi(){
+   /* val nutritionService: IngredientsApiInterface by lazy {
+        retrofit.create(IngredientsApiInterface::class.java)
+    }*/
 }
+
 /*
 
 val client = OkHttpClient()

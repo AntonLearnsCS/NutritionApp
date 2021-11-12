@@ -9,6 +9,7 @@ import com.example.nutritionapp.database.IngredientDataSourceInterface
 import com.example.nutritionapp.database.IngredientDatabase
 import com.example.nutritionapp.database.IngredientRepository
 import com.example.nutritionapp.database.LocalDatabase
+import com.example.nutritionapp.network.mNutritionApi
 import org.koin.android.ext.koin.androidContext
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.core.context.startKoin
@@ -20,6 +21,9 @@ class App : Application() {
     //repository from MyApp
     val taskRepository: IngredientDataSourceInterface
         get() = ServiceLocator.provideTasksRepository(this)
+
+    val mNutritionApi : mNutritionApi
+        get() = ServiceLocator.returnNutritionApi()
 
     override fun onCreate() {
         super.onCreate()
@@ -43,11 +47,11 @@ class App : Application() {
             //Declare a ViewModel - be later inject into Fragment with dedicated injector using by viewModel()
             viewModel {
                 IngredientViewModel(
-                    get(),get() as IngredientDataSourceInterface)
+                    get(),get() as IngredientDataSourceInterface, get())
             }
-            single { taskRepository}// IngredientRepository(get()) as IngredientDataSourceInterface
+            single { taskRepository} // IngredientRepository(get()) as IngredientDataSourceInterface
             single { IngredientDatabase.getInstance(this@App) }            //Declare singleton definitions to be later injected using by inject()
-
+            single { mNutritionApi }
             single { LocalDatabase.createIngredientDao(this@App) }
 
             //"single" is in contrast to "factory", which creates a new instance every time

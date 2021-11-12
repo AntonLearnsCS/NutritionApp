@@ -40,4 +40,8 @@ object MockRepository : IngredientDataSourceInterface {
     override suspend fun saveNotificationRecipe(recipe: RecipeNotificationClass) {
         TODO("Not yet implemented")
     }
+
+    override suspend fun clearNotificationRecipe() {
+        TODO("Not yet implemented")
+    }
 }

@@ -4,6 +4,7 @@ import androidx.room.Room
 import com.example.nutritionapp.database.IngredientDataSourceInterface
 import com.example.nutritionapp.database.IngredientDatabase
 import com.example.nutritionapp.database.IngredientRepository
+import com.example.nutritionapp.network.mNutritionApi
 import kotlinx.coroutines.runBlocking
 
 //We use a ServiceLocator in order to return an instance of a repository and other dependencies
@@ -27,6 +28,17 @@ object ServiceLocator {
             return ingredientRepository ?: createTaskLocalDataSource(context)
         }
     }
+
+    object mNutritionObject : mNutritionApi()
+
+    fun returnNutritionApi() : mNutritionApi
+    {
+        synchronized(this)
+        {
+        return mNutritionObject
+        }
+    }
+
 
     private fun createTaskLocalDataSource(context: Context): IngredientDataSourceInterface {
         val database = database ?: createDataBase(context)

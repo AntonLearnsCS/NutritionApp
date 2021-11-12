@@ -36,12 +36,17 @@ import java.net.URLEncoder
 To get context inside a ViewModel we can either extend AndroidViewModel. Do not use ApplicationProvider in production code, only in tests
 https://stackoverflow.com/questions/51451819/how-to-get-context-in-android-mvvm-viewmodel
  */
+
 val selectedProductName = MutableLiveData<String>("Apple,flour,sugar")
 
 class IngredientViewModel(
     val app: Application,
-    val ingredientRepository: IngredientDataSourceInterface
+    val ingredientRepository: IngredientDataSourceInterface, val nutritionApi : mNutritionApi
 ) : AndroidViewModel(app), Observable {
+
+    val nutritionService: IngredientsApiInterface by lazy {
+        NutritionAPI.retrofit.create(IngredientsApiInterface::class.java)
+    }
 
     //flag for shopping cart image
     private val _shoppingCartVisibilityFlag = MutableLiveData<Boolean>(true)
@@ -164,7 +169,7 @@ class IngredientViewModel(
                 _viewVisibilityFlag.value = true
                 try {
                     val resultWrapper: List<RecipeIngredientResult> =
-                        NutritionAPI.nutritionService.findByIngredients(
+                        nutritionApi.nutritionService.findByIngredients(
                             listOfIngredientsString.value!!
                         )
                     Log.i("testRecipeById", "recipe list size: ${resultWrapper.size}")
@@ -190,7 +195,7 @@ class IngredientViewModel(
                 if (searchItem.value != null) {
                     try {
                         val result: wrapperIngredientListNetworkDataClass =
-                            NutritionAPI.nutritionService.getIngredients(searchItem.value!!)
+                            nutritionApi.nutritionService.getIngredients(searchItem.value!!)
                         Log.i("test", "search item: ${searchItem.value}")
                         println("Total products: ${result.totalProducts}")
 
@@ -283,7 +288,7 @@ class IngredientViewModel(
                 //Q: Why is this working but not the previous network request format?
                 val networkResult: List<RecipeInstruction>? =
                     _navigateToRecipe.value?.id?.let {
-                        NutritionAPI.nutritionService.getRecipeInstructions(it, false)
+                        nutritionApi.nutritionService.getRecipeInstructions(it, false)
                     }
 
                     Log.i("testFunctionID", "ID: ${_navigateToRecipe.value?.id}")
@@ -549,7 +554,7 @@ class IngredientViewModelFactory (
     private val ingredientRepository: IngredientDataSourceInterface
 ) : ViewModelProvider.NewInstanceFactory() {
     override fun <T : ViewModel> create(modelClass: Class<T>) =
-        (IngredientViewModel(ApplicationProvider.getApplicationContext(), ingredientRepository) as T)
+        (IngredientViewModel(ApplicationProvider.getApplicationContext(), ingredientRepository, NutritionAPI) as T)
 }
 
 object testNutritionApi {
