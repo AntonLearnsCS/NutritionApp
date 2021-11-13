@@ -139,12 +139,11 @@ val instantTaskExecutorRule = InstantTaskExecutorRule()
         openActionBarOverflowOrOptionsMenu(InstrumentationRegistry.getInstrumentation().context)
 
         Thread.sleep(3000)
-        //onView(withId(R.menu.overflow_menu)).perform(click())
-        onView(withText(R.id.mapGroceryReminder)).perform(click())
 
         onView(
             withText(R.string.google_maps)
         ).check(matches(isDisplayed()))
+
         onView(
             withText(R.string.about)
         ).check(matches(isDisplayed()))

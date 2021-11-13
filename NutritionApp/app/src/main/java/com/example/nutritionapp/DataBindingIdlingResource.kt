@@ -1,5 +1,6 @@
 package com.example.nutritionapp
 
+
 import android.view.View
 import androidx.databinding.DataBindingUtil
 import androidx.databinding.ViewDataBinding
@@ -55,7 +56,7 @@ class DataBindingIdlingResource : IdlingResource {
         idlingCallbacks.add(callback)
     }
 
-/**
+    /**
      * Find all binding classes in all currently available fragments.
      */
 

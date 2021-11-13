@@ -123,46 +123,38 @@ Q: Could be causing UI to hang?
          */
 
         val activityScenario = ActivityScenario.launch(AuthenticationActivity::class.java)
-        Espresso.openActionBarOverflowOrOptionsMenu(InstrumentationRegistry.getInstrumentation().context)
-
-        //onView(withId(R.menu.overflow_menu)).perform(click())
-
-        onView(
-            withText(R.string.google_maps)
-        ).check(matches(isDisplayed()))
-
-        onView(
-            withText(R.string.about)
-        ).check(matches(isDisplayed()))
-
         dataBindingIdlingResource.monitorActivity(activityScenario)
 
         onView(withId(R.id.loginButton)).check(matches(isDisplayed()))
         onView(withId(R.id.loginButton)).perform(click())
-        //onView(withId(R.id.ingredient_list_constraint_layout)).check(matches(isDisplayed()))
-//        onView(withId(R.id.search_view)).check(matches(isDisplayed()))
-        //recyclerview did not display b/c there was no data to display so the recyclerview collapsed on itself since height/width is
-        //set to wrap_content
+
+
         val listActivityScenario = ActivityScenario.launch(IngredientListActivity::class.java)
 
         //You must monitor the very first activity if it contains databinding in order to then monitor subsequent activities
         dataBindingIdlingResource.monitorActivity(listActivityScenario)
+        //onView(withId(R.menu.overflow_menu)).perform(click())
+        //Note: It seems that you can only test action bar items like a menu if you launch the activity,
+        // especially if the menu item is found in the fragment contained in the activity.
+        Thread.sleep(1000)
+        Espresso.openActionBarOverflowOrOptionsMenu(InstrumentationRegistry.getInstrumentation().context)
+        //Sleep b/c openActionBarOverflowOrOptionsMenu takes a while to take effect
+        Thread.sleep(3000)
+        onView(withText(R.string.google_maps)).check(matches(isDisplayed()))
 
-       /* val mockNavController = mock(NavController::class.java)
+        onView(withText(R.string.about)).check(matches(isDisplayed()))
 
-        // Create a graphical FragmentScenario for the TitleScreen
-        val fragmentScenario = launchFragmentInContainer<IngredientListOverview>()
+        Espresso.pressBack()
 
-        // Set the NavController property on the fragment
-        fragmentScenario.onFragment { fragment ->
-            Navigation.setViewNavController(fragment.requireView(), mockNavController)
-        }
-*/
         onView(withId(R.id.searchIngredient)).perform(replaceText("Apple"), closeSoftKeyboard())
+        onView(withId(R.id.shopping_cart)).check(matches(isDisplayed()))
+
         onView(withId(R.id.searchIngredientButton)).perform(click())
+        onView(withId(R.id.shopping_cart)).check(matches(not(isDisplayed())))
 
         //waitUntilCondition(withId(R.id.recycler_view_network), timeout = 10000L, {it != null})
         //Thread.sleep(3000)
+
         onView(withId(R.id.recycler_view_network)).check(matches(isDisplayed()))
         onView(withId(R.id.recycler_view_local))
             .check(matches(hasDescendant(withText("DescriptionQ"))))
