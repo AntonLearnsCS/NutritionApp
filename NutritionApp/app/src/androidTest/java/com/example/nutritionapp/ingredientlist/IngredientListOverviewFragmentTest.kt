@@ -138,7 +138,8 @@ val instantTaskExecutorRule = InstantTaskExecutorRule()
         //source: https://stackoverflow.com/questions/29556883/how-to-click-on-action-bar-items-when-testing-with-android-espresso
         openActionBarOverflowOrOptionsMenu(InstrumentationRegistry.getInstrumentation().context)
 
-        onView(withId(R.menu.overflow_menu)).perform(click())
+        Thread.sleep(3000)
+        //onView(withId(R.menu.overflow_menu)).perform(click())
         onView(withText(R.id.mapGroceryReminder)).perform(click())
 
         onView(

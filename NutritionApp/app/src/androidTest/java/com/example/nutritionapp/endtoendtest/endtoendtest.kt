@@ -8,6 +8,7 @@ import androidx.room.Room
 import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.core.app.ApplicationProvider.getApplicationContext
+import androidx.test.espresso.Espresso
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.IdlingRegistry
 import androidx.test.espresso.NoMatchingViewException
@@ -19,6 +20,7 @@ import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.runners.AndroidJUnit4
 
 import androidx.test.filters.LargeTest
+import androidx.test.platform.app.InstrumentationRegistry
 import com.example.nutritionapp.App
 import com.example.nutritionapp.DataBindingIdlingResource
 //import com.example.nutritionapp.DataBindingIdlingResource
@@ -121,6 +123,18 @@ Q: Could be causing UI to hang?
          */
 
         val activityScenario = ActivityScenario.launch(AuthenticationActivity::class.java)
+        Espresso.openActionBarOverflowOrOptionsMenu(InstrumentationRegistry.getInstrumentation().context)
+
+        //onView(withId(R.menu.overflow_menu)).perform(click())
+
+        onView(
+            withText(R.string.google_maps)
+        ).check(matches(isDisplayed()))
+
+        onView(
+            withText(R.string.about)
+        ).check(matches(isDisplayed()))
+
         dataBindingIdlingResource.monitorActivity(activityScenario)
 
         onView(withId(R.id.loginButton)).check(matches(isDisplayed()))
