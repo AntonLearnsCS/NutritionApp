@@ -41,7 +41,7 @@
     see what recipes you can make! The recipes listed will let you know which ingredients you are missing and gives you the
     option to set a grocery reminder which will send a notification next time you are in the vicinity of your choosen grocery. Happy cooking!
     </string>
-
+<string name="aboutMenuItem">aboutMenuItem</string>
 
 <!-- Error strings -->
 <string name="geofence_unknown_error">Unknown error: the Geofence service is not available now.</string>

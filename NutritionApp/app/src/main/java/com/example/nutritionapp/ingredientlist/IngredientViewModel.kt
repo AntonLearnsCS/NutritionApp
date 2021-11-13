@@ -191,6 +191,7 @@ class IngredientViewModel(
 
     fun loadIngredientListByNetwork() {
         wrapEspressoIdlingResource {
+
             viewModelScope.launch {
                 _viewVisibilityFlag.value = true
                 if (searchItem.value != null) {
@@ -220,12 +221,6 @@ class IngredientViewModel(
                         println("Error: ${e.message}")
                     }
 
-                } else {
-                    Toast.makeText(
-                        app,
-                        "Missing search parameter",
-                        Toast.LENGTH_SHORT
-                    ).show()
                 }
                 _viewVisibilityFlag.value = false
             }
