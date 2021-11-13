@@ -1,9 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:android="http://schemas.android.com/apk/res/android">
-
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    >
     <item
         android:id="@+id/mapGroceryReminder"
         android:title="@string/google_maps" />
-    <item android:title="@string/about" />
+
+    <item android:title="@string/about"
+        android:id="@string/aboutMenuItem"/>
 </menu>

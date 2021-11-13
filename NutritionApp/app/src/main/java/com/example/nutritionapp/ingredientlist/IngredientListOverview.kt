@@ -1,8 +1,11 @@
 package com.example.nutritionapp.ingredientlist
 
+import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.*
+import androidx.annotation.RequiresApi
+import androidx.core.view.get
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
@@ -79,7 +82,10 @@ class IngredientListOverview : Fragment() {
         binding.searchIngredientButton.setOnClickListener {
             //TODO: Clear the previous search results in recyclerView
             //networkIngredientAdapter.currentList.clear()
-
+            if (binding.searchIngredient.text.isEmpty())
+            {
+                viewModel.displayToast("Enter ingredient to search")
+            }
             viewModel.loadIngredientListByNetwork()
         }
 
@@ -137,12 +143,16 @@ class IngredientListOverview : Fragment() {
 
     //override onCreateOptionsMenu() and onOptionsItemSelected() and implement setHasOptionsMenu(true) to allow for menu; also create menu xml
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        Log.i("testMenu","$menu ")
         //Note: Must remove call to super to use navigation
         //super.onCreateOptionsMenu(menu, inflater)
         inflater.inflate(R.menu.overflow_menu, menu)
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        Log.i("testMenu","$item : ${item.contentDescription}")
+
         return NavigationUI.onNavDestinationSelected(item, requireView().findNavController())
                 || super.onOptionsItemSelected(item)    }
 
