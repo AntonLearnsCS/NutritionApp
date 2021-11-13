@@ -192,12 +192,20 @@ object Adapters {
      * Use this binding adapter to show and hide the views using boolean variables
      */
 
+    /*
+    Progress bar -> Shopping cart
+     */
     @BindingAdapter("android:fadeVisible")
     @JvmStatic
     fun setFadeVisible(view: View, visible: Boolean? = true) {
+        Log.i("test1","visible: ${visible}")
         if (view.tag == null) {
             view.tag = true
-            view.visibility = if (visible == true) View.VISIBLE else View.GONE
+            view.visibility = if (visible == true){ View.VISIBLE
+            Log.i("test1","view VISIBLE")}
+            else {
+                Log.i("test1","view GONE")
+                View.GONE}
         } else {
             view.animate().cancel()
             if (visible == true) {

@@ -50,7 +50,7 @@ class IngredientViewModel(
     }
 
     //flag for shopping cart image
-    private val _shoppingCartVisibilityFlag = MutableLiveData<Boolean>(true)
+    private val _shoppingCartVisibilityFlag = MutableLiveData(true)
     val shoppingCartVisibilityFlag: LiveData<Boolean>
         get() = _shoppingCartVisibilityFlag
 /*
@@ -191,15 +191,16 @@ class IngredientViewModel(
 
     fun loadIngredientListByNetwork() {
         wrapEspressoIdlingResource {
-
+        Log.i("test1","loadIngredientListByNetwork called")
             viewModelScope.launch {
                 _viewVisibilityFlag.value = true
                 if (searchItem.value != null) {
                     try {
+                        Log.i("test1","searchItem !null")
                         val result: wrapperIngredientListNetworkDataClass =
                             nutritionApi.nutritionService.getIngredients(searchItem.value!!)
                         Log.i("test", "search item: ${searchItem.value}")
-                        println("Total products: ${result.totalProducts}")
+                        Log.i("test1","Total products: ${result.totalProducts}")
 
                         listOfNetworkRequestedIngredients = result.products.map {
                             IngredientDataClass(
@@ -215,7 +216,6 @@ class IngredientViewModel(
                             "networkRequestSuccess",
                             Toast.LENGTH_SHORT
                         ).show()
-
                         _shoppingCartVisibilityFlag.value = false
                     } catch (e: Exception) {
                         println("Error: ${e.message}")

@@ -68,5 +68,6 @@
     <string name="shopping_cart_image">Shopping cart Image</string>
     <string name="google_maps">Google Maps</string>
     <string name="about">About</string>
+    <string name="logout_button">Logout button</string>
 
 </resources>
