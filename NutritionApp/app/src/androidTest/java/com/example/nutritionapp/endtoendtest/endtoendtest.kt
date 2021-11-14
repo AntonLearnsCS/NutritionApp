@@ -12,6 +12,7 @@ import androidx.test.espresso.Espresso
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.IdlingRegistry
 import androidx.test.espresso.NoMatchingViewException
+import androidx.test.espresso.action.ViewActions
 import androidx.test.espresso.action.ViewActions.*
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.RecyclerViewActions
@@ -26,12 +27,14 @@ import com.example.nutritionapp.DataBindingIdlingResource
 //import com.example.nutritionapp.DataBindingIdlingResource
 import com.example.nutritionapp.R
 import com.example.nutritionapp.authentication.AuthenticationActivity
+import com.example.nutritionapp.database.IngredientDataClass
 import com.example.nutritionapp.database.IngredientDataSourceInterface
 import com.example.nutritionapp.database.IngredientDatabase
 import com.example.nutritionapp.database.dto.IngredientDataClassDTO
 import com.example.nutritionapp.ingredientlist.IngredientListActivity
 import com.example.nutritionapp.ingredientlist.IngredientListOverview
 import com.example.nutritionapp.ingredientlist.IngredientViewModel
+import com.example.nutritionapp.ingredientlist.localIngredientAdapter
 import com.example.nutritionapp.monitorActivity
 import com.example.nutritionapp.network.mNutritionApi
 //import com.example.nutritionapp.monitorActivity
@@ -79,6 +82,8 @@ Q: Could be causing UI to hang?
         database.clearAllTables()
         //database.IngredientDatabaseDao.clear()
         repository = ((ApplicationProvider.getApplicationContext()) as App).taskRepository
+        repository.saveNewIngredient(IngredientDataClass(1, "DescriptionM", 2, "url", "jpeg"))
+        repository.saveNewIngredient(IngredientDataClass(2, "DescriptionQ", 3, "url", "png"))
 
         viewModel = IngredientViewModel(ApplicationProvider.getApplicationContext(),repository, nutritionApi)
     }
@@ -150,10 +155,17 @@ Q: Could be causing UI to hang?
         onView(withId(R.id.shopping_cart)).check(matches(isDisplayed()))
 
         onView(withId(R.id.searchIngredientButton)).perform(click())
-        onView(withId(R.id.shopping_cart)).check(matches(not(isDisplayed())))
+        onView(withId(R.id.progress_circular)).check(matches(isDisplayed()))
+        delay(2000)
+        onView(withId(R.id.recycler_view_local)).inRoot().check(matches(isDisplayed()))
 
-        //waitUntilCondition(withId(R.id.recycler_view_network), timeout = 10000L, {it != null})
-        //Thread.sleep(3000)
+        onView(withId(R.id.recycler_view_local)).perform(
+            RecyclerViewActions.actionOnItemAtPosition<localIngredientAdapter.ViewHolder>
+                (0, ViewActions.click())
+        )
+        delay(2000)
+        //TODO: shopping_cart still in view during end to end test
+        onView(withId(R.id.shopping_cart)).check(matches(not(isDisplayed())))
 
         onView(withId(R.id.recycler_view_network)).check(matches(isDisplayed()))
         onView(withId(R.id.recycler_view_local))

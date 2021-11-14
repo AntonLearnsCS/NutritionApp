@@ -10,7 +10,6 @@ import androidx.lifecycle.*
 import androidx.test.core.app.ApplicationProvider
 import com.example.nutritionapp.database.IngredientDataClass
 import com.example.nutritionapp.database.IngredientDataSourceInterface
-import com.example.nutritionapp.database.IngredientRepository
 import com.example.nutritionapp.database.dto.IngredientDataClassDTO
 import com.example.nutritionapp.ingredientlist.testNutritionApi.nutritionServicePost
 import com.example.nutritionapp.maps.RecipeNotificationClass
@@ -24,8 +23,6 @@ import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import kotlinx.coroutines.*
 import okhttp3.*
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
-import retrofit2.Call
-import retrofit2.Response
 
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
@@ -104,11 +101,13 @@ class IngredientViewModel(
         get() = _listOfStepsLiveData
 
 
-    var listOfNetworkRequestedIngredients: List<IngredientDataClass>? = null
 
     //Note: Don't set the MutableLiveData to null, b/c technically it is not initialized so any assignment will not change the null value
     //and variable observing this MutableLiveData will return null
-    var mutableLiveDataList: MutableLiveData<List<IngredientDataClass>> = MutableLiveData()
+    private val _mutableLiveDataList: MutableLiveData<List<IngredientDataClass>> = MutableLiveData()
+    val mutableLiveDataList : LiveData<List<IngredientDataClass>>
+    get() = _mutableLiveDataList
+
     var listOfSavedIngredients: MutableLiveData<List<IngredientDataClass>> = MutableLiveData()
 
     //two-way binding
@@ -191,7 +190,9 @@ class IngredientViewModel(
 
     fun loadIngredientListByNetwork() {
         wrapEspressoIdlingResource {
-        Log.i("test1","loadIngredientListByNetwork called")
+            var listOfNetworkRequestedIngredients: List<IngredientDataClass>? = null
+
+            Log.i("test1","loadIngredientListByNetwork called")
             viewModelScope.launch {
                 _viewVisibilityFlag.value = true
                 if (searchItem.value != null) {
@@ -209,14 +210,18 @@ class IngredientViewModel(
                             )
                         }
 
-                        mutableLiveDataList.value = listOfNetworkRequestedIngredients
+                        _mutableLiveDataList.value = listOfNetworkRequestedIngredients
 
                         Toast.makeText(
                             app,
                             "networkRequestSuccess",
                             Toast.LENGTH_SHORT
                         ).show()
-                        _shoppingCartVisibilityFlag.value = false
+
+                            val tempBool = false
+                        _shoppingCartVisibilityFlag.value = tempBool
+                        Log.i("test1","shoppingCart visibility: ${_shoppingCartVisibilityFlag.value}")
+
                     } catch (e: Exception) {
                         println("Error: ${e.message}")
                     }
