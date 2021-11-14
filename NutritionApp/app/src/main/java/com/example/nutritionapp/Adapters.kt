@@ -20,6 +20,7 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import com.example.nutritionapp.database.IngredientDataClass
 import com.example.nutritionapp.ingredientlist.localIngredientAdapter
+import com.example.nutritionapp.util.wrapEspressoIdlingResource
 import org.w3c.dom.Text
 import java.lang.StringBuilder
 
@@ -191,29 +192,30 @@ object Adapters {
     /**
      * Use this binding adapter to show and hide the views using boolean variables
      */
-
     /*
     Progress bar -> Shopping cart
-     */
+    */
+    //TODO: shopping cart image is not fading out in end to end test
     @BindingAdapter("android:fadeVisible")
     @JvmStatic
     fun setFadeVisible(view: View, visible: Boolean? = true) {
-        Log.i("test1","visible: ${visible}")
-        if (view.tag == null) {
-            view.tag = true
-            view.visibility = if (visible == true){ View.VISIBLE
-            Log.i("test1","view VISIBLE")}
+        wrapEspressoIdlingResource {
+            //id: 2131362152 is the progress bar and id: 2131362205 is the shopping_cart image
+            Log.i("test1","view: ${view.id}, visible: $visible")
+            if (view.tag == null) {
+                view.tag = true
+                view.visibility = if (visible == true) View.VISIBLE else View.GONE
+            }
             else {
-                Log.i("test1","view GONE")
-                View.GONE}
-        } else {
-            view.animate().cancel()
-            if (visible == true) {
-                if (view.visibility == View.GONE)
-                    view.fadeIn()
-            } else {
-                if (view.visibility == View.VISIBLE)
-                    view.fadeOut()
+                view.animate().cancel()
+                if (visible == true) {
+                    if (view.visibility == View.GONE)
+                        view.fadeIn()
+                }
+                else {
+                    if (view.visibility == View.VISIBLE)
+                        view.fadeOut()
+                }
             }
         }
     }
