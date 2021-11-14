@@ -157,7 +157,11 @@ Q: Could be causing UI to hang?
         onView(withId(R.id.searchIngredientButton)).perform(click())
         onView(withId(R.id.progress_circular)).check(matches(isDisplayed()))
         delay(2000)
-        onView(withId(R.id.recycler_view_local)).inRoot().check(matches(isDisplayed()))
+
+        //TODO: recycler_view_local not recognized despite being visible on screen
+        onView(withId(R.id.recycler_view_local)).check(matches(isDisplayed()))
+
+
 
         onView(withId(R.id.recycler_view_local)).perform(
             RecyclerViewActions.actionOnItemAtPosition<localIngredientAdapter.ViewHolder>
