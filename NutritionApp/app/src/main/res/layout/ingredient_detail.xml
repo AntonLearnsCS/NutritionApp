@@ -32,7 +32,7 @@
             android:layout_width="309dp"
             android:layout_height="321dp"
             android:layout_marginBottom="60dp"
-            android:contentDescription="@string/ingredient_image"
+            android:contentDescription="@{@string/ingredient_detail_description(selectedIngredientViewModel.selectedIngredient.name)}"
             app:displayImage="@{selectedIngredientViewModel.selectedIngredient.imageUrl}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
