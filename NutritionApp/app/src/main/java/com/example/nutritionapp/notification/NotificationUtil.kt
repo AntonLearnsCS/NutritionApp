@@ -6,17 +6,16 @@ import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import android.os.Build
-import android.os.Bundle
 import android.util.Log
 import androidx.core.app.NotificationCompat
 import androidx.core.app.TaskStackBuilder
 import com.example.nutritionapp.BuildConfig
 import com.example.nutritionapp.R
-import com.example.nutritionapp.maps.RecipeNotificationClass
+import com.example.nutritionapp.maps.RecipeNotificationClassDTO
 
 private const val NOTIFICATION_CHANNEL_ID = BuildConfig.APPLICATION_ID + ".channel"
 
-fun sendNotification(context: Context, recipeNotification: RecipeNotificationClass) {
+fun sendNotification(context: Context, recipeNotificationDTO: RecipeNotificationClassDTO) {
     Log.i("test","sendNotification called")
     val notificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
 
@@ -34,7 +33,7 @@ fun sendNotification(context: Context, recipeNotification: RecipeNotificationCla
     }
 
     val intent = Intent(context,NotificationDescriptionActivity::class.java)//ReminderDescriptionActivity.newIntent(context, reminderDataItem)
-    intent.putExtra("EXTRA_recipeNotification",recipeNotification)
+    intent.putExtra("EXTRA_recipeNotification",recipeNotificationDTO)
     //create a pending intent that opens NotificationDescriptionActivity when the user clicks on the notification
     val stackBuilder = TaskStackBuilder.create(context)
         .addParentStack(NotificationDescriptionActivity::class.java)
@@ -46,13 +45,13 @@ fun sendNotification(context: Context, recipeNotification: RecipeNotificationCla
 //    build the notification object with the data to be shown
     val notification = NotificationCompat.Builder(context, NOTIFICATION_CHANNEL_ID)
         .setSmallIcon(R.mipmap.ic_launcher)
-        .setContentTitle(recipeNotification.recipeName)
-        .setContentText(recipeNotification.missingIngredients)
+        .setContentTitle(recipeNotificationDTO.recipeName)
+        .setContentText(recipeNotificationDTO.missingIngredients)
         .setContentIntent(notificationPendingIntent)
         .setAutoCancel(true)
         .build()
 
-    println("Extra Item: " + recipeNotification.recipeName)
+    println("Extra Item: " + recipeNotificationDTO.recipeName)
 
     notificationManager.notify(getUniqueId(), notification)
 }

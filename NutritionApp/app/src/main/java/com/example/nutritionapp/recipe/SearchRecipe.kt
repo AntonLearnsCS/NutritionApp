@@ -1,11 +1,13 @@
 package com.example.nutritionapp.recipe
 
+import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.activity.OnBackPressedCallback
+import androidx.annotation.RequiresApi
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
@@ -31,6 +33,7 @@ private val adapter = recipeAdapter(recipeAdapter.RecipeIngredientListener { rec
 
 val viewModel by sharedViewModel<IngredientViewModel>()
 
+    @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,

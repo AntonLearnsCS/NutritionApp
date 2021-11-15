@@ -1,20 +1,14 @@
 package com.example.nutritionapp.localdatatest
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.Observer
 import androidx.room.Room
-import androidx.test.core.app.ApplicationProvider
 import androidx.test.core.app.ApplicationProvider.getApplicationContext
 import com.example.nutritionapp.database.IngredientDatabase
 import com.example.nutritionapp.database.dto.IngredientDataClassDTO
 import com.example.nutritionapp.endtoendtest.MainCoroutineRule
-import com.example.nutritionapp.maps.RecipeNotificationClass
-import com.example.nutritionapp.recipe.RecipeIngredientResult
-import com.example.nutritionapp.util.getOrAwaitValue
+import com.example.nutritionapp.maps.RecipeNotificationClassDTO
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.asExecutor
-import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.runBlockingTest
 import org.hamcrest.CoreMatchers.*
 import org.hamcrest.MatcherAssert.assertThat
@@ -24,8 +18,6 @@ import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
-import java.util.concurrent.CountDownLatch
-import java.util.concurrent.TimeUnit
 
 @RunWith(JUnit4::class)
 class daoTest {
@@ -98,8 +90,8 @@ class daoTest {
     @Test
     @ExperimentalCoroutinesApi
     fun testDao_ClearRecipeNotification_ResultIsNull() = runBlockingTest{
-        val ingredientItem = RecipeNotificationClass("name","none","someId")
-        val ingredientItem1 = RecipeNotificationClass("name1","none1","someId1")
+        val ingredientItem = RecipeNotificationClassDTO("name","none","someId")
+        val ingredientItem1 = RecipeNotificationClassDTO("name1","none1","someId1")
 
         //given - a saved ingredient item
         database.IngredientDatabaseDao.saveNotificationRecipe(ingredientItem)

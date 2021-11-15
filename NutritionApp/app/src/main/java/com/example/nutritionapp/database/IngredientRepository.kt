@@ -3,7 +3,7 @@ package com.example.nutritionapp.database
 import android.util.Log
 import com.example.nutritionapp.util.Result
 import com.example.nutritionapp.database.dto.IngredientDataClassDTO
-import com.example.nutritionapp.maps.RecipeNotificationClass
+import com.example.nutritionapp.maps.RecipeNotificationClassDTO
 import com.example.nutritionapp.util.wrapEspressoIdlingResource
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
@@ -106,7 +106,7 @@ class IngredientRepository(private val dao: IngredientDao,
         }
     }
 
-    override suspend fun getNotificationRecipeById(key: String): RecipeNotificationClass? {
+    override suspend fun getNotificationRecipeById(key: String): RecipeNotificationClassDTO? {
         wrapEspressoIdlingResource {
             return withContext(IOdispatcher)
             {
@@ -116,10 +116,10 @@ class IngredientRepository(private val dao: IngredientDao,
         }
     }
 
-    override suspend fun saveNotificationRecipe(recipe: RecipeNotificationClass) {
+    override suspend fun saveNotificationRecipe(recipeDTO: RecipeNotificationClassDTO) {
 wrapEspressoIdlingResource {
     withContext(IOdispatcher)
     {
-        dao.saveNotificationRecipe(recipe)
+        dao.saveNotificationRecipe(recipeDTO)
     } }}
 }

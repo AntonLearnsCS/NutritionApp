@@ -6,8 +6,7 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
-import com.example.nutritionapp.maps.NoneRecipeClass
-import com.example.nutritionapp.maps.RecipeNotificationClass
+import com.example.nutritionapp.maps.RecipeNotificationClassDTO
 
 @Dao
 interface IngredientDao {
@@ -82,13 +81,13 @@ interface IngredientDao {
 
 
     @Query("SELECT * from RecipeEntity WHERE mId = :key")
-    suspend fun getNotificationRecipeById(key: String): RecipeNotificationClass?
+    suspend fun getNotificationRecipeById(key: String): RecipeNotificationClassDTO?
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun saveNotificationRecipe(recipe: RecipeNotificationClass)
+    suspend fun saveNotificationRecipe(recipeDTO: RecipeNotificationClassDTO)
 
     @Query("SELECT * FROM RecipeEntity")
-    suspend fun getAllRecipeNotification() : List<RecipeNotificationClass>?
+    suspend fun getAllRecipeNotification() : List<RecipeNotificationClassDTO>?
 
     @Query("DELETE FROM RecipeEntity WHERE mId = :key")
     suspend fun deleteRecipeNotificationById(key : String)

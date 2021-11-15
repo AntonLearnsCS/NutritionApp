@@ -74,6 +74,9 @@ class IngredientDetailTest {
         onView(withId(R.id.ingredient_detail_name)).check(matches(withText(viewModel.selectedIngredient.value?.name)))
         onView(withContentDescription("Image of: ${viewModel.selectedIngredient.value!!.name}")).check(matches(isDisplayed()))
 
+            //test that image placeholder appears
+            onView(withId(R.drawable.ic_broken_image)).check(matches(isDisplayed()))
+
         onView(withId(R.id.addIngredientFAB)).perform(click())
 
         verify(navController.navigate(IngredientDetailDirections.actionIngredientDetailToIngredientListOverview()))

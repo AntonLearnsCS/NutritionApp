@@ -24,7 +24,6 @@ import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import com.example.nutritionapp.R
 import com.example.nutritionapp.databinding.MapGroceryReminderBinding
@@ -35,7 +34,6 @@ import com.google.android.gms.common.api.ResolvableApiException
 import com.google.android.gms.location.*
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.material.snackbar.Snackbar
-import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 import timber.log.Timber
 import java.lang.StringBuilder
@@ -48,7 +46,7 @@ private lateinit var binding : MapGroceryReminderBinding
         android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.Q
     private val GEOFENCE_RADIUS_IN_METERS = 4800F
 
-    private var recipeNotificationClass : RecipeNotificationClass? = null
+    private var recipeNotificationClassDTO : RecipeNotificationClassDTO? = null
 
     //Get the view model this time as a single to be shared with the another fragment, note the "override" tag
     //Note: We don't use "override val _viewModel: SaveReminderViewModel = get<SaveReminderViewModel>()"
@@ -178,21 +176,21 @@ private lateinit var binding : MapGroceryReminderBinding
         binding.saveReminder.setOnClickListener {
 
             if (recipeIngredientResult != null) {
-                recipeNotificationClass = RecipeNotificationClass(recipeIngredientResult!!.title, _viewModel.missingIngredients.value.toString())
+                recipeNotificationClassDTO = RecipeNotificationClassDTO(recipeIngredientResult!!.title, _viewModel.missingIngredients.value.toString())
             }
             else
             {
-                recipeNotificationClass = RecipeNotificationClass("Recipe", binding.missingIngredients.text.toString())
+                recipeNotificationClassDTO = RecipeNotificationClassDTO("Recipe", binding.missingIngredients.text.toString())
             }
 
-            Log.i("test","RecipeNotificationClass Id: ${recipeNotificationClass!!.mId}")
+            Log.i("test","RecipeNotificationClass Id: ${recipeNotificationClassDTO!!.mId}")
 
-            intent.putExtra("RecipeNotificationClass", recipeNotificationClass)
+            intent.putExtra("RecipeNotificationClass", recipeNotificationClassDTO)
 
             //set to null so that user can go to Maps from menu and have empty list instead of pre-filled list
             _viewModel.setMissingIngredientsNull()
 
-            _viewModel.saveRecipeNotification(recipeNotificationClass!!)
+            _viewModel.saveRecipeNotification(recipeNotificationClassDTO!!)
 
             checkPermission()
         }
@@ -264,10 +262,10 @@ private lateinit var binding : MapGroceryReminderBinding
         // Build the Geofence Object
         val geofence = latLng?.latitude?.let {
             latLng?.longitude?.let { it1 ->
-                Log.i("test","requestId geofence: ${recipeNotificationClass?.mId}")
+                Log.i("test","requestId geofence: ${recipeNotificationClassDTO?.mId}")
                 Geofence.Builder()
                     // Set the request ID, string to identify the geofence. Depends on whether we are selecting a recipe or a non-recipe
-                    .setRequestId(recipeNotificationClass?.mId) //reminderDataItem.id)//_viewModel.latLng.value?.latitude.toString())
+                    .setRequestId(recipeNotificationClassDTO?.mId) //reminderDataItem.id)//_viewModel.latLng.value?.latitude.toString())
                     // Set the circular region of this geofence.
                     .setCircularRegion(
                         it,

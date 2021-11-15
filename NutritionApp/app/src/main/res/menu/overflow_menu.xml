@@ -2,10 +2,14 @@
 <menu xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:android="http://schemas.android.com/apk/res/android"
     >
+<!-- Note: For a menu, the destination i.d must match the id of the fragment
+ in the Nav graph. So menus are tied to the Nav graph. -->
     <item
         android:id="@+id/mapGroceryReminder"
         android:title="@string/google_maps" />
 
-    <item android:title="@string/about"
-        android:id="@string/aboutMenuItem"/>
+    <item
+        android:id="@+id/aboutFragment"
+        android:title="@string/about"
+        />
 </menu>

@@ -1,9 +1,15 @@
 package com.example.nutritionapp.ingredientlist
 
 //import androidx.test.core.app.ApplicationProvider
+
 import android.app.Application
+import android.content.Context
+import android.net.ConnectivityManager
+import android.net.NetworkCapabilities
+import android.os.Build
 import android.util.Log
 import android.widget.Toast
+import androidx.annotation.RequiresApi
 import androidx.databinding.Observable
 import androidx.databinding.PropertyChangeRegistry
 import androidx.lifecycle.*
@@ -12,7 +18,7 @@ import com.example.nutritionapp.database.IngredientDataClass
 import com.example.nutritionapp.database.IngredientDataSourceInterface
 import com.example.nutritionapp.database.dto.IngredientDataClassDTO
 import com.example.nutritionapp.ingredientlist.testNutritionApi.nutritionServicePost
-import com.example.nutritionapp.maps.RecipeNotificationClass
+import com.example.nutritionapp.maps.RecipeNotificationClassDTO
 import com.example.nutritionapp.network.*
 import com.example.nutritionapp.recipe.*
 import com.example.nutritionapp.util.Result
@@ -23,12 +29,12 @@ import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import kotlinx.coroutines.*
 import okhttp3.*
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
-
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
 import retrofit2.http.POST
 import java.io.IOException
 import java.net.URLEncoder
+
 
 /*
 To get context inside a ViewModel we can either extend AndroidViewModel. Do not use ApplicationProvider in production code, only in tests
@@ -39,7 +45,7 @@ val selectedProductName = MutableLiveData<String>("Apple,flour,sugar")
 
 class IngredientViewModel(
     val app: Application,
-    val ingredientRepository: IngredientDataSourceInterface, val nutritionApi : mNutritionApi
+    val ingredientRepository: IngredientDataSourceInterface, val nutritionApi: mNutritionApi
 ) : AndroidViewModel(app), Observable {
 
     val nutritionService: IngredientsApiInterface by lazy {
@@ -130,6 +136,7 @@ class IngredientViewModel(
     val listOfIngredientsString = MutableLiveData<String>()
 
     //input is list of names i.e {"Snapple Apple flavored drink 4oz","Mott's Apple pudding 3oz"}
+    @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
     fun detectFoodInText(listName: List<String>) {
         wrapEspressoIdlingResource {
             viewModelScope.launch {
@@ -150,6 +157,10 @@ class IngredientViewModel(
                         }
                     }
                 } catch (e: java.lang.Exception) {
+                    if(!isOnline(app))
+                    {
+                        displayToast("Not connected to internet")
+                    }
                     Log.i("Exception", "$e")
                 }
 
@@ -162,6 +173,7 @@ class IngredientViewModel(
         }
     }
 
+    @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
     fun findRecipeByIngredients() {
         val listOfRecipes = mutableListOf<RecipeIngredientResult>()
         wrapEspressoIdlingResource {
@@ -181,27 +193,61 @@ class IngredientViewModel(
                     _listOfRecipesLiveData.value = listOfRecipes
 
                 } catch (e: java.lang.Exception) {
+                    if (!isOnline(app)) {
+                        Log.i("test","not online")
+                        displayToast("Not connected to internet")
+                    }
+
                     Log.i("Exception", "$e")
                 }
                 _viewVisibilityFlag.value = false
             }
         }
     }
+    //source: https://stackoverflow.com/questions/51141970/check-internet-connectivity-android-in-kotlin
+    @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
+    fun isOnline(context: Context): Boolean {
+        Log.i("test","isOnline called")
+        val connectivityManager =
+            context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
 
+            val capabilities =
+                if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
+                    Log.i("test",">M")
+                    connectivityManager.getNetworkCapabilities(connectivityManager.activeNetwork)
+                } else {
+                    TODO("VERSION.SDK_INT < M")
+                }
+            if (capabilities != null) {
+                if (capabilities.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR)) {
+                    Log.i("Internet", "NetworkCapabilities.TRANSPORT_CELLULAR")
+                    return true
+                } else if (capabilities.hasTransport(NetworkCapabilities.TRANSPORT_WIFI)) {
+                    Log.i("Internet", "NetworkCapabilities.TRANSPORT_WIFI")
+                    return true
+                } else if (capabilities.hasTransport(NetworkCapabilities.TRANSPORT_ETHERNET)) {
+                    Log.i("Internet", "NetworkCapabilities.TRANSPORT_ETHERNET")
+                    return true
+                }
+            }
+
+        return false
+    }
+    @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
     fun loadIngredientListByNetwork() {
         wrapEspressoIdlingResource {
             var listOfNetworkRequestedIngredients: List<IngredientDataClass>? = null
 
-            Log.i("test1","loadIngredientListByNetwork called")
+            Log.i("test1", "loadIngredientListByNetwork called")
             viewModelScope.launch {
                 _viewVisibilityFlag.value = true
                 if (searchItem.value != null) {
                     try {
-                        Log.i("test1","searchItem !null")
+                        Log.i("test1", "searchItem !null")
                         val result: wrapperIngredientListNetworkDataClass =
                             nutritionApi.nutritionService.getIngredients(searchItem.value!!)
                         Log.i("test", "search item: ${searchItem.value}")
-                        Log.i("test1","Total products: ${result.totalProducts}")
+                        Log.i("test1", "Total products: ${result.totalProducts}")
 
                         listOfNetworkRequestedIngredients = result.products.map {
                             IngredientDataClass(
@@ -220,9 +266,18 @@ class IngredientViewModel(
 
                             val tempBool = false
                         _shoppingCartVisibilityFlag.value = tempBool
-                        Log.i("test1","shoppingCart visibility: ${_shoppingCartVisibilityFlag.value}")
+                        Log.i(
+                            "test1",
+                            "shoppingCart visibility: ${_shoppingCartVisibilityFlag.value}"
+                        )
 
                     } catch (e: Exception) {
+
+                        if (!isOnline(app)) {
+                            Log.i("test","not online")
+                            displayToast("Not connected to internet")
+                        }
+
                         println("Error: ${e.message}")
                     }
 
@@ -236,7 +291,7 @@ class IngredientViewModel(
     {
         Toast.makeText(
             app,
-            "$mString",
+            mString,
             Toast.LENGTH_SHORT
         ).show()
     }
@@ -249,11 +304,11 @@ class IngredientViewModel(
         _saveRecipeNotificationFlag.value = boolean
     }
 
-    fun saveRecipeNotification(recipeNotification: RecipeNotificationClass)
+    fun saveRecipeNotification(recipeNotificationDTO: RecipeNotificationClassDTO)
     {
 
         viewModelScope.launch {
-            ingredientRepository.saveNotificationRecipe(recipeNotification)
+            ingredientRepository.saveNotificationRecipe(recipeNotificationDTO)
             _saveRecipeNotificationFlag.value = true
         }
     }
@@ -316,7 +371,9 @@ class IngredientViewModel(
 
                         _listOfStepsLiveData.value = listOfSteps
 
-                        _missingIngredients.value = listOfIngredientNameInInstruction.minus(foodInText)
+                        _missingIngredients.value = listOfIngredientNameInInstruction.minus(
+                            foodInText
+                        )
 
                         mFlag.value = true
                     }
@@ -336,7 +393,7 @@ class IngredientViewModel(
     }
 
     fun getLocalIngredientList() { //need DAO and repository
-        Log.i("test","getLocalList called")
+        Log.i("test", "getLocalList called")
         wrapEspressoIdlingResource {
             viewModelScope.launch {
 
@@ -435,7 +492,7 @@ class IngredientViewModel(
     }
 
     fun setNavigateToRecipeFlag(boolean: Boolean) {
-        Log.i("test1","setNavigateToRecipeFlag called")
+        Log.i("test1", "setNavigateToRecipeFlag called")
         _navigateToRecipeFlag.value = boolean
     }
 
@@ -451,7 +508,7 @@ class IngredientViewModel(
 
     fun decreaseQuantityCounter()
     {
-        Log.i("test","decrease button called, ")
+        Log.i("test", "decrease button called, ")
         if (_quantityCounter.value!! > 0)
         {
             //note - we need to reassign the mutableLiveData to a new variable for observers to observe a change in value
@@ -553,11 +610,15 @@ interface IngredientsApiInterfacePost {
 }
 
 @Suppress("UNCHECKED_CAST")
-class IngredientViewModelFactory (
+class IngredientViewModelFactory(
     private val ingredientRepository: IngredientDataSourceInterface
 ) : ViewModelProvider.NewInstanceFactory() {
     override fun <T : ViewModel> create(modelClass: Class<T>) =
-        (IngredientViewModel(ApplicationProvider.getApplicationContext(), ingredientRepository, NutritionAPI) as T)
+        (IngredientViewModel(
+            ApplicationProvider.getApplicationContext(),
+            ingredientRepository,
+            NutritionAPI
+        ) as T)
 }
 
 object testNutritionApi {

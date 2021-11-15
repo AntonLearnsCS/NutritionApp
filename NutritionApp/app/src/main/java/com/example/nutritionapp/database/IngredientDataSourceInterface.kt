@@ -1,8 +1,7 @@
 package com.example.nutritionapp.database
 import com.example.nutritionapp.util.Result
 import com.example.nutritionapp.database.dto.IngredientDataClassDTO
-import com.example.nutritionapp.maps.NoneRecipeClass
-import com.example.nutritionapp.maps.RecipeNotificationClass
+import com.example.nutritionapp.maps.RecipeNotificationClassDTO
 
 interface IngredientDataSourceInterface {
 
@@ -14,7 +13,7 @@ interface IngredientDataSourceInterface {
     suspend fun deleteAllIngredients()
     suspend fun deleteTaskIngredient(id: Int)
 
-    suspend fun getNotificationRecipeById (key: String) : RecipeNotificationClass?
-    suspend fun saveNotificationRecipe (recipe : RecipeNotificationClass)
+    suspend fun getNotificationRecipeById (key: String) : RecipeNotificationClassDTO?
+    suspend fun saveNotificationRecipe (recipeDTO : RecipeNotificationClassDTO)
     suspend fun clearNotificationRecipe()
 }
