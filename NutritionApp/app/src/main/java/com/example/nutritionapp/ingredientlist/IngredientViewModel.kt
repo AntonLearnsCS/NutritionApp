@@ -407,6 +407,8 @@ class IngredientViewModel(
         get() = _navigateToDetail
 
     fun setNavigateToDetail(ingredientItem: IngredientDataClass) {
+        selectedIngredient.value = ingredientItem
+        _quantityCounter.value = ingredientItem.quantity
         _navigateToDetail.value = ingredientItem
     }
 

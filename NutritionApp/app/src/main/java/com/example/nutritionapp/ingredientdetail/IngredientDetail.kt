@@ -20,7 +20,7 @@ class IngredientDetail : Fragment() {
     private lateinit var binding: IngredientDetailBinding
     //share viewModel
      val viewModel by sharedViewModel<IngredientViewModel>()
-    private var counter = 0
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
