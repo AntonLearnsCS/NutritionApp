@@ -1,5 +1,7 @@
 package com.example.nutritionapp.endtoendtest
 
+import android.app.Activity
+import android.os.Bundle
 import android.view.View
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.fragment.app.testing.launchFragmentInContainer
@@ -16,16 +18,16 @@ import androidx.test.espresso.action.ViewActions
 import androidx.test.espresso.action.ViewActions.*
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.RecyclerViewActions
+import androidx.test.espresso.matcher.RootMatchers
 import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.espresso.matcher.ViewMatchers.*
+import androidx.test.ext.junit.rules.activityScenarioRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
 
 import androidx.test.filters.LargeTest
 import androidx.test.platform.app.InstrumentationRegistry
-import com.example.nutritionapp.App
-import com.example.nutritionapp.DataBindingIdlingResource
+import com.example.nutritionapp.*
 //import com.example.nutritionapp.DataBindingIdlingResource
-import com.example.nutritionapp.R
 import com.example.nutritionapp.authentication.AuthenticationActivity
 import com.example.nutritionapp.database.IngredientDataClass
 import com.example.nutritionapp.database.IngredientDataSourceInterface
@@ -35,14 +37,15 @@ import com.example.nutritionapp.ingredientlist.IngredientListActivity
 import com.example.nutritionapp.ingredientlist.IngredientListOverview
 import com.example.nutritionapp.ingredientlist.IngredientViewModel
 import com.example.nutritionapp.ingredientlist.localIngredientAdapter
-import com.example.nutritionapp.monitorActivity
 import com.example.nutritionapp.network.mNutritionApi
 //import com.example.nutritionapp.monitorActivity
 import com.example.nutritionapp.util.EspressoIdleResource
+import com.google.android.material.internal.ContextUtils.getActivity
 import kotlinx.coroutines.*
 import kotlinx.coroutines.test.runBlockingTest
 import org.hamcrest.CoreMatchers.*
 import org.hamcrest.Matcher
+import org.hamcrest.Matchers
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
@@ -133,11 +136,11 @@ Q: Could be causing UI to hang?
         onView(withId(R.id.loginButton)).check(matches(isDisplayed()))
         onView(withId(R.id.loginButton)).perform(click())
 
-
         val listActivityScenario = ActivityScenario.launch(IngredientListActivity::class.java)
 
         //You must monitor the very first activity if it contains databinding in order to then monitor subsequent activities
         dataBindingIdlingResource.monitorActivity(listActivityScenario)
+
         //onView(withId(R.menu.overflow_menu)).perform(click())
         //Note: It seems that you can only test action bar items like a menu if you launch the activity,
         // especially if the menu item is found in the fragment contained in the activity.
@@ -148,8 +151,10 @@ Q: Could be causing UI to hang?
         onView(withText(R.string.google_maps)).check(matches(isDisplayed()))
 
         onView(withText(R.string.about)).check(matches(isDisplayed()))
-
         Espresso.pressBack()
+
+       // val scenario = launchFragmentInContainer<IngredientListOverview>(Bundle(), R.style.AppTheme)
+       // dataBindingIdlingResource.monitorFragment(scenario)
 
         onView(withId(R.id.searchIngredient)).perform(replaceText("Apple"), closeSoftKeyboard())
         onView(withId(R.id.shopping_cart)).check(matches(isDisplayed()))
@@ -158,15 +163,24 @@ Q: Could be causing UI to hang?
         onView(withId(R.id.progress_circular)).check(matches(isDisplayed()))
         delay(2000)
 
+
         //TODO: recycler_view_local not recognized despite being visible on screen
         onView(withId(R.id.recycler_view_local)).check(matches(isDisplayed()))
 
+/* Tried:
+ onView(withId(R.id.recycler_view_local)).inRoot(RootMatchers.withDecorView
+            (`is`(getActivity(listActivityScenario)?.window?.decorView))).check(matches(isDisplayed()))
+
+ onView(withId(R.id.recycler_view_local)).inRoot(RootMatchers.withDecorView(not(`is`(ContextUtils.getActivity
+ (getApplicationContext())?.getWindow()?.getDecorView())))).check(matches(isDisplayed()))
+ */
 
 
         onView(withId(R.id.recycler_view_local)).perform(
             RecyclerViewActions.actionOnItemAtPosition<localIngredientAdapter.ViewHolder>
                 (0, ViewActions.click())
         )
+
         delay(2000)
         //TODO: shopping_cart still in view during end to end test
         onView(withId(R.id.shopping_cart)).check(matches(not(isDisplayed())))
@@ -197,6 +211,7 @@ Q: Could be causing UI to hang?
         activityScenario.close()
         listActivityScenario.close()
     }
+
     var DEFAULT_WAIT_TIMEOUT = 10000L
     var DEFAULT_SLEEP_INTERVAL = 10000L
     fun waitUntilCondition(matcher: Matcher<View>, timeout: Long = DEFAULT_WAIT_TIMEOUT, condition: (View?) -> Boolean) {
@@ -220,5 +235,14 @@ Q: Could be causing UI to hang?
             }
         }
         throw exception
+    }
+
+    // get activity context
+    private fun getActivity(activityScenario: ActivityScenario<IngredientListActivity>): Activity? {
+        var activity: Activity? = null
+        activityScenario.onActivity {
+            activity = it
+        }
+        return activity
     }
 }
