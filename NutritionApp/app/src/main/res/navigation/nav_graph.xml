@@ -65,4 +65,8 @@
             app:nullable="true"
             android:defaultValue="@null" />
     </fragment>
+    <fragment
+        android:id="@+id/aboutFragment"
+        android:name="com.example.nutritionapp.aboutFragment"
+        android:label="aboutFragment" />
 </navigation>

@@ -8,7 +8,7 @@ import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import com.example.nutritionapp.databinding.AboutFragmentBinding
 
-class AboutFragment : Fragment() {
+class aboutFragment : Fragment() {
     private lateinit var binding : AboutFragmentBinding
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -16,7 +16,6 @@ class AboutFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         binding = DataBindingUtil.inflate(inflater,R.layout.about_fragment,container,false)
-
 
     return binding.root
     }

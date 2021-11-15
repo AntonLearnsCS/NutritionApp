@@ -18,10 +18,9 @@ import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import com.example.nutritionapp.database.dto.IngredientDataClassDTO
-import com.example.nutritionapp.maps.NoneRecipeClass
-import com.example.nutritionapp.maps.RecipeNotificationClass
+import com.example.nutritionapp.maps.RecipeNotificationClassDTO
 
-@Database(entities = [IngredientDataClassDTO::class, RecipeNotificationClass::class], version = 4, exportSchema = false)
+@Database(entities = [IngredientDataClassDTO::class, RecipeNotificationClassDTO::class], version = 4, exportSchema = false)
 abstract class IngredientDatabase : RoomDatabase() {
 
     /**

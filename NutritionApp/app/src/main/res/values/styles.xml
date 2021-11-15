@@ -5,8 +5,8 @@
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
-        <item name="android:fontFamily">@font/lobster_two</item>
-        <item name="fontFamily">@font/lobster_two</item>
+        <item name="android:fontFamily">@font/acme</item>
+        <item name="fontFamily">@font/acme</item>
         <item name="android:windowBackground">@color/white</item>
     </style>
 <!-- We need to specifiy android:fontFamily and fontFamily b/c our parent theme uses both-->

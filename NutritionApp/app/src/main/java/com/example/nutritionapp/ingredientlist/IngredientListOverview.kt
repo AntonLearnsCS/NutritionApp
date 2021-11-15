@@ -1,10 +1,12 @@
 package com.example.nutritionapp.ingredientlist
 
+import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.*
 import androidx.annotation.RequiresApi
+import androidx.core.app.ActivityCompat
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
@@ -37,6 +39,7 @@ class IngredientListOverview : Fragment() {
     val viewModel by sharedViewModel<IngredientViewModel>()
     private lateinit var binding: IngredientListRecyclerviewBinding
 
+    @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -85,6 +88,7 @@ class IngredientListOverview : Fragment() {
             {
                 viewModel.displayToast("Enter ingredient to search")
             }
+
             viewModel.loadIngredientListByNetwork()
         }
 

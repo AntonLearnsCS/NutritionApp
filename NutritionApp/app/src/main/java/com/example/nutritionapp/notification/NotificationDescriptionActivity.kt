@@ -1,12 +1,11 @@
 package com.example.nutritionapp.notification
 
 import android.os.Bundle
-import android.os.PersistableBundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import com.example.nutritionapp.R
 import com.example.nutritionapp.databinding.NotificationDescriptionActivityBinding
-import com.example.nutritionapp.maps.RecipeNotificationClass
+import com.example.nutritionapp.maps.RecipeNotificationClassDTO
 
 class NotificationDescriptionActivity : AppCompatActivity() {
     private lateinit var binding : NotificationDescriptionActivityBinding
@@ -15,7 +14,7 @@ class NotificationDescriptionActivity : AppCompatActivity() {
         setContentView(R.layout.notification_description_activity)
         binding = DataBindingUtil.setContentView(this, R.layout.notification_description_activity)
 
-        val bundleItem = intent.getSerializableExtra("EXTRA_recipeNotification") as RecipeNotificationClass//intent.getSerializableExtra("RecipeNotificationClass") as RecipeNotificationClass
+        val bundleItem = intent.getSerializableExtra("EXTRA_recipeNotification") as RecipeNotificationClassDTO//intent.getSerializableExtra("RecipeNotificationClass") as RecipeNotificationClass
 
         binding.recipeNotification = bundleItem
 

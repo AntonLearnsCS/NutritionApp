@@ -70,5 +70,6 @@
     <string name="google_maps">Google Maps</string>
     <string name="about">About</string>
     <string name="logout_button">Logout button</string>
+    <string name="nutrition_app">Nutrition App</string>
 
 </resources>

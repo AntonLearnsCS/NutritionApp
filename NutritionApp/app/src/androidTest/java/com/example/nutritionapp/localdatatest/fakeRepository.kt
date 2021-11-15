@@ -2,23 +2,19 @@ package com.example.nutritionapp.localdatatest
 
 import android.util.Log
 import androidx.lifecycle.MutableLiveData
-import com.example.nutritionapp.database.IngredientDao
 import com.example.nutritionapp.database.IngredientDataClass
 import com.example.nutritionapp.database.IngredientDataSourceInterface
 import com.example.nutritionapp.util.Result
 import com.example.nutritionapp.database.dto.IngredientDataClassDTO
-import com.example.nutritionapp.maps.RecipeNotificationClass
+import com.example.nutritionapp.maps.RecipeNotificationClassDTO
 import com.example.nutritionapp.util.wrapEspressoIdlingResource
-import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
 import java.util.LinkedHashMap
 
 class fakeIngredientRepository() :
     IngredientDataSourceInterface {
 
     var ingredientServiceData: LinkedHashMap<String, IngredientDataClassDTO> = LinkedHashMap()
-    var notificationServiceData: LinkedHashMap<String, RecipeNotificationClass> = LinkedHashMap()
+    var notificationServiceDataDTO: LinkedHashMap<String, RecipeNotificationClassDTO> = LinkedHashMap()
 
     private val observableIngredients =
         MutableLiveData<kotlin.Result<List<IngredientDataClassDTO>>>()
@@ -123,7 +119,7 @@ class fakeIngredientRepository() :
 
     override suspend fun clearNotificationRecipe() {
         wrapEspressoIdlingResource {
-            notificationServiceData.clear()
+            notificationServiceDataDTO.clear()
             /*withContext(IOdispatcher)
             {
                 dao.clearRecipeEntity()
@@ -141,9 +137,9 @@ class fakeIngredientRepository() :
         }
     }
 
-    override suspend fun getNotificationRecipeById(key: String): RecipeNotificationClass? {
+    override suspend fun getNotificationRecipeById(key: String): RecipeNotificationClassDTO? {
         wrapEspressoIdlingResource {
-            return notificationServiceData[key]
+            return notificationServiceDataDTO[key]
             /*return withContext(IOdispatcher)
             {
                 val result = dao.getNotificationRecipeById(key)
@@ -152,9 +148,9 @@ class fakeIngredientRepository() :
         }
     }
 
-    override suspend fun saveNotificationRecipe(recipe: RecipeNotificationClass) {
+    override suspend fun saveNotificationRecipe(recipeDTO: RecipeNotificationClassDTO) {
         wrapEspressoIdlingResource {
-            notificationServiceData[recipe.mId] = recipe
+            notificationServiceDataDTO[recipeDTO.mId] = recipeDTO
             /*   withContext(IOdispatcher)
             {
                 dao.saveNotificationRecipe(recipe)

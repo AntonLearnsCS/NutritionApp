@@ -69,6 +69,10 @@ class AuthenticationActivity : AppCompatActivity() {
             }
         }
 
+        title = "NutritionApp"
+        getActionBar()?.setIcon(R.drawable.shopping_cart)
+
+
         viewModel = ViewModelProvider(this).get(AuthViewModel::class.java)
 
         binding.loginButton.setOnClickListener {

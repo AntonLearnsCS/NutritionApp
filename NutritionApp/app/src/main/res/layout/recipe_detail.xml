@@ -28,9 +28,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:layoutDescription="@xml/motion_scene_recipe_detail"
-                app:motionDebug="SHOW_PATH"
                 android:minHeight="80dp"
-                app:layout_scrollFlags="scroll|enterAlways|snap|exitUntilCollapsed">
+                app:layout_scrollFlags="scroll|enterAlways|exitUntilCollapsed">
 
                 <ImageView
                     android:id="@+id/background"
@@ -48,8 +47,9 @@
 
                 <ImageView
                     android:id="@+id/shopping_cart"
-                    android:layout_width="120dp"
-                    android:layout_height="120dp"
+                    android:layout_width="100dp"
+                    android:layout_height="100dp"
+                    android:scaleType="fitXY"
                     android:contentDescription="@string/shopping_cart_image"
                     android:src="@drawable/food_shopping_cart"
                     tools:layout_editor_absoluteX="291dp"
