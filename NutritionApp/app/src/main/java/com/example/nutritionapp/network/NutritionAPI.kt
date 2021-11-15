@@ -16,7 +16,7 @@ import java.io.IOException
 
 private const val BASE_URL = "https://spoonacular-recipe-food-nutrition-v1.p.rapidapi.com/"
 
-open class mNutritionApi() {
+open class mNutritionApi {
     /**
      * Build the Moshi object that Retrofit will be using, making sure to add the Kotlin adapter for
      * full Kotlin compatibility.

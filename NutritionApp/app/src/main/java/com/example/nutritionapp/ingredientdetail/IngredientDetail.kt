@@ -20,7 +20,7 @@ class IngredientDetail : Fragment() {
     private lateinit var binding: IngredientDetailBinding
     //share viewModel
      val viewModel by sharedViewModel<IngredientViewModel>()
-    private var counter = 0
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -42,7 +42,7 @@ class IngredientDetail : Fragment() {
         return binding.root
     }
 
-    fun increaseQuantity()
+ /*   fun increaseQuantity()
     {
         //Note: We can't update the variable in the viewModel from the fragment and have the data variable in the XML receive the updated
         //value since that layout object had already been created with the initial value. A solution would be to invalidate the view
@@ -65,5 +65,5 @@ class IngredientDetail : Fragment() {
             binding.quantity.text = counter.toString()
             viewModel.selectedIngredient.value?.quantity = counter
         }
-    }
+    }*/
 }
