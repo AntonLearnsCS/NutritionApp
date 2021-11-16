@@ -4,6 +4,7 @@ import com.example.nutritionapp.database.IngredientDataClass
 import com.example.nutritionapp.database.IngredientDataSourceInterface
 import com.example.nutritionapp.database.dto.IngredientDataClassDTO
 import com.example.nutritionapp.maps.RecipeNotificationClassDTO
+import com.example.nutritionapp.maps.RecipeNotificationClassDomain
 import com.example.nutritionapp.util.Result
 
 
@@ -32,11 +33,11 @@ object MockRepository : IngredientDataSourceInterface {
         TODO("Not yet implemented")
     }
 
-    override suspend fun getNotificationRecipeById(key: String): RecipeNotificationClassDTO? {
+    override suspend fun getNotificationRecipeById(key: String): Result<RecipeNotificationClassDomain>? {
         TODO("Not yet implemented")
     }
 
-    override suspend fun saveNotificationRecipe(recipeDTO: RecipeNotificationClassDTO) {
+    override suspend fun saveNotificationRecipe(recipeDomain: RecipeNotificationClassDomain) {
         TODO("Not yet implemented")
     }
 

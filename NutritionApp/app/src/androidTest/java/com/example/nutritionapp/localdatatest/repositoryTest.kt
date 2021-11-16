@@ -1,7 +1,6 @@
 package com.example.nutritionapp.localdatatest
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.room.Room
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.matcher.ViewMatchers.assertThat
@@ -12,8 +11,6 @@ import com.example.nutritionapp.util.Result
 import com.example.nutritionapp.util.succeeded
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.runBlocking
-import kotlinx.coroutines.test.runBlockingTest
-import org.hamcrest.CoreMatchers
 import org.hamcrest.MatcherAssert
 import org.hamcrest.Matchers.`is`
 import org.junit.*
@@ -55,13 +52,16 @@ val instantTaskExecutorRule = InstantTaskExecutorRule()
         repository.saveNewIngredient(someIngredient)
 
         // when - retrieve ingredient
-        val result = repository.getIngredient(someIngredient.id)
-        assertThat(result.succeeded,`is`(true))
-        result as Result.Success
+        val resultSuccess = repository.getIngredient(someIngredient.id)
+        assertThat(resultSuccess.succeeded,`is`(true))
+        resultSuccess as Result.Success
 
-        assertThat(result.data.name, `is`(someIngredient.name))
-        Assert.assertThat(result.data.imageType, `is`("Jpeg"))
-        Assert.assertThat(result.data.image, `is`("url"))
+        val resultError = repository.getIngredient(888)
+        assertThat(resultError.succeeded,`is`(false))
+
+        assertThat(resultSuccess.data.name, `is`(someIngredient.name))
+        Assert.assertThat(resultSuccess.data.imageType, `is`("Jpeg"))
+        Assert.assertThat(resultSuccess.data.image, `is`("url"))
     }
 
     @Test

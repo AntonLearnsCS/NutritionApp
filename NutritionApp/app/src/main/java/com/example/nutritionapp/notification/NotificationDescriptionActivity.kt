@@ -6,6 +6,7 @@ import androidx.databinding.DataBindingUtil
 import com.example.nutritionapp.R
 import com.example.nutritionapp.databinding.NotificationDescriptionActivityBinding
 import com.example.nutritionapp.maps.RecipeNotificationClassDTO
+import com.example.nutritionapp.maps.RecipeNotificationClassDomain
 
 class NotificationDescriptionActivity : AppCompatActivity() {
     private lateinit var binding : NotificationDescriptionActivityBinding
@@ -14,7 +15,7 @@ class NotificationDescriptionActivity : AppCompatActivity() {
         setContentView(R.layout.notification_description_activity)
         binding = DataBindingUtil.setContentView(this, R.layout.notification_description_activity)
 
-        val bundleItem = intent.getSerializableExtra("EXTRA_recipeNotification") as RecipeNotificationClassDTO//intent.getSerializableExtra("RecipeNotificationClass") as RecipeNotificationClass
+        val bundleItem = intent.getSerializableExtra("EXTRA_recipeNotification") as RecipeNotificationClassDomain//intent.getSerializableExtra("RecipeNotificationClass") as RecipeNotificationClass
 
         binding.recipeNotification = bundleItem
 

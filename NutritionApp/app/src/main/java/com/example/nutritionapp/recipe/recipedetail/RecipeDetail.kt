@@ -31,11 +31,6 @@ class RecipeDetail : Fragment() {
         binding.lifecycleOwner = viewLifecycleOwner
         val args  = RecipeDetailArgs.fromBundle(requireArguments()).Recipe
         binding.recipe = args
-        Log.i("test","args: ${args.title}")
-        Log.i("test","RecipeDetail: ${viewModel.navigateToRecipe.value?.title}")
-
-        //TODO: In contrast, calling getRecipeInstructions here does not update the xml
-       //viewModel.getRecipeInstructions()
 
         binding.findGroceries.setOnClickListener {
             findNavController().navigate(RecipeDetailDirections.actionRecipeDetailToMapGroceryReminder(args))

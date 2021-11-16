@@ -13,7 +13,7 @@ class Util {
  * A sealed class that encapsulates successful outcome with a value of type [T]
  * or a failure with message and statusCode
  */
-//TODO: Where can I go to get more information on the use of this sealed class?
+//Where can I go to get more information on the use of this sealed class?
 //So you have the option to use one of each data class when a data type is wrapped in Result<>
 //"data" in: data class Success<out T : Any>(val data: T) : Result<T>() refers to any data type wrapped by Result. In the case of
 //"Result<List<ReminderDTO>>", data refers to <List<ReminderDTO>>

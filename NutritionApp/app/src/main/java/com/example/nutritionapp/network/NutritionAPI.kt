@@ -1,12 +1,15 @@
 package com.example.nutritionapp.network
 
+import android.util.Log
 import androidx.annotation.VisibleForTesting
-import com.example.nutritionapp.ingredientlist.clientPostRequest
+import com.example.nutritionapp.ingredientlist.selectedProductName
+import com.example.nutritionapp.recipe.PostRequestResultWrapper
 import com.example.nutritionapp.recipe.RecipeIngredientResult
 import com.example.nutritionapp.recipe.RecipeInstruction
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import okhttp3.*
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Call
 import retrofit2.Retrofit
@@ -17,6 +20,47 @@ import java.io.IOException
 private const val BASE_URL = "https://spoonacular-recipe-food-nutrition-v1.p.rapidapi.com/"
 
 open class mNutritionApi {
+
+
+    val mediaType = "application/x-www-form-urlencoded".toMediaTypeOrNull()
+
+    //Q: What is the purpose of ".post(body)" in the OkHttpClient?
+//A: To input your text that will be acted upon by the API POST function
+    var body: RequestBody? = null
+    fun setBody() {
+        body = RequestBody.create(
+            mediaType,
+            "text=${selectedProductName.value}"
+        )
+        Log.i("testSetBody()", selectedProductName.value.toString())
+    }
+
+    //Note: Need to add MediaType
+    val clientPostRequest by lazy {
+        OkHttpClient.Builder().addInterceptor(object : Interceptor {
+            @Throws(IOException::class)
+            override fun intercept(chain: Interceptor.Chain): okhttp3.Response {
+                val newRequest: Request = chain.request().newBuilder()
+                    .post(body!!)
+                    .addHeader("content-type", "application/x-www-form-urlencoded")
+                    .addHeader("x-rapidapi-host", "spoonacular-recipe-food-nutrition-v1.p.rapidapi.com")
+                    .addHeader(
+                        "x-rapidapi-key",
+                        "743dd97869msh559abee3f899bd4p131dd1jsn866e00036c54"
+                    )//Error: HTTP 401 Unauthorized
+                    .build()
+                return chain.proceed(newRequest)
+            }
+        }).build()
+    }
+
+    private val retrofitPost by lazy {
+        Retrofit.Builder()
+            .addConverterFactory(MoshiConverterFactory.create(moshi))
+            .baseUrl(BASE_URL)
+            .client(clientPostRequest)
+            .build()
+    }
     /**
      * Build the Moshi object that Retrofit will be using, making sure to add the Kotlin adapter for
      * full Kotlin compatibility.
@@ -60,29 +104,6 @@ source: https://stackoverflow.com/questions/42491733/passing-api-key-in-retrofit
 
     }).build()
 
-
-/*var clientGetRequestInstructions = OkHttpClient.Builder().addInterceptor(object : Interceptor {
-    @Throws(IOException::class)
-    override fun intercept(chain: Interceptor.Chain): Response? {
-        val newRequest: Request = chain.request().newBuilder()
-            .get()
-            .addHeader("x-rapidapi-host", "spoonacular-recipe-food-nutrition-v1.p.rapidapi.com")
-            .addHeader("x-rapidapi-key", "743dd97869msh559abee3f899bd4p131dd1jsn866e00036c54")
-            .build()
-        return chain.proceed(newRequest)
-    }
-}).build()
-
-val retrofitInstructions = Retrofit.Builder()
-    .addConverterFactory(MoshiConverterFactory.create(moshi))
-    .baseUrl(BASE_URL)
-    .client(clientGetRequestInstructions)
-    .build()*/
-
-    /**
-     * Use the Retrofit builder to build a retrofit object using a Moshi converter with our Moshi
-     * object.
-     */
       val retrofit = Retrofit.Builder()
         .addConverterFactory(MoshiConverterFactory.create(moshi))
         .baseUrl(BASE_URL)
@@ -93,6 +114,11 @@ val retrofitInstructions = Retrofit.Builder()
         retrofit.create(IngredientsApiInterface::class.java)
     }
 
+    val nutritionServicePost: IngredientsApiInterface by lazy {
+        retrofitPost.create(
+            IngredientsApiInterface::class.java
+        )
+    }
 }
     /**
      * A public interface that exposes the [getIngredients] method
@@ -114,30 +140,8 @@ val retrofitInstructions = Retrofit.Builder()
         //run as blocking function by omitting suspend modifier
         @GET("recipes/{id}/analyzedInstructions")
         suspend fun getRecipeInstructions(@Path("id") id : Long, @Query("stepBreakdown") boolean: Boolean) : List<RecipeInstruction>
+
+        @POST("food/detect")
+        suspend fun detectFoodInText(): PostRequestResultWrapper
     }
 
-
-
-
-//we want to expose the retrofit instance because creating a Retrofit instance is expensive
-//but we also want to do dependency injection for testing Nutrition Api
-
-//TODO: Is this the best way to test or can I pass a singleton as a class parameter?
-object NutritionAPI : mNutritionApi(){
-   /* val nutritionService: IngredientsApiInterface by lazy {
-        retrofit.create(IngredientsApiInterface::class.java)
-    }*/
-}
-
-/*
-
-val client = OkHttpClient()
-
-val request = Request.Builder()
-    .url("https://spoonacular-recipe-food-nutrition-v1.p.rapidapi.com/food/products/search?query=carrot&maxCalories=5000&minProtein=0&maxProtein=100&minFat=0&maxFat=100&minCarbs=0&maxCarbs=100&minCalories=0&offset=0&number=10")
-    .get()
-    .addHeader("x-rapidapi-host", "spoonacular-recipe-food-nutrition-v1.p.rapidapi.com")
-    .addHeader("x-rapidapi-key", "743dd97869msh559abee3f899bd4p131dd1jsn866e00036c54")
-    .build()
-
-val response = client.newCall(request).execute()*/

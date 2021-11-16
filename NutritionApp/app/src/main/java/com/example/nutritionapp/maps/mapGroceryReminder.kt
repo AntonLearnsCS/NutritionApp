@@ -44,7 +44,7 @@ private lateinit var binding : MapGroceryReminderBinding
     private lateinit var contxt: Context
     private val runningQOrLater =
         android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.Q
-    private val GEOFENCE_RADIUS_IN_METERS = 4800F
+    private val GEOFENCE_RADIUS_IN_METERS = 1200F
 
     private var recipeNotificationClassDTO : RecipeNotificationClassDTO? = null
 
@@ -100,7 +100,6 @@ private lateinit var binding : MapGroceryReminderBinding
             ActivityResultContracts.StartIntentSenderForResult()) {
                 result: ActivityResult ->
             if (result.resultCode == Activity.RESULT_OK) {
-                Log.i("test","requestLocationSetting result code Ok")
                 checkDeviceLocationSettingsAndStartGeofence()
             }
             else
@@ -112,35 +111,20 @@ private lateinit var binding : MapGroceryReminderBinding
 
                 mSnackbar.setAction("Dismiss"){mSnackbar.dismiss()}
                 mSnackbar.show()
-                Log.i("Test", "location setting denied access")
             }
         }
 
 
         val test = ActivityResultContracts.RequestMultiplePermissions()
-        //TODO: Receiving Type Mismatch error in defining permissionCallback when
-        // following: https://developer.android.com/training/permissions/requesting#allow-system-manage-request-code
+
         permissionCallback = registerForActivityResult(test) { permissions: Map<String, Boolean> ->
-            //On Android <= 9, being granted location permission also grants background permission
-            /*if(runningQOrLater && ActivityCompat.checkSelfPermission(
-                    contxt,
-                    Manifest.permission.ACCESS_FINE_LOCATION
-                ) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
-                    contxt,
-                    Manifest.permission.ACCESS_COARSE_LOCATION
-                ) != PackageManager.PERMISSION_GRANTED)
-            {
-                Log.i("test","Background permission is not granted")
-                requestBackgroundLocationPermissionLauncher.launch(Manifest.permission.ACCESS_BACKGROUND_LOCATION)
-            }*/
+
             if (permissions.containsValue(true))
                 {
                     checkDeviceLocationSettingsAndStartGeofence()
-                    Log.i("test", "permission granted contract")
             }
             else {
                 checkDeviceLocationSettingsAndStartGeofence()
-                Log.i("test", "permission granted contract, running less than Q")
             }
         }
 
@@ -183,14 +167,16 @@ private lateinit var binding : MapGroceryReminderBinding
                 recipeNotificationClassDTO = RecipeNotificationClassDTO("Recipe", binding.missingIngredients.text.toString())
             }
 
-            Log.i("test","RecipeNotificationClass Id: ${recipeNotificationClassDTO!!.mId}")
-
             intent.putExtra("RecipeNotificationClass", recipeNotificationClassDTO)
 
             //set to null so that user can go to Maps from menu and have empty list instead of pre-filled list
             _viewModel.setMissingIngredientsNull()
 
-            _viewModel.saveRecipeNotification(recipeNotificationClassDTO!!)
+            if(recipeNotificationClassDTO != null)
+            {
+            _viewModel.saveRecipeNotification(RecipeNotificationClassDomain(recipeName = recipeNotificationClassDTO!!.recipeName,
+            missingIngredients = recipeNotificationClassDTO!!.missingIngredients, mId = recipeNotificationClassDTO!!.mId))
+            }
 
             checkPermission()
         }
@@ -203,7 +189,6 @@ private lateinit var binding : MapGroceryReminderBinding
 
     @RequiresApi(Build.VERSION_CODES.Q)
     private fun checkDeviceLocationSettingsAndStartGeofence(resolve: Boolean = true) {
-        Log.i("test","checkDeviceLocation called")
         val locationRequest = LocationRequest.create().apply {
             priority = LocationRequest.PRIORITY_LOW_POWER
         }
@@ -223,7 +208,6 @@ private lateinit var binding : MapGroceryReminderBinding
                     //"exception" is defined in terms of "locationSettingsResponseTask". exception.resolution a placeholder for a pendingIntent
                     //source: https://knowledge.udacity.com/questions/650170#650189
                     if (backgroundFlag) {
-                        Log.i("test","location settings need not be called")
                         backgroundFlag = false
                         val intentSenderRequest =
                             IntentSenderRequest.Builder(exception.resolution).build()
@@ -232,9 +216,7 @@ private lateinit var binding : MapGroceryReminderBinding
                     //return@addOnFailureListener
                 }
                 catch (sendEx: IntentSender.SendIntentException) {
-                    Log.i("test","sendEx message: ${sendEx.message}")
                     Timber.i("Error getting location settings resolution:" + sendEx.message)
-                    //Log.d(TAG, "Error geting location settings resolution: " + sendEx.message)
                 }
             }
             else {
@@ -262,7 +244,6 @@ private lateinit var binding : MapGroceryReminderBinding
         // Build the Geofence Object
         val geofence = latLng?.latitude?.let {
             latLng?.longitude?.let { it1 ->
-                Log.i("test","requestId geofence: ${recipeNotificationClassDTO?.mId}")
                 Geofence.Builder()
                     // Set the request ID, string to identify the geofence. Depends on whether we are selecting a recipe or a non-recipe
                     .setRequestId(recipeNotificationClassDTO?.mId) //reminderDataItem.id)//_viewModel.latLng.value?.latitude.toString())
@@ -305,7 +286,6 @@ private lateinit var binding : MapGroceryReminderBinding
             addOnSuccessListener {
 
                 Toast.makeText(contxt, "Succesfully added geofence", Toast.LENGTH_SHORT).show()
-                Log.i("test", "added geofence")
                 findNavController().navigate(mapGroceryReminderDirections.actionMapGroceryReminderToIngredientListOverview())
             }
             addOnFailureListener {
@@ -330,7 +310,6 @@ private lateinit var binding : MapGroceryReminderBinding
         }
 
         if (runningQOrLater) {
-            Log.i("test","runningQOrLater")
             requestBackgroundLocationPermissionLauncher.launch(Manifest.permission.ACCESS_BACKGROUND_LOCATION)
             //return false
         }

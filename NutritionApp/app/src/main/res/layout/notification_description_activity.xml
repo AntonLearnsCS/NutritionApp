@@ -6,7 +6,7 @@
     <data>
         <variable
             name="recipeNotification"
-            type="com.example.nutritionapp.maps.RecipeNotificationClassDTO" />
+            type="com.example.nutritionapp.maps.RecipeNotificationClassDomain" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout

@@ -35,7 +35,6 @@ class IngredientListActivity : AppCompatActivity() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.logout -> {
-//                TODO: add the logout implementation
                 val intent = Intent(this, AuthenticationActivity::class.java)
                 intent.putExtra("flag", true)
                 startActivity(intent)
