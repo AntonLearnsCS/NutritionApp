@@ -157,8 +157,6 @@ val instantTaskExecutorRule = InstantTaskExecutorRule()
         //onView(withId(R.id.recycler_view_local)).perform(RecyclerViewActions.scrollTo<localIngredientAdapter.ViewHolder> (hasDescendant (withText ("DescriptionQ"))))
 
         verify(navController).navigate(IngredientListOverviewDirections.actionIngredientListOverviewToIngredientDetail())
-
-
     }
 
     //source: https://sisik.eu/blog/android/tests/recyclerview-custom-matcher
