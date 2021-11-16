@@ -6,11 +6,13 @@ import com.example.nutritionapp.database.dto.IngredientDataClassDTO
 import com.example.nutritionapp.maps.RecipeNotificationClassDTO
 import com.example.nutritionapp.maps.RecipeNotificationClassDomain
 import com.example.nutritionapp.util.Result
+import java.lang.reflect.TypeVariable
 
 
 object MockRepository : IngredientDataSourceInterface {
 
     private var INGREDIENT_SERVICE_DATA = LinkedHashMap<String, IngredientDataClassDTO>()
+    private var RECIPE_NOTIFICATION_SERVICE_DATA = LinkedHashMap<String, RecipeNotificationClassDomain>()
 
     override suspend fun getIngredients(): Result<List<IngredientDataClassDTO>> {
         return Result.Success((INGREDIENT_SERVICE_DATA.values).toList())
@@ -43,14 +45,15 @@ object MockRepository : IngredientDataSourceInterface {
     }
 
     override suspend fun getNotificationRecipeById(key: String): Result<RecipeNotificationClassDomain>? {
-        TODO("Not yet implemented")
+
+        return Result.Success( RECIPE_NOTIFICATION_SERVICE_DATA[key] as RecipeNotificationClassDomain)
     }
 
     override suspend fun saveNotificationRecipe(recipeDomain: RecipeNotificationClassDomain) {
-        TODO("Not yet implemented")
+        RECIPE_NOTIFICATION_SERVICE_DATA[recipeDomain.mId] = recipeDomain
     }
 
     override suspend fun clearNotificationRecipe() {
-        TODO("Not yet implemented")
+        RECIPE_NOTIFICATION_SERVICE_DATA.clear()
     }
 }
