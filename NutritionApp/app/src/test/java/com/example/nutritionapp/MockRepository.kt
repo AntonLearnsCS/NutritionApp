@@ -9,28 +9,37 @@ import com.example.nutritionapp.util.Result
 
 
 object MockRepository : IngredientDataSourceInterface {
+
+    private var INGREDIENT_SERVICE_DATA = LinkedHashMap<String, IngredientDataClassDTO>()
+
     override suspend fun getIngredients(): Result<List<IngredientDataClassDTO>> {
-        TODO("Not yet implemented")
+        return Result.Success((INGREDIENT_SERVICE_DATA.values).toList())
+
     }
 
     override suspend fun saveNewIngredient(ingredient: IngredientDataClass) {
-        TODO("Not yet implemented")
+        INGREDIENT_SERVICE_DATA[ingredient.id.toString()] = IngredientDataClassDTO(id = ingredient.id,name = ingredient.name,
+            quantity = ingredient.quantity,image = ingredient.imageUrl,imageType = ingredient.imageType)
     }
 
     override suspend fun update(ingredient: IngredientDataClass) {
-        TODO("Not yet implemented")
+        INGREDIENT_SERVICE_DATA[ingredient.id.toString()] = IngredientDataClassDTO(id = ingredient.id,name = ingredient.name,
+        quantity = ingredient.quantity,image = ingredient.imageUrl,imageType = ingredient.imageType)
     }
 
     override suspend fun getIngredient(id: Int): Result<IngredientDataClassDTO> {
-        TODO("Not yet implemented")
+        val result = INGREDIENT_SERVICE_DATA[id.toString()]
+
+    return Result.Success(IngredientDataClassDTO(
+        id = result!!.id,name = result.name,quantity = result.quantity,image = result.image, imageType = result.imageType))
     }
 
     override suspend fun deleteAllIngredients() {
-        TODO("Not yet implemented")
+        INGREDIENT_SERVICE_DATA.clear()
     }
 
     override suspend fun deleteTaskIngredient(id: Int) {
-        TODO("Not yet implemented")
+        INGREDIENT_SERVICE_DATA.remove(id)
     }
 
     override suspend fun getNotificationRecipeById(key: String): Result<RecipeNotificationClassDomain>? {
