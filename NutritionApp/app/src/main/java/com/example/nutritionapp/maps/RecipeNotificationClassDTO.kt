@@ -12,4 +12,4 @@ data class RecipeNotificationClassDTO(@ColumnInfo(name = "recipeName")var recipe
                                       @PrimaryKey @ColumnInfo(name = "mId") var mId: String = UUID.randomUUID().toString()) : Serializable
 
 data class RecipeNotificationClassDomain(var recipeName :String, var missingIngredients : String,
-                                         var mId: String)
+                                         var mId: String) : Serializable

@@ -4,6 +4,7 @@ import android.util.Log
 import com.example.nutritionapp.util.Result
 import com.example.nutritionapp.database.dto.IngredientDataClassDTO
 import com.example.nutritionapp.maps.RecipeNotificationClassDTO
+import com.example.nutritionapp.maps.RecipeNotificationClassDomain
 import com.example.nutritionapp.util.wrapEspressoIdlingResource
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
@@ -106,20 +107,29 @@ class IngredientRepository(private val dao: IngredientDao,
         }
     }
 
-    override suspend fun getNotificationRecipeById(key: String): RecipeNotificationClassDTO? {
+    override suspend fun getNotificationRecipeById(key: String): Result<RecipeNotificationClassDomain>? {
         wrapEspressoIdlingResource {
             return withContext(IOdispatcher)
             {
                 val result = dao.getNotificationRecipeById(key)
-                return@withContext result
+                if (result != null) {
+                    return@withContext Result.Success(RecipeNotificationClassDomain(
+                        recipeName = result.recipeName,
+                        missingIngredients = result.missingIngredients,
+                        mId = result.mId
+                    ))
+                }
+                else
+                    return@withContext Result.Error(null)
             }
         }
     }
 
-    override suspend fun saveNotificationRecipe(recipeDTO: RecipeNotificationClassDTO) {
+    override suspend fun saveNotificationRecipe(recipeDomain: RecipeNotificationClassDomain) {
 wrapEspressoIdlingResource {
     withContext(IOdispatcher)
     {
-        dao.saveNotificationRecipe(recipeDTO)
+        dao.saveNotificationRecipe(RecipeNotificationClassDTO(recipeName = recipeDomain.recipeName, missingIngredients = recipeDomain.missingIngredients,
+        mId = recipeDomain.mId) )
     } }}
 }

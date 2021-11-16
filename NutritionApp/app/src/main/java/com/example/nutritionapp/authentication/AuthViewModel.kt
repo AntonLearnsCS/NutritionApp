@@ -9,7 +9,7 @@ class AuthViewModel : ViewModel() {
         AUTHENTICATED, UNAUTHENTICATED, INVALID_AUTHENTICATION
     }
 
-    // TODO Create an authenticationState variable based off the FirebaseUserLiveData object. By
+    // Create an authenticationState variable based off the FirebaseUserLiveData object. By
     //  creating this variable, other classes will be able to query for whether the user is logged
     //  in or not
     //A "map" maps a unique key to a unique value; here "user" is the key, which ironically is the .value of the LiveData<>

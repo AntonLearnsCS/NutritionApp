@@ -2,9 +2,6 @@ package com.example.nutritionapp.network
 import com.example.nutritionapp.database.IngredientDataClass
 import com.squareup.moshi.Json
 
-//from "Search Grocery Products" endpoint
-data class IngredientListNetworkDataClassContainer(val ingredientList : List<IngredientListNetworkDataClass>)
-
 data class wrapperIngredientListNetworkDataClass(
     val type : String, val products : List<IngredientListNetworkDataClass>,
     val offset : Int, val number: Int, val totalProducts : Int,
@@ -17,7 +14,13 @@ data class IngredientListNetworkDataClass (
     val imageType : String
     )
 
-fun IngredientListNetworkDataClassContainer.toDomainType() : List<IngredientDataClass>
+fun wrapperIngredientListNetworkDataClass.toDomainType() : List<IngredientDataClass>
 {
-    return ingredientList.map { IngredientDataClass(name = it.name,quantity = 1,id = it.id,imageUrl = it.imageUrl,imageType = it.imageType) }
+    return products.map {
+        IngredientDataClass(
+            name = it.name, quantity = 1, id = it.id,
+            imageUrl = it.imageUrl, imageType = it.imageType
+        )
+    }
 }
+

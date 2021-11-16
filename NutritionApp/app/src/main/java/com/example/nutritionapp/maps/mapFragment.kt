@@ -49,13 +49,14 @@ class mapFragment : Fragment(), OnMapReadyCallback {
     private var latitude : Double = 33.8447593
     private var longitude : Double = -118.1480706
     private var defaultLocation = LatLng(latitude,longitude)
-    private val zoomLevel = 12f
+    private val zoomLevel = 15f
     private lateinit var permissionCallback : ActivityResultLauncher<Array<String>>
     private var backgroundFlag = false
     private var locationFlag = false
     private lateinit var requestLocationSetting : ActivityResultLauncher<IntentSenderRequest>
     private val runningQOrLater = android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.Q
     private val viewModel: IngredientViewModel by sharedViewModel()
+
     //TODO: Get API KEY
     //val apikey = BuildConfig.mMaps_API_KEY
 
@@ -81,8 +82,6 @@ class mapFragment : Fragment(), OnMapReadyCallback {
             ActivityResultContracts.StartIntentSenderForResult()
         ) { result: ActivityResult ->
             if (result.resultCode == Activity.RESULT_OK) {
-                Log.i("test","location setting enabled")
-
                 locationFlag = true
                 getDeviceLocation()
             }
@@ -95,7 +94,6 @@ class mapFragment : Fragment(), OnMapReadyCallback {
                 )
                 mSnackbar.setAction("Dismiss"){mSnackbar.dismiss()}
                 mSnackbar.show()
-                Log.i("Test", "location setting denied access")
             }
         }
 
@@ -120,7 +118,6 @@ class mapFragment : Fragment(), OnMapReadyCallback {
                 backgroundFlag = true
                 //check if device's location setting is on
                 checkDeviceLocationSettings()
-                Log.i("test", "permission granted contract")
             }
             else
             {
@@ -145,8 +142,6 @@ class mapFragment : Fragment(), OnMapReadyCallback {
 
                 mSnackbar.setAction("dismiss"){mSnackbar.dismiss()}
                 mSnackbar.show()
-
-                Log.i("test", "permission not granted contract")
             }
         }
 
@@ -184,8 +179,6 @@ class mapFragment : Fragment(), OnMapReadyCallback {
         ) {
             //Note: setMyLocationEnabled updates user icon on map
             map.setMyLocationEnabled(true)
-
-            //map.isMyLocationEnabled = true
         }
     }
 
@@ -200,7 +193,6 @@ class mapFragment : Fragment(), OnMapReadyCallback {
             ) == PackageManager.PERMISSION_GRANTED
                     )
         ){
-            Log.i("test","Location permission is granted")
             return true
         }
         else
@@ -260,9 +252,6 @@ class mapFragment : Fragment(), OnMapReadyCallback {
                     return@addOnCompleteListener
                 }
                 map.setMyLocationEnabled(true)
-
-                //map.isMyLocationEnabled = true
-                Log.i("test","location settings is enabled")
             }
         }
     }
@@ -285,8 +274,6 @@ class mapFragment : Fragment(), OnMapReadyCallback {
                 val locationResult = fusedLocationProviderClient.lastLocation
                 locationResult.addOnCompleteListener(requireActivity()) { task ->
                     if (task.isSuccessful && task.result != null) {
-                        //TODO: Why was task.result null?
-                        // Set the map's camera position to the current location of the device.
                         lastKnownLocation = task.result
                         defaultLocation =
                             LatLng(lastKnownLocation.latitude, lastKnownLocation.longitude)
@@ -301,13 +288,11 @@ class mapFragment : Fragment(), OnMapReadyCallback {
                     }
                     else {
                         requestLocation()
-                        Log.i("test", "0Current location is null. Using defaults.")
                     }
                 }
             }
             else
             {
-                Log.i("test", "1Current location is null. Using defaults.")
                 map.moveCamera(
                     CameraUpdateFactory
                     .newLatLngZoom(defaultLocation, zoomLevel))
@@ -330,12 +315,9 @@ class mapFragment : Fragment(), OnMapReadyCallback {
             ) == PackageManager.PERMISSION_GRANTED
         )
         {
-            Log.i("test", "SelectLocation foreground permission enabled")
             return
         }
         else{
-            Log.i("test", "SelectLocation foreground permission not yet enabled")
-
             val mArray = arrayOf(
                 Manifest.permission.ACCESS_FINE_LOCATION,
                 Manifest.permission.ACCESS_COARSE_LOCATION
@@ -361,7 +343,6 @@ class mapFragment : Fragment(), OnMapReadyCallback {
         ) {
             return
         }
-        Log.i("test","requestLocation called")
         fusedLocationClient.requestLocationUpdates(locationRequest, locationCallBack, Looper.myLooper())
     }
 

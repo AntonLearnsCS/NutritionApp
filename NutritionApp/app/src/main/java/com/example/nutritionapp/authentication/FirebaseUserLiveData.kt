@@ -17,7 +17,7 @@ import com.example.nutritionapp.util.wrapEspressoIdlingResource
  */
 class FirebaseUserLiveData : LiveData<FirebaseUser?>() {
     private val firebaseAuth = FirebaseAuth.getInstance()
-    // TODO set the value of this FireUserLiveData object by hooking it up to equal the value of the
+    // Set the value of this FireUserLiveData object by hooking it up to equal the value of the
     //  current FirebaseUser. You can utilize the FirebaseAuth.AuthStateListener callback to get
     //  updates on the current Firebase user logged into the app.
     //AuthStateListener is triggered whenever a user logs in or out
@@ -25,7 +25,7 @@ class FirebaseUserLiveData : LiveData<FirebaseUser?>() {
         //value here refers to the value of the whole class, which is of type LiveData
         value = firebaseAuthListener.currentUser
     }
-    // TODO Use the FirebaseAuth instance instantiated at the beginning of the class to get an
+    // Use the FirebaseAuth instance instantiated at the beginning of the class to get an
     //  entry point into the Firebase Authentication SDK the app is using.
     //  With an instance of the FirebaseAuth class, you can now query for the current user.
 

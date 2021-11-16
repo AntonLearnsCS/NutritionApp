@@ -9,7 +9,6 @@ import java.io.Serializable
 data class RecipeIngredientResult (val id : Long, val title : String, val image : String, val usedIngredientCount : Int,
                                    val missedIngredientCount : Int, val likes : Int) : Serializable
 
-
 //recipe steps
 
 //data class RecipeInstructionsWrapper(val mList : List<RecipeInstruction>) //unnecessary

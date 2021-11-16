@@ -82,7 +82,6 @@ class IngredientListOverview : Fragment() {
         })
 
         binding.searchIngredientButton.setOnClickListener {
-            //TODO: Clear the previous search results in recyclerView
             //networkIngredientAdapter.currentList.clear()
             if (binding.searchIngredient.text.isEmpty())
             {
@@ -103,8 +102,7 @@ class IngredientListOverview : Fragment() {
             viewModel.foodInText.clear()
             //Returns list of ingredients i.e {"mushroom","flour","tomato"}
             viewModel.detectFoodInText(localIngredientAdapter.mListOfNames)
-            //val foodDetected : String? = viewModel.listOfIngredientsString.value
-            //val serialArg = viewModel.foodInText.toString()
+
 
             localIngredientAdapter.mList.clear()
             //wait for flag to be true, indicating that the viewModelScope coroutine is done
@@ -125,7 +123,6 @@ class IngredientListOverview : Fragment() {
             if (it != null) {
                 viewModel.selectedIngredient.value = it
                 viewModel.setNavigateToDetailNull()
-                Log.i("test","selectedIngredient: ${viewModel.selectedIngredient.value!!.name}")
                 findNavController().navigate(IngredientListOverviewDirections.actionIngredientListOverviewToIngredientDetail())
             }
         })
@@ -146,7 +143,6 @@ class IngredientListOverview : Fragment() {
 
     //override onCreateOptionsMenu() and onOptionsItemSelected() and implement setHasOptionsMenu(true) to allow for menu; also create menu xml
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        Log.i("testMenu","$menu ")
         //Note: Must remove call to super to use navigation
         //super.onCreateOptionsMenu(menu, inflater)
         inflater.inflate(R.menu.overflow_menu, menu)
@@ -154,8 +150,6 @@ class IngredientListOverview : Fragment() {
 
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        Log.i("testMenu","$item : ${item.contentDescription}")
-
         return NavigationUI.onNavDestinationSelected(item, requireView().findNavController())
                 || super.onOptionsItemSelected(item)    }
 

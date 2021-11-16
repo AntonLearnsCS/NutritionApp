@@ -77,7 +77,7 @@ class daoTest {
 
         database.IngredientDatabaseDao.clearIngredientEntity()
 
-        //TODO: returnedItem is null
+        //returnedItem is null
         assertThat(returnedItem, `is`(ingredientItem))
 
         assertThat(allItem?.size, `is`(2))

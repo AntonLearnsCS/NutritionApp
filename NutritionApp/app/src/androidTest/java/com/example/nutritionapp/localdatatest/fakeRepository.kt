@@ -7,6 +7,7 @@ import com.example.nutritionapp.database.IngredientDataSourceInterface
 import com.example.nutritionapp.util.Result
 import com.example.nutritionapp.database.dto.IngredientDataClassDTO
 import com.example.nutritionapp.maps.RecipeNotificationClassDTO
+import com.example.nutritionapp.maps.RecipeNotificationClassDomain
 import com.example.nutritionapp.util.wrapEspressoIdlingResource
 import java.util.LinkedHashMap
 
@@ -137,9 +138,11 @@ class fakeIngredientRepository() :
         }
     }
 
-    override suspend fun getNotificationRecipeById(key: String): RecipeNotificationClassDTO? {
+    override suspend fun getNotificationRecipeById(key: String): Result<RecipeNotificationClassDomain>? {
         wrapEspressoIdlingResource {
-            return notificationServiceDataDTO[key]
+            val tempResult = notificationServiceDataDTO[key]
+            return Result.Success(RecipeNotificationClassDomain(recipeName = tempResult!!.recipeName, missingIngredients = tempResult!!.missingIngredients,
+            mId = notificationServiceDataDTO[key]!!.mId))
             /*return withContext(IOdispatcher)
             {
                 val result = dao.getNotificationRecipeById(key)
@@ -148,9 +151,10 @@ class fakeIngredientRepository() :
         }
     }
 
-    override suspend fun saveNotificationRecipe(recipeDTO: RecipeNotificationClassDTO) {
+    override suspend fun saveNotificationRecipe(recipeDomain: RecipeNotificationClassDomain) {
         wrapEspressoIdlingResource {
-            notificationServiceDataDTO[recipeDTO.mId] = recipeDTO
+            notificationServiceDataDTO[recipeDomain.mId] = RecipeNotificationClassDTO(recipeName = recipeDomain.recipeName,
+            missingIngredients = recipeDomain.missingIngredients, mId = recipeDomain.mId)
             /*   withContext(IOdispatcher)
             {
                 dao.saveNotificationRecipe(recipe)

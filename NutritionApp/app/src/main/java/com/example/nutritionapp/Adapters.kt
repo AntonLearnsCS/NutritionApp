@@ -143,6 +143,7 @@ object Adapters {
     {
         val sb = StringBuilder()
 
+        sb.append("Buy ingredients:\n")
         //convert string to list
         val result: List<String> = mString.split(",").map { it.trim() }
 

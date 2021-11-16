@@ -41,29 +41,4 @@ class IngredientDetail : Fragment() {
 
         return binding.root
     }
-
- /*   fun increaseQuantity()
-    {
-        //Note: We can't update the variable in the viewModel from the fragment and have the data variable in the XML receive the updated
-        //value since that layout object had already been created with the initial value. A solution would be to invalidate the view
-        // (i.e binding.invalidateAll()) to force the view to refresh
-        Log.i("test","Increased quantity called")
-        counter = Integer.parseInt(binding.quantity.text as String)
-        counter++
-        binding.quantity.text = counter.toString()
-
-        viewModel.selectedIngredient.value?.quantity = counter
-        Log.i("test","ViewModel quantity: ${viewModel.selectedIngredient.value?.quantity}")
-        Log.i("test","Binding quantity: ${binding.selectedIngredientViewModel?.selectedIngredient?.value?.quantity}")
-    }
-
-    fun decreaseQuantity()
-    {
-        if(counter > 0)
-        {
-            counter--
-            binding.quantity.text = counter.toString()
-            viewModel.selectedIngredient.value?.quantity = counter
-        }
-    }*/
 }

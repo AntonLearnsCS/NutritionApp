@@ -30,13 +30,6 @@ class localIngredientAdapter(val onClickListener: LocalIngredientListener) : Lis
             }
             return mListOfNames
         }
-    //var selectedList = ListSelectedIngredients(mList)
-
-    //Callback method to be invoked when an item in this AdapterView has been clicked.
-/*@Override
-override fun onItemClick()
-{
-}*/
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view : IngredientItemLocalBinding = DataBindingUtil.inflate(
@@ -45,37 +38,16 @@ override fun onItemClick()
             parent,
             false
         )
-        /*  val inflater = LayoutInflater.from(parent.context)
-        val view = IngredientItemBinding.inflate(inflater,parent,false)*/
-        /*
-           val withDataBinding: DevbyteItemBinding = DataBindingUtil.inflate(
-                LayoutInflater.from(parent.context),
-                DevByteViewHolder.LAYOUT,
-                parent,
-                false)
-        //correct
-LayoutInflater.from(parent.getContext())
-            .inflate(R.layout.card_listitem, parent, false);
-         */
+
         return ViewHolder(view, onClickListener)
     }
-
-    interface OnItemCheckListener {
-        fun onItemCheck(item: IngredientDataClass)
-        fun onItemUncheck(item: IngredientDataClass)
-    }
-
-    @NonNull
-    private val onItemClick: OnItemCheckListener? = null
 
     override fun onBindViewHolder(holder: localIngredientAdapter.ViewHolder, position: Int) {
             val ingredientItem = getItem(position)
             holder.bind(ingredientItem)
 
         holder.binding.checkbox.setOnClickListener{
-          /*  (holder.binding).checkbox.setChecked(
-                !(holder.binding).checkbox.isChecked()
-            )*/
+
             if ((holder.binding).checkbox.isChecked()) {
                 mList.add(ingredientItem)
             } else {
