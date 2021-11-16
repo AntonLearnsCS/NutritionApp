@@ -17,8 +17,7 @@ class fakeIngredientRepository() :
     var ingredientServiceData: LinkedHashMap<String, IngredientDataClassDTO> = LinkedHashMap()
     var notificationServiceDataDTO: LinkedHashMap<String, RecipeNotificationClassDTO> = LinkedHashMap()
 
-    private val observableIngredients =
-        MutableLiveData<kotlin.Result<List<IngredientDataClassDTO>>>()
+    private val observableIngredients = MutableLiveData<kotlin.Result<List<IngredientDataClassDTO>>>()
 
 
     //will get ingredient searches directly from network and not the repository
@@ -29,18 +28,6 @@ class fakeIngredientRepository() :
             //coroutine scope
             Log.i("test","getIngredients fake repository called")
             return Result.Success(ArrayList(ingredientServiceData.values))
-            /*return withContext(IOdispatcher)
-            {
-                resultGetIngredients = dao.getAllIngredients()
-
-                if (!resultGetIngredients.isNullOrEmpty()) {
-                    //https://stackoverflow.com/questions/46040027/how-to-convert-livedatalistfoo-into-livedatalistbar
-                    //resultGetIngredients = Result.Success(convertedIngredients)
-                    return@withContext Result.Success(resultGetIngredients!!)
-                } else {
-                    return@withContext Result.Error("No ingredients found")
-                }
-            }*/
         }
     }
 
@@ -53,15 +40,6 @@ class fakeIngredientRepository() :
                 image = ingredient.imageUrl,
                 imageType = ingredient.imageType
             )
-            /* dao.saveIngredient(
-                IngredientDataClassDTO(
-                    name = ingredient.name,
-                    quantity = ingredient.quantity,
-                    id = ingredient.id,
-                    image = ingredient.imageUrl,
-                    imageType = ingredient.imageType
-                )
-            )*/
         }
     }
 
@@ -74,15 +52,6 @@ class fakeIngredientRepository() :
                 image = ingredient.imageUrl,
                 imageType = ingredient.imageType
             )
-            /*    dao.update(
-                IngredientDataClassDTO(
-                    name = ingredient.name,
-                    quantity = ingredient.quantity,
-                    id = ingredient.id,
-                    image = ingredient.imageUrl,
-                    imageType = ingredient.imageType
-                )
-            )*/
         }
     }
 
@@ -93,48 +62,24 @@ class fakeIngredientRepository() :
                 return Result.Success(it)
             }
             return Result.Error("Could not find ingredient")
-
-            /* return withContext(IOdispatcher)
-                {
-                    //return Result.Success(database.IngredientDatabaseDao.getIngredientById(id))
-                    val resultGetIngredients = dao.getIngredientById(id)
-                    if (resultGetIngredients == null) {
-                        return@withContext Result.Error("Could not find ingredient")
-                    } else {
-                        return@withContext Result.Success(resultGetIngredients)
-                    }
-                }*/
         }
     }
 
     override suspend fun deleteAllIngredients() {
         wrapEspressoIdlingResource {
             ingredientServiceData.clear()
-            /*  withContext(IOdispatcher)
-            {
-                dao.clearIngredientEntity()
-                dao.clearRecipeEntity()
-            }*/
         }
     }
 
     override suspend fun clearNotificationRecipe() {
         wrapEspressoIdlingResource {
             notificationServiceDataDTO.clear()
-            /*withContext(IOdispatcher)
-            {
-                dao.clearRecipeEntity()
-            }*/
         }
     }
 
     override suspend fun deleteTaskIngredient(id: Int) {
         wrapEspressoIdlingResource {
             ingredientServiceData.remove(id.toString())
-            /*   withContext(IOdispatcher)
-            {
-                dao.deleteIngredientById(id)
-            }*/
         }
     }
 
@@ -143,11 +88,6 @@ class fakeIngredientRepository() :
             val tempResult = notificationServiceDataDTO[key]
             return Result.Success(RecipeNotificationClassDomain(recipeName = tempResult!!.recipeName, missingIngredients = tempResult!!.missingIngredients,
             mId = notificationServiceDataDTO[key]!!.mId))
-            /*return withContext(IOdispatcher)
-            {
-                val result = dao.getNotificationRecipeById(key)
-                return@withContext result
-            }*/
         }
     }
 
@@ -155,10 +95,6 @@ class fakeIngredientRepository() :
         wrapEspressoIdlingResource {
             notificationServiceDataDTO[recipeDomain.mId] = RecipeNotificationClassDTO(recipeName = recipeDomain.recipeName,
             missingIngredients = recipeDomain.missingIngredients, mId = recipeDomain.mId)
-            /*   withContext(IOdispatcher)
-            {
-                dao.saveNotificationRecipe(recipe)
-            }*/
         }
     }
 }

@@ -8,7 +8,9 @@ import androidx.test.filters.SmallTest
 import com.example.nutritionapp.MainCoroutineRule
 import com.example.nutritionapp.ingredientlist.IngredientViewModel
 import com.example.nutritionapp.MockRepository
+import com.example.nutritionapp.database.IngredientDataClass
 import com.example.nutritionapp.network.mNutritionApi
+import com.example.nutritionapp.util.Result
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runBlockingTest
 import org.hamcrest.MatcherAssert.assertThat
@@ -30,6 +32,7 @@ class IngredientListViewModelTest {
     val instanceTaskExecutorRule = InstantTaskExecutorRule()
     @get: Rule
     val mainCoroutineRule = MainCoroutineRule()
+
     @Before
     fun init()
     {
@@ -40,13 +43,17 @@ class IngredientListViewModelTest {
     fun IngredientListViewModel_searchIngredient_ReturnArraySize() = mainCoroutineRule.runBlockingTest {
         //Given - view model
         val viewModel = IngredientViewModel(ApplicationProvider.getApplicationContext(), MockRepository, nutritionApi)
-        //When - user searches "Apple"
-
-            //save for testing Network data layer //viewModel.loadIngredientListByNetwork()
+        val testIngredient = IngredientDataClass(1,"Name",2,"imgUrl","jpeg")
+        viewModel.selectedIngredient.value = testIngredient
+        //When - user saves an ingredient item
+        viewModel.saveIngredientItem()
 
         //Then - returns the number of apple results from spoonacular API, should return "8"
-        val networkRequestFailed = viewModel.listOfNetworkRequestedIngredients == null
-        println("Network list size: ${viewModel.listOfNetworkRequestedIngredients?.size}")
-        assertThat(networkRequestFailed,`is`(false))
+        viewModel.getLocalIngredientList()
+
+        val localIngredientList = viewModel.listOfSavedIngredients.value
+        assertThat(
+            localIngredientList?.get(0), `is`(testIngredient
+        ))
     }
 }

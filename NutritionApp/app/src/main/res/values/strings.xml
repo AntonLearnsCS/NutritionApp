@@ -71,5 +71,7 @@
     <string name="about">About</string>
     <string name="logout_button">Logout button</string>
     <string name="nutrition_app">Nutrition App</string>
+    <string name="helping_you_make_that_perfect_dish">Helping you make that perfect dish!</string>
+    <string name="image_of_a_cartoon_shopping_cart">image of a cartoon shopping cart</string>
 
 </resources>
