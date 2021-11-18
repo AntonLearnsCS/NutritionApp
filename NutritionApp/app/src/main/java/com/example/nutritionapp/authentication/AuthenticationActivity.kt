@@ -33,6 +33,11 @@ import com.example.nutritionapp.util.wrapEspressoIdlingResource
     string in this file.
     username:gilong314@gmail.com
     password:abcd1234
+    testtesting
+    new test scheme
+    again
+    last time, sikes
+    sing
  */
 
 class AuthenticationActivity : AppCompatActivity() {
@@ -77,7 +82,7 @@ class AuthenticationActivity : AppCompatActivity() {
 
         binding.loginButton.setOnClickListener {
 
-            //Tip: Don't start activity from here, do it from onActivityResult
+            //Tip: Don't start activity from here, do it from onActivityResult; testing commit
             wrapEspressoIdlingResource {
                 launchSignInFlow()
             }
