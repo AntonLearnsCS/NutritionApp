@@ -283,6 +283,7 @@ class IngredientViewModel(
         return false
     }
 
+
     @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
     fun loadIngredientListByNetwork() {
         wrapEspressoIdlingResource {

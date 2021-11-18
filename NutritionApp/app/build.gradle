@@ -1,3 +1,11 @@
+/*plugins {
+    id("com.google.secrets_gradle_plugin") version "0.6.1"
+  *//*  id('com.android.application')
+    id('kotlin-android')
+    id('kotlin-kapt')
+    id("androidx.navigation.safeargs.kotlin")
+    id('com.google.gms.google-services')*//*
+}*/
 
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
@@ -25,7 +33,13 @@ android {
         }
     }
     buildTypes {
+        debug {
+            buildConfigField 'String', "MAPS_API_KEY", MAPS_API_KEY
+            resValue 'string', "MAPS_API_KEY", MAPS_API_KEY
+        }
         release {
+            buildConfigField 'String', "MAPS_API_KEY", MAPS_API_KEY
+            resValue 'string', "MAPS_API_KEY", MAPS_API_KEY
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
@@ -51,8 +65,8 @@ android {
     buildFeatures {
         dataBinding true
     }
-  /*  buildTypes.each {
-        it.buildConfigField 'String', 'mMaps_API_KEY', 'MAPS_API_KEY'
+ /*   buildTypes.each {
+        it.buildConfigField "String", "Maps_API_KEY", "MAPS_API_KEY"
     }*/
 }
 
