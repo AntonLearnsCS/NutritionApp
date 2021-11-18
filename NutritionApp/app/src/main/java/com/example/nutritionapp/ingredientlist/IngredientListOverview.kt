@@ -14,6 +14,7 @@ import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.NavigationUI
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.nutritionapp.BuildConfig
 import com.example.nutritionapp.R
 import com.example.nutritionapp.databinding.IngredientListRecyclerviewBinding
 import com.example.nutritionapp.util.wrapEspressoIdlingResource
@@ -44,7 +45,6 @@ class IngredientListOverview : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-
         super.onCreate(savedInstanceState)
 
         //load the reminders list on the ui
