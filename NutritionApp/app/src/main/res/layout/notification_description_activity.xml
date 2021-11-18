@@ -17,23 +17,27 @@
             android:id="@+id/recipe_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="296dp"
-            android:textSize="50sp"
             android:text="@{recipeNotification.recipeName}"
-            app:layout_constraintEnd_toEndOf="@+id/missing_ingredients_list"
-            app:layout_constraintHorizontal_bias="0.47"
-            app:layout_constraintStart_toStartOf="@+id/missing_ingredients_list"
-            app:layout_constraintTop_toTopOf="parent" />
+            android:textSize="50sp"
+            android:gravity="center"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.498"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.281" />
 
         <TextView
             android:id="@+id/missing_ingredients_list"
+            listIngredients="@{recipeNotification.missingIngredients}"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textSize="30sp"
-            listIngredients="@{recipeNotification.missingIngredients}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.498"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/recipe_title" />
+            app:layout_constraintTop_toBottomOf="@+id/recipe_title"
+            app:layout_constraintVertical_bias="0.369" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
