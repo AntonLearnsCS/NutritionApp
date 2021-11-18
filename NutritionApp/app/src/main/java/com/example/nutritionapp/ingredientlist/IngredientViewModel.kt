@@ -388,8 +388,8 @@ class IngredientViewModel(
                     }
 
                     _listOfStepsLiveData.value = listOfSteps
-
-                    _missingIngredients.value = listOfIngredientNameInInstruction.minus(
+                    val removeDuplicates = listOfIngredientNameInInstruction.toSet().toList()
+                    _missingIngredients.value = removeDuplicates.minus(
                         foodInText
                     )
                     mFlag.value = true
