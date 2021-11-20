@@ -1,4 +1,4 @@
-![shopping cart image](food_shopping_cart.jpg "Shopping cart")
+![shopping cart image](https://upload.wikimedia.org/wikipedia/commons/b/bb/Shopping_cart_with_food_clip_art.svg)
 ![image](C:/Users/Anton/Pictures/Isolated.png)
 
 
