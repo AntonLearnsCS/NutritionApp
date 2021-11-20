@@ -33,6 +33,7 @@ import com.example.nutritionapp.util.wrapEspressoIdlingResource
     string in this file.
     username:gilong314@gmail.com
     password:abcd1234
+    testtesting
  */
 
 class AuthenticationActivity : AppCompatActivity() {
