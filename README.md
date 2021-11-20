@@ -1,6 +1,4 @@
 ![shopping cart image](https://upload.wikimedia.org/wikipedia/commons/b/bb/Shopping_cart_with_food_clip_art.svg)
-![image](C:/Users/Anton/Pictures/Isolated.png)
-
 
 # NutritionApp - An Android Reminder/Search App
 ## About
