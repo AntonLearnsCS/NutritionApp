@@ -282,7 +282,7 @@ class IngredientViewModel(
 
         return false
     }
-//git testing it now check
+//git testing it now check push
 
     @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
     fun loadIngredientListByNetwork() {
