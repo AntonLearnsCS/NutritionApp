@@ -1,4 +1,7 @@
 ![shopping cart image](food_shopping_cart.jpg "Shopping cart")
+![image](C:/Users/Anton/Pictures/Isolated.png)
+
+
 # NutritionApp - An Android Reminder/Search App
 ## About
 Simple reminder/search app created with _Kotlin_
