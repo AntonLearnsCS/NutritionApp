@@ -16,4 +16,5 @@ Mockito (2.8.9), Koin(2.0.1), AndroidX (1.4.0), Espresso (3.2.0)
 
 ### Launch
 Requires API 21
-Requires API ket from [Spoonacular API](https://rapidapi.com/spoonacular/api/recipe-food-nutrition)
+
+Requires API key from [Spoonacular API](https://rapidapi.com/spoonacular/api/recipe-food-nutrition)
