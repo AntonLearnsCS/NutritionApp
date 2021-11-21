@@ -34,6 +34,7 @@ import com.example.nutritionapp.util.wrapEspressoIdlingResource
     username:gilong314@gmail.com
     password:abcd1234
     testtesting
+    new test scheme
  */
 
 class AuthenticationActivity : AppCompatActivity() {
