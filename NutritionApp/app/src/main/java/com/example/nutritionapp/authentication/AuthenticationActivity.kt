@@ -36,7 +36,7 @@ import com.example.nutritionapp.util.wrapEspressoIdlingResource
     testtesting
     new test scheme
     again
-    last time
+    last time, sikes
  */
 
 class AuthenticationActivity : AppCompatActivity() {
