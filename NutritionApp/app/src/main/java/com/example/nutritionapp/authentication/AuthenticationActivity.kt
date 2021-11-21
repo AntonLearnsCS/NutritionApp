@@ -37,6 +37,7 @@ import com.example.nutritionapp.util.wrapEspressoIdlingResource
     new test scheme
     again
     last time, sikes
+    sing
  */
 
 class AuthenticationActivity : AppCompatActivity() {
