@@ -82,7 +82,7 @@ class AuthenticationActivity : AppCompatActivity() {
 
         binding.loginButton.setOnClickListener {
 
-            //Tip: Don't start activity from here, do it from onActivityResult
+            //Tip: Don't start activity from here, do it from onActivityResult; testing commit
             wrapEspressoIdlingResource {
                 launchSignInFlow()
             }
