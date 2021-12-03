@@ -41,4 +41,14 @@ class IngredientDetail : Fragment() {
 
         return binding.root
     }
+
+    //do not need to worry about savedInstanceState since data is stored in the viewModel, which persists
+    override fun onViewStateRestored(savedInstanceState: Bundle?) {
+        super.onViewStateRestored(savedInstanceState)
+        Log.i("state","onViewStateRestored called, empty? ${savedInstanceState?.isEmpty}")
+    }
+    
 }
+
+
+class Empty

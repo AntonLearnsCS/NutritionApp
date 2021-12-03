@@ -24,13 +24,6 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.annotation.Config
 
-import androidx.test.espresso.Espresso.onView
-
-import androidx.test.espresso.assertion.ViewAssertions.matches
-import androidx.test.espresso.matcher.RootMatchers.withDecorView
-import androidx.test.espresso.matcher.ViewMatchers.*
-import com.google.android.material.internal.ContextUtils
-import org.hamcrest.CoreMatchers
 
 //Note: Robolectric - Running tests on Android API 29 now strictly requires a Java9 runtime or newer
 @Config(sdk = [Build.VERSION_CODES.P])
@@ -51,7 +44,7 @@ class IngredientListViewModelTest {
     }
 
     @Test
-    fun IngredientListViewModel_searchIngredient_ReturnArraySize() = mainCoroutineRule.runBlockingTest {
+    fun IngredientListViewModel_searchIngredient_ReturnArraySize() = mainCoroutineRule.dispatcher.runBlockingTest {
         //Given - view model
         val viewModel = IngredientViewModel(ApplicationProvider.getApplicationContext(), MockRepository, nutritionApi)
         val testIngredient = IngredientDataClass(1,"Name",2,"imgUrl","jpeg")

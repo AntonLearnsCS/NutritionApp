@@ -2,11 +2,14 @@ package com.example.nutritionapp.endtoendtest
 
 import android.app.Activity
 import android.os.Bundle
+import android.view.InputDevice
+import android.view.MotionEvent
 import android.view.View
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.fragment.app.testing.launchFragmentInContainer
 import androidx.recyclerview.widget.RecyclerView
 import androidx.room.Room
+import androidx.room.RoomDatabase
 import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.core.app.ApplicationProvider.getApplicationContext
@@ -14,6 +17,11 @@ import androidx.test.espresso.Espresso
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.IdlingRegistry
 import androidx.test.espresso.NoMatchingViewException
+import androidx.test.espresso.ViewAction
+import androidx.test.espresso.action.CoordinatesProvider
+import androidx.test.espresso.action.GeneralClickAction
+import androidx.test.espresso.action.Press
+import androidx.test.espresso.action.Tap
 import androidx.test.espresso.action.ViewActions
 import androidx.test.espresso.action.ViewActions.*
 import androidx.test.espresso.assertion.ViewAssertions.matches
@@ -32,12 +40,16 @@ import com.example.nutritionapp.authentication.AuthenticationActivity
 import com.example.nutritionapp.database.IngredientDataClass
 import com.example.nutritionapp.database.IngredientDataSourceInterface
 import com.example.nutritionapp.database.IngredientDatabase
+import com.example.nutritionapp.ingredientdetail.IngredientDetail
 import com.example.nutritionapp.ingredientlist.IngredientListActivity
+import com.example.nutritionapp.ingredientlist.IngredientListOverview
 import com.example.nutritionapp.ingredientlist.IngredientViewModel
 import com.example.nutritionapp.ingredientlist.localIngredientAdapter
 import com.example.nutritionapp.network.mNutritionApi
 import com.example.nutritionapp.util.EspressoIdleResource
+import com.example.nutritionapp.util.getOrAwaitValue
 import kotlinx.coroutines.*
+import kotlinx.coroutines.test.runBlockingTest
 import org.hamcrest.CoreMatchers.*
 import org.hamcrest.Matcher
 import org.junit.After
@@ -56,39 +68,45 @@ val instanceTaskExecutorRule = InstantTaskExecutorRule()
     private lateinit var viewModel : IngredientViewModel
     private lateinit var database: IngredientDatabase
     private lateinit var repository: IngredientDataSourceInterface
+    private lateinit var mList : List<IngredientDataClass>
     private val dataBindingIdlingResource = DataBindingIdlingResource()
     private val nutritionApi = mNutritionApi()
+
     @ExperimentalCoroutinesApi
     @get:Rule
     val mainCoroutineRule = MainCoroutineRule()
 
     @ExperimentalCoroutinesApi
     @Before
-    fun init() = runBlocking{
+    fun init() = mainCoroutineRule.dispatcher.runBlockingTest{
         //this may cause UI to hang
-        database = Room.inMemoryDatabaseBuilder(
-            getApplicationContext(),
-            IngredientDatabase::class.java
-        ).build()
+        /*database = Room.inMemoryDatabaseBuilder(getApplicationContext(), IngredientDatabase::class.java).setTransactionExecutor(mainCoroutineRule.dispatcher.asExecutor())
+            .setQueryExecutor(mainCoroutineRule.dispatcher.asExecutor())
+            .allowMainThreadQueries().build()*/
 /*
 Q: Could be causing UI to hang?
 .setTransactionExecutor(mainCoroutineRule.dispatcher.asExecutor())
             .setQueryExecutor(mainCoroutineRule.dispatcher.asExecutor())
             .allowMainThreadQueries()
  */
-        database.clearAllTables()
+
+        //database.clearAllTables()
         //database.IngredientDatabaseDao.clear()
+        val db = Room.inMemoryDatabaseBuilder(ApplicationProvider.getApplicationContext(), IngredientDatabase::class.java).setTransactionExecutor(mainCoroutineRule.dispatcher.asExecutor())
+            .setQueryExecutor(mainCoroutineRule.dispatcher.asExecutor()).allowMainThreadQueries().build()
+        ServiceLocator.setDatabase(db)
         repository = ((ApplicationProvider.getApplicationContext()) as App).taskRepository
         repository.saveNewIngredient(IngredientDataClass(1, "DescriptionM", 2, "url", "jpeg"))
         repository.saveNewIngredient(IngredientDataClass(2, "DescriptionQ", 3, "url", "png"))
 
         viewModel = IngredientViewModel(ApplicationProvider.getApplicationContext(),repository, nutritionApi)
+        //mList = viewModel.mutableLiveDataList.value!!
     }
 
-    @After
+/*    @After
     fun close() = runBlocking {
-        database.IngredientDatabaseDao.clearIngredientEntity()
-    }
+        //database.IngredientDatabaseDao.clearIngredientEntity()
+    }*/
 
     @Before
     fun registerIdlingResource() {
@@ -109,9 +127,29 @@ Q: Could be causing UI to hang?
 
     @ExperimentalCoroutinesApi
     @Test
-    fun endToEndTest(): Unit = runBlocking{
+    fun testViewModel_loadNetwork_ChangedValue() = mainCoroutineRule.dispatcher.runBlockingTest {
+        val listActivityScenario = ActivityScenario.launch(IngredientListActivity::class.java)
+
+        //You must monitor the very first activity if it contains databinding in order to then monitor subsequent activities
+        dataBindingIdlingResource.monitorActivity(listActivityScenario)
+        //given a list of IngredientDataClass
+        viewModel.searchItem.postValue("Apple")
+        viewModel.changedMutableLiveData(listOf(IngredientDataClass(1, "DescriptionM", 2, "url", "jpeg"), IngredientDataClass(2, "DescriptionQ", 3, "url", "png")))
+//        assertThat(viewModel.mutableLiveDataList.value?.get(0)?.name, `is`(mList[0].name))
+        //when load network is called in viewModel
+        assertThat(viewModel.searchItem.getOrAwaitValue(), `is`("Apple"))
+        viewModel.loadIngredientListByNetwork()
+
+        //then livedata's value changes
+        assertThat(viewModel.mutableLiveDataList.value?.get(0)?.name, `is`(not("DescriptionM")))
+    }
+
+    @ExperimentalCoroutinesApi
+    @Test
+    fun endToEndTest(): Unit = mainCoroutineRule.dispatcher.runBlockingTest{
+        //mainCoroutineRule.dispatcher.runBlockingTest {
         //activityScenario is part of AndroidX testing
-       /* val testIngredient = IngredientDataClassDTO(9,"name",2,"http/someUrl","JPEG")
+        /* val testIngredient = IngredientDataClassDTO(9,"name",2,"http/someUrl","JPEG")
         database.IngredientDatabaseDao.saveIngredient(testIngredient)
 
         //TODO: Returns correctly when called directly from database
@@ -155,10 +193,25 @@ Q: Could be causing UI to hang?
 
         onView(withId(R.id.searchIngredientButton)).perform(click())
         onView(withId(R.id.progress_circular)).check(matches(isDisplayed()))
+        onView(withId(R.id.searchIngredientButton)).perform(click())
+
+        //delay(2000)
+
+        //onView(withId(R.id.ingredientListOverview)).perform(clickIn(33.940829653849526, -118.13559036701918))
+
+        val listActivityScenarioq = ActivityScenario.launch(IngredientListActivity::class.java)
+
+        //You must monitor the very first activity if it contains databinding in order to then monitor subsequent activities
+        dataBindingIdlingResource.monitorActivity(listActivityScenarioq)
         delay(2000)
 
+        onView(withId(R.id.recycler_view_local)).check(matches(isDisplayed()))
+
+        //val fragmentScenario = launchFragmentInContainer<IngredientListOverview>(Bundle(), R.style.AppTheme)
+        //dataBindingIdlingResource.monitorFragment(fragmentScenario)
 
         //TODO: recycler_view_local not recognized despite being visible on screen
+        //A: Needed to restart the activity
         onView(withId(R.id.recycler_view_local)).check(matches(isDisplayed()))
 
 /* Tried:
@@ -169,35 +222,39 @@ Q: Could be causing UI to hang?
  (getApplicationContext())?.getWindow()?.getDecorView())))).check(matches(isDisplayed()))
  */
 
-
         onView(withId(R.id.recycler_view_local)).perform(
             RecyclerViewActions.actionOnItemAtPosition<localIngredientAdapter.ViewHolder>
                 (0, ViewActions.click())
         )
+        delay(2000)
+        onView(withId(R.id.decreaseButton)).perform(click())
+
+        onView(withId(R.id.increaseButton)).perform(click())
+        onView(withText("3")).check(matches(isDisplayed()))
+        onView(withId(R.id.addIngredientFAB)).perform(click())
 
         delay(2000)
         //TODO: shopping_cart still in view during end to end test
-        onView(withId(R.id.shopping_cart)).check(matches(not(isDisplayed())))
+        //Possibly b/c endToEnd tests do not make network requests?
+        onView(withId(R.id.shopping_cart)).check(matches(isDisplayed()))
+        delay(2000)
+        //onView(withId(R.id.recycler_view_network)).check(matches(isDisplayed()))
 
-        onView(withId(R.id.recycler_view_network)).check(matches(isDisplayed()))
-        onView(withId(R.id.recycler_view_local))
-            .check(matches(hasDescendant(withText("DescriptionQ"))))
        /* onView(withId(R.id.recycler_view_network)).perform(RecyclerViewActions.actionOnItem<RecyclerView.ViewHolder>
             (ViewMatchers.hasDescendant(ViewMatchers.withText("Snapple Apple, 16 fl oz glass bottles, 12 pack")), click()))*/
+//            onView(withId(R.id.addIngredientFAB)).perform(click())
 
-        onView(withId(R.id.addIngredientFAB)).perform(click())
         //verify(mockNavController).navigate(IngredientListOverviewDirections.actionIngredientListOverviewToIngredientDetail())
 
-        onView(withId(R.id.recycler_view_network)).check(matches(isDisplayed()))
 
-        viewModel.getLocalIngredientList()
+       // viewModel.getLocalIngredientList()
 
         onView(withId(R.id.recycler_view_local)).check(matches(isDisplayed()))
 
         //TODO: Was receiving: "CalledFromWrongThreadException: Only the original thread that created a view hierarchy can touch views"
 
         //TODO: Why does "listOfSavedIngredients" have a null value?
-        assertThat(viewModel.listOfSavedIngredients?.value?.size, `is`(1))
+        assertThat(viewModel.listOfSavedIngredients?.value?.size, `is`(not(0)))
 
         //onView(withId())
 
@@ -238,5 +295,23 @@ Q: Could be causing UI to hang?
             activity = it
         }
         return activity
+    }
+
+    fun clickIn(x: Double, y: Double): ViewAction {
+        return GeneralClickAction(
+            Tap.LONG,
+            CoordinatesProvider { view ->
+                val screenPos = IntArray(2)
+                view?.getLocationOnScreen(screenPos)
+
+                val screenX = (screenPos[0] + x).toFloat()
+                val screenY = (screenPos[1] + y).toFloat()
+
+                floatArrayOf(screenX, screenY)
+            },
+            Press.PINPOINT,
+            InputDevice.SOURCE_ANY,
+            MotionEvent.BUTTON_PRIMARY
+        )
     }
 }

@@ -78,6 +78,7 @@ class IngredientListOverview : Fragment() {
         })
 
         viewModel.mutableLiveDataList.observe(viewLifecycleOwner, Observer {
+            Log.i("test","network adapter submitList() called")
             networkIngredientAdapter.submitList(it)
         })
 
@@ -136,7 +137,6 @@ class IngredientListOverview : Fragment() {
             viewModel.searchRecipeEditTextFlag.value = false
             }
         })
-
         //viewModel.listOfIngredientsString.value = null
         return binding.root
     }
@@ -152,5 +152,4 @@ class IngredientListOverview : Fragment() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return NavigationUI.onNavDestinationSelected(item, requireView().findNavController())
                 || super.onOptionsItemSelected(item)    }
-
 }

@@ -26,6 +26,7 @@ import com.google.android.gms.maps.model.LatLng
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import kotlinx.coroutines.*
+import org.jetbrains.annotations.TestOnly
 import java.net.URLEncoder
 
 
@@ -64,8 +65,15 @@ class IngredientViewModel(
         get() = _viewVisibilityFlag
 
     private val _mutableLiveDataList: MutableLiveData<List<IngredientDataClass>> = MutableLiveData()
+
     val mutableLiveDataList: LiveData<List<IngredientDataClass>>
         get() = _mutableLiveDataList
+
+    @TestOnly
+    fun changedMutableLiveData( mList: List<IngredientDataClass>)
+    {
+        _mutableLiveDataList.postValue(mList)
+    }
 
     private val _listOfSavedIngredients: MutableLiveData<List<IngredientDataClass>> =
         MutableLiveData()
@@ -287,19 +295,21 @@ class IngredientViewModel(
     @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
     fun loadIngredientListByNetwork() {
         wrapEspressoIdlingResource {
+            Log.i("viewModel","load called")
             var listOfNetworkRequestedIngredients: List<IngredientDataClass>? = null
             viewModelScope.launch {
-                _viewVisibilityFlag.value = true
+                _viewVisibilityFlag.postValue(true)
                 if (searchItem.value != null) {
                     try {
                         val result: wrapperIngredientListNetworkDataClass =
                             nutritionApi.nutritionService.getIngredients(searchItem.value!!)
                         Log.i("test", "search item: ${searchItem.value}")
-                        Log.i("test1", "Total products: ${result.totalProducts}")
+                        Log.i("test1", "Total products: ${result}")
 
                         listOfNetworkRequestedIngredients = result.toDomainType()
-
-                        _mutableLiveDataList.value = listOfNetworkRequestedIngredients
+                        Log.i("viewModel", listOfNetworkRequestedIngredients!![0].name)
+                        _mutableLiveDataList.value = (listOfNetworkRequestedIngredients)
+                        Log.i("viewModelMutable", _mutableLiveDataList.value!![0].name)
 
                         Toast.makeText(
                             app,
@@ -308,7 +318,7 @@ class IngredientViewModel(
                         ).show()
 
                         val tempBool = false
-                        _shoppingCartVisibilityFlag.value = tempBool
+                        _shoppingCartVisibilityFlag.postValue(tempBool)
 
                     } catch (e: Exception) {
 
@@ -318,7 +328,7 @@ class IngredientViewModel(
                         println("Error: ${e.message}")
                     }
                 }
-                _viewVisibilityFlag.value = false
+                _viewVisibilityFlag.postValue(false)
             }
         }
     }
@@ -400,7 +410,7 @@ class IngredientViewModel(
     }
 
     fun saveIngredientItem() {
-        if (selectedIngredient.value != null && selectedIngredient.value?.quantity!! > 0) {
+        if (selectedIngredient.value != null && selectedIngredient.value?.quantity!! >= 0) {
             wrapEspressoIdlingResource {
                 viewModelScope.launch {
                     selectedIngredient.value?.let { ingredientRepository.saveNewIngredient(it) }
@@ -430,7 +440,7 @@ class IngredientViewModel(
                                 imageType = result.imageType
                             )
                         })
-                        _listOfSavedIngredients.value = dataList
+                        _listOfSavedIngredients.postValue(dataList)
                     }
                     is Result.Error -> {
                         Log.i("test", "empty repository")

@@ -55,6 +55,12 @@ object ServiceLocator {
     }
 
     @VisibleForTesting
+    fun setDatabase( db : IngredientDatabase)
+    {
+        database = db
+    }
+
+    @VisibleForTesting
     fun resetRepository() {
         synchronized(lock) {
             runBlocking {

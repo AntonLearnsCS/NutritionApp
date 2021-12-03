@@ -36,7 +36,6 @@ val instantTaskExecutorRule = InstantTaskExecutorRule()
             .build()
 
         repository = IngredientRepository(database.IngredientDatabaseDao)
-
     }
     @After
     fun cleanUp() {

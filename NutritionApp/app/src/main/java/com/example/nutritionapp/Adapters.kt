@@ -201,8 +201,7 @@ object Adapters {
     @JvmStatic
     fun setFadeVisible(view: View, visible: Boolean? = true) {
         wrapEspressoIdlingResource {
-            //id: 2131362152 is the progress bar and id: 2131362205 is the shopping_cart image
-            Log.i("test1","view: ${view.id}, visible: $visible")
+            //id: 2131362156 is the progress bar and id: 2131362209 is the shopping_cart image
             if (view.tag == null) {
                 view.tag = true
                 view.visibility = if (visible == true) View.VISIBLE else View.GONE
@@ -218,6 +217,8 @@ object Adapters {
                         view.fadeOut()
                 }
             }
+            Log.i("test1","view: ${view.id}, visible: $visible")
+
         }
     }
 }
