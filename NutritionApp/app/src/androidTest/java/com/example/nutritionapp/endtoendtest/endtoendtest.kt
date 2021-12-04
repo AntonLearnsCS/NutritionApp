@@ -1,5 +1,7 @@
 package com.example.nutritionapp.endtoendtest
 
+//import com.example.nutritionapp.DataBindingIdlingResource
+import ServiceLocator
 import android.app.Activity
 import android.os.Bundle
 import android.view.InputDevice
@@ -7,58 +9,47 @@ import android.view.MotionEvent
 import android.view.View
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.fragment.app.testing.launchFragmentInContainer
-import androidx.recyclerview.widget.RecyclerView
+import androidx.navigation.NavController
+import androidx.navigation.Navigation
 import androidx.room.Room
-import androidx.room.RoomDatabase
 import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ApplicationProvider
-import androidx.test.core.app.ApplicationProvider.getApplicationContext
-import androidx.test.espresso.Espresso
+import androidx.test.espresso.*
 import androidx.test.espresso.Espresso.onView
-import androidx.test.espresso.IdlingRegistry
-import androidx.test.espresso.NoMatchingViewException
-import androidx.test.espresso.ViewAction
-import androidx.test.espresso.action.CoordinatesProvider
-import androidx.test.espresso.action.GeneralClickAction
-import androidx.test.espresso.action.Press
-import androidx.test.espresso.action.Tap
-import androidx.test.espresso.action.ViewActions
+import androidx.test.espresso.action.*
 import androidx.test.espresso.action.ViewActions.*
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.RecyclerViewActions
 import androidx.test.espresso.matcher.RootMatchers
-import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.espresso.matcher.ViewMatchers.*
-import androidx.test.ext.junit.rules.activityScenarioRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
-
 import androidx.test.filters.LargeTest
 import androidx.test.platform.app.InstrumentationRegistry
 import com.example.nutritionapp.*
-//import com.example.nutritionapp.DataBindingIdlingResource
+import com.example.nutritionapp.R
 import com.example.nutritionapp.authentication.AuthenticationActivity
 import com.example.nutritionapp.database.IngredientDataClass
 import com.example.nutritionapp.database.IngredientDataSourceInterface
 import com.example.nutritionapp.database.IngredientDatabase
-import com.example.nutritionapp.ingredientdetail.IngredientDetail
 import com.example.nutritionapp.ingredientlist.IngredientListActivity
-import com.example.nutritionapp.ingredientlist.IngredientListOverview
+import com.example.nutritionapp.ingredientlist.IngredientListOverviewDirections
 import com.example.nutritionapp.ingredientlist.IngredientViewModel
 import com.example.nutritionapp.ingredientlist.localIngredientAdapter
 import com.example.nutritionapp.network.mNutritionApi
+import com.example.nutritionapp.recipe.SearchRecipe
 import com.example.nutritionapp.util.EspressoIdleResource
-import com.example.nutritionapp.util.getOrAwaitValue
 import kotlinx.coroutines.*
-import kotlinx.coroutines.test.TestCoroutineDispatcher
-import kotlinx.coroutines.test.runBlockingTest
-import kotlinx.coroutines.test.setMain
 import org.hamcrest.CoreMatchers.*
 import org.hamcrest.Matcher
+import org.hamcrest.Matchers
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.mockito.Mock
+import org.mockito.Mockito
+import org.mockito.Mockito.mock
 
 @LargeTest
 @RunWith(AndroidJUnit4::class)
@@ -99,7 +90,10 @@ Q: Could be causing UI to hang?
 
         //database.clearAllTables()
         //database.IngredientDatabaseDao.clear()
-        val db = Room.inMemoryDatabaseBuilder(ApplicationProvider.getApplicationContext(), IngredientDatabase::class.java)
+        val db = Room.inMemoryDatabaseBuilder(
+            ApplicationProvider.getApplicationContext(),
+            IngredientDatabase::class.java
+        )
             .allowMainThreadQueries().build()
         ServiceLocator.setDatabase(db)
 
@@ -107,7 +101,11 @@ Q: Could be causing UI to hang?
         repository.saveNewIngredient(IngredientDataClass(1, "DescriptionM", 2, "url", "jpeg"))
         repository.saveNewIngredient(IngredientDataClass(2, "DescriptionQ", 3, "url", "png"))
 
-        viewModel = IngredientViewModel(ApplicationProvider.getApplicationContext(),repository, nutritionApi)
+        viewModel = IngredientViewModel(
+            ApplicationProvider.getApplicationContext(),
+            repository,
+            nutritionApi
+        )
         //mList = viewModel.mutableLiveDataList.value!!
     }
 
@@ -196,7 +194,8 @@ Q: Could be causing UI to hang?
 
         onView(withId(R.id.recycler_view_network)).perform(
             RecyclerViewActions.actionOnItemAtPosition<localIngredientAdapter.ViewHolder>
-                (0, ViewActions.click()))
+                (0, ViewActions.click())
+        )
 
         onView(withId(R.id.addIngredientFAB)).perform(click())
 
@@ -217,7 +216,8 @@ Q: Could be causing UI to hang?
 
         onView(withId(R.id.recycler_view_local)).perform(
             RecyclerViewActions.actionOnItemAtPosition<localIngredientAdapter.ViewHolder>
-                (0, ViewActions.click()))
+                (0, ViewActions.click())
+        )
         delay(2000)
         onView(withId(R.id.decreaseButton)).perform(click())
 
@@ -229,21 +229,64 @@ Q: Could be causing UI to hang?
 
         onView(withId(R.id.recycler_view_local)).check(matches(isDisplayed()))
 
-        //TODO: Was receiving: "CalledFromWrongThreadException: Only the original thread that created a view hierarchy can touch views"
-
         //TODO: Why does "listOfSavedIngredients" have a null value?
-        assertThat(viewModel.listOfSavedIngredients?.value?.size, `is`(not(0)))
+        assertThat(viewModel.listOfSavedIngredients?.value?.size, `is`(not(2)))
 
-        //onView(withId())
+        onView(withId(R.id.search_recipe)).perform(click())
 
-        //onView(withId(R.id.test)).check(matches(withText(not(containsString("NutritionApp")))))
+        onView(withText("Select at least one ingredient")).inRoot(RootMatchers.withDecorView(Matchers.not(`is`(getActivity(listActivityScenario)
+            ?.window?.decorView)))).check(matches(isDisplayed()))
+
+        onView(withId(R.id.recycler_view_local)).perform(
+            RecyclerViewActions.actionOnItemAtPosition<localIngredientAdapter.ViewHolder>
+                (0, MyViewAction.clickChildViewWithId(R.id.checkbox))
+        )
+        onView(withId(R.id.progress_circular)).check(matches(isDisplayed()))
+
+
+        val fragmentScenario = launchFragmentInContainer<SearchRecipe>(Bundle(),R.style.AppTheme)
+        val mockNav = mock(NavController::class.java)
+
+        fragmentScenario.onFragment {
+            Navigation.setViewNavController(it.view!!, mockNav)
+        }
+        Mockito.verify(mockNav).navigate(
+            IngredientListOverviewDirections.actionIngredientListOverviewToSearchRecipe()
+        )
+        //onView(withId(R.id.ingredient_list)).check(matches(isDisplayed()))
+
+        //Select at least one ingredient
+        //onView(withId(R.id.test)).che.ck(matches(withText(not(containsString("NutritionApp")))))
         activityScenario.close()
         listActivityScenario.close()
+    }
+    //source: https://stackoverflow.com/questions/28476507/using-espresso-to-click-view-inside-recyclerview-item
+    object MyViewAction {
+        fun clickChildViewWithId(id: Int): ViewAction {
+            return object : ViewAction {
+                override fun getConstraints(): Matcher<View>? {
+                    return null
+                }
+
+                override fun getDescription(): String {
+                    return "Click on a child view with specified id."
+                }
+
+                override fun perform(uiController: UiController?, view: View) {
+                    val v = view.findViewById<View>(id)
+                    v.performClick()
+                }
+            }
+        }
     }
 
     var DEFAULT_WAIT_TIMEOUT = 10000L
     var DEFAULT_SLEEP_INTERVAL = 10000L
-    fun waitUntilCondition(matcher: Matcher<View>, timeout: Long = DEFAULT_WAIT_TIMEOUT, condition: (View?) -> Boolean) {
+    fun waitUntilCondition(
+        matcher: Matcher<View>,
+        timeout: Long = DEFAULT_WAIT_TIMEOUT,
+        condition: (View?) -> Boolean
+    ) {
 
         var success = false
         lateinit var exception: NoMatchingViewException
