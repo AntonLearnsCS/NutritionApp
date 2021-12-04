@@ -217,7 +217,7 @@ object Adapters {
                         view.fadeOut()
                 }
             }
-            Log.i("test1","view: ${view.id}, visible: $visible")
+            Log.i("testVisibility","view: ${view.id}, visible: $visible")
 
         }
     }

@@ -74,13 +74,18 @@ class IngredientListOverview : Fragment() {
         }
 
         viewModel.listOfSavedIngredients.observe(viewLifecycleOwner, Observer {
-            localIngredientAdapter.submitList(it)
+            wrapEspressoIdlingResource {
+                localIngredientAdapter.submitList(it)
+            }
         })
 
         viewModel.mutableLiveDataList.observe(viewLifecycleOwner, Observer {
-            Log.i("test","network adapter submitList() called")
-            networkIngredientAdapter.submitList(it)
+            wrapEspressoIdlingResource {
+                Log.i("testLive", "mutableLiveDataList is changed: ${it[0]}")
+                networkIngredientAdapter.submitList(it)
+            }
         })
+
 
         binding.searchIngredientButton.setOnClickListener {
             //networkIngredientAdapter.currentList.clear()

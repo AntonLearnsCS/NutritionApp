@@ -19,6 +19,14 @@ class localIngredientAdapter(val onClickListener: LocalIngredientListener) : Lis
     LocalIngredienttDiffCallback()
 )
 {
+    override fun onCurrentListChanged(
+        previousList: MutableList<IngredientDataClass>,
+        currentList: MutableList<IngredientDataClass>
+    ) {
+        Log.i("adapter","listchanged called")
+        super.onCurrentListChanged(previousList, currentList)
+    }
+
     //NOTE: MutableLiveData<MutableList<IngredientDataClass>>> does not work but mutableListOf() does b/c MutableList is an interface
     var mList = mutableListOf<IngredientDataClass>()
     var mListOfNames = mutableListOf<String>()
