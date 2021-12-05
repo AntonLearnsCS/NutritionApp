@@ -1,16 +1,16 @@
 package com.example.nutritionapp.endtoendtest
 
 //import com.example.nutritionapp.DataBindingIdlingResource
+
 import ServiceLocator
 import android.app.Activity
-import android.os.Bundle
 import android.view.InputDevice
 import android.view.MotionEvent
 import android.view.View
+import android.widget.EditText
+import android.widget.TextView
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import androidx.fragment.app.testing.launchFragmentInContainer
-import androidx.navigation.NavController
-import androidx.navigation.Navigation
+import androidx.recyclerview.widget.RecyclerView
 import androidx.room.Room
 import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ApplicationProvider
@@ -20,6 +20,7 @@ import androidx.test.espresso.action.*
 import androidx.test.espresso.action.ViewActions.*
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.RecyclerViewActions
+import androidx.test.espresso.matcher.BoundedMatcher
 import androidx.test.espresso.matcher.RootMatchers
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.runners.AndroidJUnit4
@@ -32,14 +33,13 @@ import com.example.nutritionapp.database.IngredientDataClass
 import com.example.nutritionapp.database.IngredientDataSourceInterface
 import com.example.nutritionapp.database.IngredientDatabase
 import com.example.nutritionapp.ingredientlist.IngredientListActivity
-import com.example.nutritionapp.ingredientlist.IngredientListOverviewDirections
 import com.example.nutritionapp.ingredientlist.IngredientViewModel
 import com.example.nutritionapp.ingredientlist.localIngredientAdapter
 import com.example.nutritionapp.network.mNutritionApi
-import com.example.nutritionapp.recipe.SearchRecipe
 import com.example.nutritionapp.util.EspressoIdleResource
 import kotlinx.coroutines.*
 import org.hamcrest.CoreMatchers.*
+import org.hamcrest.Description
 import org.hamcrest.Matcher
 import org.hamcrest.Matchers
 import org.junit.After
@@ -47,9 +47,8 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.mockito.Mock
-import org.mockito.Mockito
-import org.mockito.Mockito.mock
+import java.lang.StringBuilder
+
 
 @LargeTest
 @RunWith(AndroidJUnit4::class)
@@ -189,7 +188,6 @@ Q: Could be causing UI to hang?
 
         delay(2000)
 
-
         onView(withId(R.id.recycler_view_network)).check(matches(isDisplayed()))
 
         onView(withId(R.id.recycler_view_network)).perform(
@@ -229,37 +227,52 @@ Q: Could be causing UI to hang?
 
         onView(withId(R.id.recycler_view_local)).check(matches(isDisplayed()))
 
+        //checks item count of local reyclerView
+        assertThat(returnItemCount(withId(R.id.recycler_view_local),3), `is`(true))
+
         //TODO: Why does "listOfSavedIngredients" have a null value?
-        assertThat(viewModel.listOfSavedIngredients?.value?.size, `is`(not(2)))
+        assertThat(viewModel.listOfSavedIngredients.value?.size, `is`(not(2)))
 
         onView(withId(R.id.search_recipe)).perform(click())
 
-        onView(withText("Select at least one ingredient")).inRoot(RootMatchers.withDecorView(Matchers.not(`is`(getActivity(listActivityScenario)
-            ?.window?.decorView)))).check(matches(isDisplayed()))
+        onView(withText("Select at least one ingredient")).inRoot(
+            RootMatchers.withDecorView(
+                Matchers.not(
+                    `is`(
+                        getActivity(
+                            listActivityScenario
+                        )
+                            ?.window?.decorView
+                    )
+                )
+            )
+        ).check(matches(isDisplayed()))
 
         onView(withId(R.id.recycler_view_local)).perform(
             RecyclerViewActions.actionOnItemAtPosition<localIngredientAdapter.ViewHolder>
                 (0, MyViewAction.clickChildViewWithId(R.id.checkbox))
         )
-        onView(withId(R.id.progress_circular)).check(matches(isDisplayed()))
 
+        onView(withId(R.id.recycler_view_local))
+            .check(matches(withItemCount(3)))
 
-        val fragmentScenario = launchFragmentInContainer<SearchRecipe>(Bundle(),R.style.AppTheme)
-        val mockNav = mock(NavController::class.java)
+        onView(withId(R.id.search_recipe)).perform(click())
 
-        fragmentScenario.onFragment {
-            Navigation.setViewNavController(it.view!!, mockNav)
-        }
-        Mockito.verify(mockNav).navigate(
-            IngredientListOverviewDirections.actionIngredientListOverviewToSearchRecipe()
-        )
-        //onView(withId(R.id.ingredient_list)).check(matches(isDisplayed()))
+        delay(3000)
+        assertThat(mGetText(withId(R.id.ingredient_list)), `is`(not(nullValue())))
+        assertThat(mGetText(withId(R.id.ingredient_list)), containsString("apple"))
+        assertThat(checkForDuplicatesViewAction(withId(R.id.ingredient_list), R.id.ingredient_list), `is`(false))
+
+        //onView(withId(R.id.ingredient_list)).check(matches(checkForDuplicates()))
+
+        //assertThat(checkForDuplicates(), `is`(false))
 
         //Select at least one ingredient
         //onView(withId(R.id.test)).che.ck(matches(withText(not(containsString("NutritionApp")))))
         activityScenario.close()
         listActivityScenario.close()
     }
+
     //source: https://stackoverflow.com/questions/28476507/using-espresso-to-click-view-inside-recyclerview-item
     object MyViewAction {
         fun clickChildViewWithId(id: Int): ViewAction {
@@ -279,6 +292,137 @@ Q: Could be causing UI to hang?
             }
         }
     }
+
+    //Issue: Returning nothing
+    //try BoundedMatcher as opposed to ViewAction
+    fun checkForDuplicates() : Matcher<View>{
+        return object : BoundedMatcher<View, TextView>(TextView::class.java) {
+            override fun describeTo(description: Description?) {
+                description?.appendText("Trying BoundedMatcher")
+            }
+
+            override fun matchesSafely(item: TextView?): Boolean {
+                if (item != null)
+                {
+                val result: List<String>? = item.text?.toString()?.split("\n")?.map { it.trim() }
+                println("list size:\n ${result?.size}")
+                return result?.toSet()?.toList()?.size == result?.size
+                    }
+                else
+                    return false
+            }
+        }
+    }
+
+    fun withItemCount(count: Int): Matcher<View> {
+        return object : BoundedMatcher<View, RecyclerView>(RecyclerView::class.java) {
+            override fun describeTo(description: Description?) {
+                description?.appendText("RecyclerView with item count: $count")
+            }
+
+            override fun matchesSafely(item: RecyclerView?): Boolean {
+                return item?.adapter?.itemCount == count
+            }
+        }
+    }
+
+    fun checkForDuplicatesViewAction(matcher: Matcher<View>, id : Int): Boolean
+    {
+        var bool = false
+        onView(matcher).perform(object : ViewAction {
+            override fun getConstraints(): Matcher<View> {
+                return isAssignableFrom(TextView::class.java)
+            }
+
+            override fun getDescription(): String {
+                return "getting text from a TextView"
+            }
+
+            override fun perform(uiController: UiController?, view: View) {
+                val mView = view.findViewById<TextView>(id)
+
+                val result: List<String>? = mView.text?.toString()?.split("\n")?.map { it.trim() }
+                println("list size:\n ${result?.size}")
+
+                bool = result?.toSet()?.toList()?.size == result?.size
+            }
+        })
+            return bool
+    }
+
+    //technically you can make BoundedMatcher return a Boolean as shown below
+    fun mCheckForDuplicatesViewAction(matcher: Matcher<View>): Boolean
+    {
+        var bool = false
+         (object : BoundedMatcher<View, EditText>(EditText::class.java) {
+            override fun describeTo(description: Description?) {
+                description?.appendText("SomeText")
+            }
+
+            override fun matchesSafely(item: EditText?): Boolean {
+                if (item != null)
+                {
+                    val result: List<String>? = item.text?.toString()?.split("\n")?.map { it.trim() }
+                    println("list size:\n ${result?.size}")
+
+                    bool = result?.toSet()?.toList()?.size == result?.size
+                }
+            return bool
+            }
+
+        })
+        return bool
+    }
+
+
+
+//source: https://stackoverflow.com/questions/23381459/how-to-get-text-from-textview-using-espresso
+
+    //creating a custom view Matcher using Espresso
+    //note that ViewAction overrides three methods
+    fun mGetText(matcher: Matcher<View?>?): String {
+        val stringBuilder = StringBuilder()
+        //espresso code
+        onView(matcher).perform(object : ViewAction {
+
+            override fun getConstraints(): Matcher<View> {
+                return isAssignableFrom(TextView::class.java)
+            }
+
+            override fun getDescription(): String {
+                return "getting text from a TextView"
+            }
+
+            override fun perform(uiController: UiController?, view: View) {
+                val tv = view as TextView //Save, because of check in getConstraints()
+                //can also get count of recyclerView
+                //val size = (view as RecyclerView).adapter?.itemCount
+                stringBuilder.append(tv.text.toString())
+            }
+        })
+        return stringBuilder.toString()
+    }
+
+    fun returnItemCount(matcher: Matcher<View>, count : Int) : Boolean
+    {
+        var bool = false
+        onView(matcher).perform(object : ViewAction {
+
+              override fun getConstraints(): Matcher<View> {
+                    return isAssignableFrom(RecyclerView::class.java)
+              }
+
+              override fun getDescription(): String {
+                  return "getting item count from a RecyclerView"
+              }
+
+              override fun perform(uiController: UiController?, view: View?) {
+                   bool = ((view as RecyclerView).adapter?.itemCount == count)
+              }
+        })
+        return bool
+    }
+
 
     var DEFAULT_WAIT_TIMEOUT = 10000L
     var DEFAULT_SLEEP_INTERVAL = 10000L

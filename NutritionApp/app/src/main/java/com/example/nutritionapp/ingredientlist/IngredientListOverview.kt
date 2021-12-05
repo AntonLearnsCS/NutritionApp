@@ -98,31 +98,32 @@ class IngredientListOverview : Fragment() {
         }
 
         binding.searchRecipe.setOnClickListener {
-            val result = localIngredientAdapter.getListName()
+            wrapEspressoIdlingResource {
+                val result = localIngredientAdapter.getListName()
 
-            if (result.size == 0)
-            {
-                viewModel.displayToast("Select at least one ingredient")
-            }
-            //clear list of ingredient components before trying to detect new ingredients
-            viewModel.foodInText.clear()
-            //Returns list of ingredients i.e {"mushroom","flour","tomato"}
-            viewModel.detectFoodInText(localIngredientAdapter.mListOfNames)
-
-
-            localIngredientAdapter.mList.clear()
-            //wait for flag to be true, indicating that the viewModelScope coroutine is done
-            viewModel.navigatorFlag.observe(viewLifecycleOwner, Observer { flag ->
-                if (flag) {
-                    viewModel.setNavigatorFlag(false)
-                    findNavController().navigate(
-                        IngredientListOverviewDirections.actionIngredientListOverviewToSearchRecipe(
-                        )
-                    )
-                    //once you navigate away, this fragment is destroyed, which destroys this method, so no need for return
-                    //return@Observer
+                if (result.size == 0) {
+                    viewModel.displayToast("Select at least one ingredient")
                 }
-            })
+                //clear list of ingredient components before trying to detect new ingredients
+                viewModel.foodInText.clear()
+                //Returns list of ingredients i.e {"mushroom","flour","tomato"}
+                viewModel.detectFoodInText(localIngredientAdapter.mListOfNames)
+
+
+                localIngredientAdapter.mList.clear()
+                //wait for flag to be true, indicating that the viewModelScope coroutine is done
+                viewModel.navigatorFlag.observe(viewLifecycleOwner, Observer { flag ->
+                    if (flag) {
+                        viewModel.setNavigatorFlag(false)
+                        findNavController().navigate(
+                            IngredientListOverviewDirections.actionIngredientListOverviewToSearchRecipe(
+                            )
+                        )
+                        //once you navigate away, this fragment is destroyed, which destroys this method, so no need for return
+                        //return@Observer
+                    }
+                })
+            }
         }
 
         viewModel.navigateToDetail.observe(viewLifecycleOwner, Observer {
