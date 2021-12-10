@@ -68,7 +68,6 @@ class IngredientViewModel(
 
     val mutableLiveDataList: LiveData<List<IngredientDataClass>>
         get() = _mutableLiveDataList
-
     @TestOnly
     fun changedMutableLiveData( mList: List<IngredientDataClass>)
     {

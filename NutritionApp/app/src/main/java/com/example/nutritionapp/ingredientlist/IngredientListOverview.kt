@@ -22,6 +22,21 @@ import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 
 class IngredientListOverview : Fragment() {
 
+    override fun onDestroy() {
+        super.onDestroy()
+        Log.i("callback", "onDestroyCalled")
+    }
+
+    override fun onPause() {
+        super.onPause()
+        Log.i("callback", "onPauseCalled")
+    }
+
+    override fun onStop() {
+        super.onStop()
+        Log.i("callback","onStopCalled")
+    }
+
     private val localIngredientAdapter =
         com.example.nutritionapp.ingredientlist.localIngredientAdapter(
             com.example.nutritionapp.ingredientlist.localIngredientAdapter.LocalIngredientListener { ingredientItem ->
@@ -99,6 +114,7 @@ class IngredientListOverview : Fragment() {
 
         binding.searchRecipe.setOnClickListener {
             wrapEspressoIdlingResource {
+
                 val result = localIngredientAdapter.getListName()
 
                 if (result.size == 0) {
@@ -159,3 +175,4 @@ class IngredientListOverview : Fragment() {
         return NavigationUI.onNavDestinationSelected(item, requireView().findNavController())
                 || super.onOptionsItemSelected(item)    }
 }
+
