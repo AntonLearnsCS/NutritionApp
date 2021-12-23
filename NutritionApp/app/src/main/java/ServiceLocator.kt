@@ -1,12 +1,19 @@
 import android.content.Context
 import androidx.annotation.VisibleForTesting
 import androidx.room.Room
+import androidx.room.migration.Migration
+import androidx.sqlite.db.SupportSQLiteDatabase
 import com.example.nutritionapp.database.IngredientDataSourceInterface
 import com.example.nutritionapp.database.IngredientDatabase
 import com.example.nutritionapp.database.IngredientRepository
 import com.example.nutritionapp.network.mNutritionApi
 import kotlinx.coroutines.runBlocking
-
+val MIGRATION_9_10: Migration = object : Migration(9, 10) {
+    override fun migrate(database: SupportSQLiteDatabase) {
+        // https://developer.android.com/reference/android/arch/persistence/room/ColumnInfo
+        database.execSQL("CREATE TABLE IF NOT EXISTS `RecipeOfDay` (`id` INTEGER NOT NULL, `image` TEXT NOT NULL, PRIMARY KEY(`id`))")
+    }
+}
 //We use a ServiceLocator in order to return an instance of a repository and other dependencies
 object ServiceLocator {
 
@@ -49,7 +56,7 @@ object ServiceLocator {
         val result = Room.databaseBuilder(
             context.applicationContext,
             IngredientDatabase::class.java, "Ingredient.db"
-        ).build()
+        ).addMigrations(MIGRATION_9_10).build()
         database = result
         return result
     }

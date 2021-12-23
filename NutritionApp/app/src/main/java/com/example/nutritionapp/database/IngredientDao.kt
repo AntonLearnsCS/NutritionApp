@@ -7,6 +7,7 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import com.example.nutritionapp.maps.RecipeNotificationClassDTO
+import com.example.nutritionapp.recipeofday.RecipeOfDay
 
 @Dao
 interface IngredientDao {
@@ -92,6 +93,11 @@ interface IngredientDao {
     @Query("DELETE FROM RecipeEntity WHERE mId = :key")
     suspend fun deleteRecipeNotificationById(key : String)
 
+    @Query("SELECT * FROM RecipeOfDay")
+    suspend fun getRecipeOfDay() : RecipeOfDay
+
+    @Insert
+    suspend fun saveRecipeOfDay(rod : RecipeOfDay)
 }
 
 

@@ -17,10 +17,18 @@ import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
+import androidx.room.migration.Migration
+import androidx.sqlite.db.SupportSQLiteDatabase
 import com.example.nutritionapp.database.dto.IngredientDataClassDTO
 import com.example.nutritionapp.maps.RecipeNotificationClassDTO
-
-@Database(entities = [IngredientDataClassDTO::class, RecipeNotificationClassDTO::class], version = 4, exportSchema = false)
+import com.example.nutritionapp.recipeofday.RecipeOfDay
+val MIGRATION_9_10: Migration = object : Migration(9, 10) {
+    override fun migrate(database: SupportSQLiteDatabase) {
+        // https://developer.android.com/reference/android/arch/persistence/room/ColumnInfo
+        database.execSQL("CREATE TABLE IF NOT EXISTS `RecipeOfDay` (`id` INTEGER NOT NULL, `image` TEXT NOT NULL, PRIMARY KEY(`id`))")//"CREATE TABLE IF NOT EXISTS `RecipeOfDay` (`id` INTEGER NOT NULL, `image` TEXT NOT NULL)")
+    }
+}
+@Database(entities = [IngredientDataClassDTO::class, RecipeNotificationClassDTO::class, RecipeOfDay::class], version = 10, exportSchema = true)
 abstract class IngredientDatabase : RoomDatabase() {
 
     /**
@@ -82,7 +90,7 @@ abstract class IngredientDatabase : RoomDatabase() {
                         // Migration is not part of this lesson. You can learn more about
                         // migration with Room in this blog post:
                         // https://medium.com/androiddevelopers/understanding-migrations-with-room-f01e04b07929
-                        .fallbackToDestructiveMigration()
+                        .addMigrations(MIGRATION_9_10)
                         .build()
                     // Assign INSTANCE to the newly created database.
                     INSTANCE = instance
