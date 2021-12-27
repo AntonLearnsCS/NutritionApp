@@ -28,7 +28,7 @@ import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import kotlinx.coroutines.*
 import org.jetbrains.annotations.TestOnly
 import java.net.URLEncoder
-
+import kotlinx.coroutines.flow.*
 
 /*
 To get context inside a ViewModel we can either extend AndroidViewModel. Do not use ApplicationProvider in production code, only in tests
@@ -66,8 +66,14 @@ class IngredientViewModel(
 
     private val _mutableLiveDataList: MutableLiveData<List<IngredientDataClass>> = MutableLiveData()
 
-    val mutableLiveDataList: LiveData<List<IngredientDataClass>>
+    val mutableLiveDataList: MutableLiveData<List<IngredientDataClass>>
         get() = _mutableLiveDataList
+
+    val testStateFlow = MutableStateFlow<List<IngredientDataClass>?>(null)
+    val testFlagStateFlow = MutableStateFlow(true)
+
+
+
     @TestOnly
     fun changedMutableLiveData( mList: List<IngredientDataClass>)
     {
@@ -297,7 +303,7 @@ class IngredientViewModel(
             Log.i("viewModel","load called")
             var listOfNetworkRequestedIngredients: List<IngredientDataClass>? = null
             viewModelScope.launch {
-                _viewVisibilityFlag.postValue(true)
+                _viewVisibilityFlag.value = (true)
                 if (searchItem.value != null) {
                     try {
                         val result: wrapperIngredientListNetworkDataClass =
@@ -308,6 +314,7 @@ class IngredientViewModel(
                         listOfNetworkRequestedIngredients = result.toDomainType()
                         Log.i("viewModel", listOfNetworkRequestedIngredients!![0].name)
                         _mutableLiveDataList.value = (listOfNetworkRequestedIngredients)
+                        testStateFlow.value = listOfNetworkRequestedIngredients
                         Log.i("viewModelMutable", _mutableLiveDataList.value!![0].name)
 
                         Toast.makeText(
@@ -327,7 +334,7 @@ class IngredientViewModel(
                         println("Error: ${e.message}")
                     }
                 }
-                _viewVisibilityFlag.postValue(false)
+                _viewVisibilityFlag.value = (false)
             }
         }
     }

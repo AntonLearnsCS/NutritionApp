@@ -13,8 +13,8 @@ apply plugin: 'kotlin-kapt'
 apply plugin: "androidx.navigation.safeargs.kotlin"
 apply plugin: 'com.google.gms.google-services'
 android {
-    compileSdkVersion 29
-    buildToolsVersion "29.0.3"
+    compileSdkVersion 30
+    buildToolsVersion "30.0.2"
 
 
     defaultConfig {
@@ -29,7 +29,7 @@ android {
 
     configurations.all {
         resolutionStrategy {
-            exclude group: "org.jetbrains.kotlinx", module: "kotlinx-coroutines-debug"
+           // exclude group: "org.jetbrains.kotlinx", module: "kotlinx-coroutines-debug"
         }
     }
     buildTypes {
@@ -89,11 +89,10 @@ dependencies {
 
     // Architecture Components
     //Navigation dependencies
-    implementation 'androidx.appcompat:appcompat:1.2.0'
     implementation 'androidx.constraintlayout:constraintlayout:2.0.0-rc1'
     kapt "androidx.lifecycle:lifecycle-compiler:$archLifecycleVersion"
     implementation "androidx.lifecycle:lifecycle-extensions:$archLifecycleVersion"
-    implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:$archLifecycleVersion"
+    //implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:$archLifecycleVersion"
     implementation "androidx.lifecycle:lifecycle-livedata-ktx:$archLifecycleVersion"
     implementation "androidx.navigation:navigation-fragment-ktx:$navigationVersion"
     implementation "androidx.navigation:navigation-ui-ktx:$navigationVersion"
@@ -106,7 +105,7 @@ dependencies {
 
     //Coroutines Dependencies
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:$coroutinesVersion"
-
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutinesVersion"
     //Koin
     implementation "org.koin:koin-android:$koinVersion"
     implementation "org.koin:koin-androidx-viewmodel:$koinVersion"
@@ -182,7 +181,10 @@ dependencies {
     implementation 'pub.devrel:easypermissions:3.0.0'
     implementation "androidx.core:core-ktx:1.6.0"
     implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:2.2.0"
-    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+    implementation "androidx.lifecycle:lifecycle-runtime-ktx:2.2.0"
+
+
+    implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
 
     //firebase
     //implementation platform('com.google.firebase:firebase-bom:28.4.1')

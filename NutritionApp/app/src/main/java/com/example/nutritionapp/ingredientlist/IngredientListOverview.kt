@@ -10,6 +10,7 @@ import androidx.core.app.ActivityCompat
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.NavigationUI
@@ -18,6 +19,8 @@ import com.example.nutritionapp.BuildConfig
 import com.example.nutritionapp.R
 import com.example.nutritionapp.databinding.IngredientListRecyclerviewBinding
 import com.example.nutritionapp.util.wrapEspressoIdlingResource
+import kotlinx.coroutines.InternalCoroutinesApi
+import kotlinx.coroutines.flow.collect
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 
 class IngredientListOverview : Fragment() {
@@ -55,6 +58,7 @@ class IngredientListOverview : Fragment() {
     val viewModel by sharedViewModel<IngredientViewModel>()
     private lateinit var binding: IngredientListRecyclerviewBinding
 
+    @InternalCoroutinesApi
     @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -94,12 +98,17 @@ class IngredientListOverview : Fragment() {
             }
         })
 
-        viewModel.mutableLiveDataList.observe(viewLifecycleOwner, Observer {
+       /* viewModel.mutableLiveDataList.observe(viewLifecycleOwner, Observer {
             wrapEspressoIdlingResource {
                 Log.i("testLive", "mutableLiveDataList is changed: ${it[0]}")
                 networkIngredientAdapter.submitList(it)
             }
-        })
+        })*/
+        lifecycleScope.launchWhenStarted {
+            viewModel.testStateFlow.collect() {
+                list -> networkIngredientAdapter.submitList(list)
+            }
+        }
 
 
         binding.searchIngredientButton.setOnClickListener {

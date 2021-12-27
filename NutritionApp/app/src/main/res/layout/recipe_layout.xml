@@ -61,7 +61,7 @@ which in this case is the "Search Recipe" button. -->
             android:layout_width="84dp"
             android:layout_height="80dp"
             android:elevation="2dp"
-            android:fadeVisible="@{viewModel.viewVisibilityFlag}"
+            android:fadeVisible="@{viewModel.viewVisibilityFlag.booleanValue()}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.498"

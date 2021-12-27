@@ -28,7 +28,7 @@ val MIGRATION_9_10: Migration = object : Migration(9, 10) {
         database.execSQL("CREATE TABLE IF NOT EXISTS `RecipeOfDay` (`id` INTEGER NOT NULL, `image` TEXT NOT NULL, PRIMARY KEY(`id`))")//"CREATE TABLE IF NOT EXISTS `RecipeOfDay` (`id` INTEGER NOT NULL, `image` TEXT NOT NULL)")
     }
 }
-@Database(entities = [IngredientDataClassDTO::class, RecipeNotificationClassDTO::class, RecipeOfDay::class], version = 10, exportSchema = true)
+@Database(entities = [IngredientDataClassDTO::class, RecipeNotificationClassDTO::class, RecipeOfDay::class], version = 10, exportSchema = false)
 abstract class IngredientDatabase : RoomDatabase() {
 
     /**
