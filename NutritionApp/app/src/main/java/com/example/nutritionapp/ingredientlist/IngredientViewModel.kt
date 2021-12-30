@@ -10,10 +10,7 @@ import android.os.Build
 import android.util.Log
 import android.widget.Toast
 import androidx.annotation.RequiresApi
-import androidx.databinding.Observable
-import androidx.databinding.PropertyChangeRegistry
 import androidx.lifecycle.*
-import androidx.test.core.app.ApplicationProvider
 import com.example.nutritionapp.database.IngredientDataClass
 import com.example.nutritionapp.database.IngredientDataSourceInterface
 import com.example.nutritionapp.database.dto.IngredientDataClassDTO
@@ -23,10 +20,7 @@ import com.example.nutritionapp.recipe.*
 import com.example.nutritionapp.util.Result
 import com.example.nutritionapp.util.wrapEspressoIdlingResource
 import com.google.android.gms.maps.model.LatLng
-import com.squareup.moshi.Moshi
-import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import kotlinx.coroutines.*
-import org.jetbrains.annotations.TestOnly
 import java.net.URLEncoder
 import kotlinx.coroutines.flow.*
 
@@ -64,26 +58,23 @@ class IngredientViewModel(
     val viewVisibilityFlag: LiveData<Boolean>
         get() = _viewVisibilityFlag
 
-    private val _mutableLiveDataList: MutableLiveData<List<IngredientDataClass>> = MutableLiveData()
+    val testStateFlow = MutableStateFlow("default")
 
+    private val _mutableLiveDataList: MutableLiveData<List<IngredientDataClass>> = MutableLiveData()
     val mutableLiveDataList: MutableLiveData<List<IngredientDataClass>>
         get() = _mutableLiveDataList
 
-    val testStateFlow = MutableStateFlow<List<IngredientDataClass>?>(null)
+    private val _networkResultStateFlow = MutableStateFlow<List<IngredientDataClass>?>(null)
+    val networkResultStateFlow : StateFlow<List<IngredientDataClass>?>
+    get() = _networkResultStateFlow
+
+
     val testFlagStateFlow = MutableStateFlow(true)
 
 
-
-    @TestOnly
-    fun changedMutableLiveData( mList: List<IngredientDataClass>)
-    {
-        _mutableLiveDataList.postValue(mList)
-    }
-
-    private val _listOfSavedIngredients: MutableLiveData<List<IngredientDataClass>> =
-        MutableLiveData()
-    val listOfSavedIngredients: LiveData<List<IngredientDataClass>>
-        get() = _listOfSavedIngredients
+    private val _listOfSavedIngredients = MutableStateFlow<List<IngredientDataClass>?>(null)
+    val listOfSavedIngredients: StateFlow<List<IngredientDataClass>?>
+    get() = _listOfSavedIngredients
 
     //two-way binding
     //no need to add "?query=" since the getIngredients() of the IngredientsApiInterface will do that
@@ -301,7 +292,6 @@ class IngredientViewModel(
     fun loadIngredientListByNetwork() {
         wrapEspressoIdlingResource {
             Log.i("viewModel","load called")
-            var listOfNetworkRequestedIngredients: List<IngredientDataClass>? = null
             viewModelScope.launch {
                 _viewVisibilityFlag.value = (true)
                 if (searchItem.value != null) {
@@ -311,11 +301,10 @@ class IngredientViewModel(
                         Log.i("test", "search item: ${searchItem.value}")
                         Log.i("test1", "Total products: ${result}")
 
-                        listOfNetworkRequestedIngredients = result.toDomainType()
-                        Log.i("viewModel", listOfNetworkRequestedIngredients!![0].name)
-                        _mutableLiveDataList.value = (listOfNetworkRequestedIngredients)
-                        testStateFlow.value = listOfNetworkRequestedIngredients
-                        Log.i("viewModelMutable", _mutableLiveDataList.value!![0].name)
+                        _mutableLiveDataList.value = result.toDomainType()
+
+                        _networkResultStateFlow.value = result.toDomainType()
+                        Log.i("viewModelMutable", networkResultStateFlow.value!![0].name)
 
                         Toast.makeText(
                             app,
@@ -446,7 +435,7 @@ class IngredientViewModel(
                                 imageType = result.imageType
                             )
                         })
-                        _listOfSavedIngredients.postValue(dataList)
+                        _listOfSavedIngredients.value = (dataList)
                     }
                     is Result.Error -> {
                         Log.i("test", "empty repository")

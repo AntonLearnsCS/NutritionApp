@@ -199,7 +199,7 @@ object Adapters {
     //TODO: shopping cart image is not fading out in end to end test
     @BindingAdapter("android:fadeVisible")
     @JvmStatic
-     fun setFadeVisible(view: View, visible: Boolean? = true) {
+    fun setFadeVisible(view: View, visible: Boolean? = true) {
         wrapEspressoIdlingResource {
             //id: 2131362156 is the progress bar and id: 2131362209 is the shopping_cart image
             if (view.tag == null) {

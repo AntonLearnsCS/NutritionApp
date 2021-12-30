@@ -1,26 +1,25 @@
 package com.example.nutritionapp.ingredientlist
 
-import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.*
 import androidx.annotation.RequiresApi
-import androidx.core.app.ActivityCompat
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.Observer
-import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.*
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.NavigationUI
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.nutritionapp.BuildConfig
+//import com.example.nutritionapp.BuildConfig
 import com.example.nutritionapp.R
 import com.example.nutritionapp.databinding.IngredientListRecyclerviewBinding
 import com.example.nutritionapp.util.wrapEspressoIdlingResource
 import kotlinx.coroutines.InternalCoroutinesApi
 import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 
 class IngredientListOverview : Fragment() {
@@ -92,32 +91,47 @@ class IngredientListOverview : Fragment() {
             viewModel.getLocalIngredientList()
         }
 
-        viewModel.listOfSavedIngredients.observe(viewLifecycleOwner, Observer {
+       /* viewModel.listOfSavedIngredients.observe(viewLifecycleOwner, Observer {
             wrapEspressoIdlingResource {
                 localIngredientAdapter.submitList(it)
             }
-        })
+        })*/
 
-       /* viewModel.mutableLiveDataList.observe(viewLifecycleOwner, Observer {
+        /*viewModel.mutableLiveDataList.observe(viewLifecycleOwner, Observer {
             wrapEspressoIdlingResource {
                 Log.i("testLive", "mutableLiveDataList is changed: ${it[0]}")
                 networkIngredientAdapter.submitList(it)
             }
         })*/
-        lifecycleScope.launchWhenStarted {
-            viewModel.testStateFlow.collect() {
-                list -> networkIngredientAdapter.submitList(list)
+
+        //source: https://developer.android.com/topic/libraries/architecture/coroutines
+        // Create a new coroutine in the lifecycleScope
+/*        lifecycleScope.launchWhenCreated {
+            viewModel.listOfSavedIngredients.apply {  Log.i("flow", "flow: ${this.value?.get(0)?.name}")}.collectLatest(){
+                    list -> localIngredientAdapter.submitList(list)
             }
+
+            viewModel.networkResultStateFlow.apply {  Log.i("flow", "flow: ${this.value?.get(0)?.name}")}.collectLatest(){
+                list -> networkIngredientAdapter.submitList(list)}
+        }*/
+        lifecycleScope.launch {
+
+                viewModel.networkResultStateFlow.flowWithLifecycle(lifecycle)
+                    .collect { list -> networkIngredientAdapter.submitList(list) }
+
+
         }
-
-
+lifecycleScope.launch {
+    viewModel.listOfSavedIngredients.flowWithLifecycle(lifecycle).collect(){
+            list -> localIngredientAdapter.submitList(list)
+    }
+}
         binding.searchIngredientButton.setOnClickListener {
             //networkIngredientAdapter.currentList.clear()
             if (binding.searchIngredient.text.isEmpty())
             {
                 viewModel.displayToast("Enter ingredient to search")
             }
-
             viewModel.loadIngredientListByNetwork()
         }
 
