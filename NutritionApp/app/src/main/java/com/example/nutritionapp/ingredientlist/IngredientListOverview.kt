@@ -106,26 +106,33 @@ class IngredientListOverview : Fragment() {
 
         //source: https://developer.android.com/topic/libraries/architecture/coroutines
         // Create a new coroutine in the lifecycleScope
-/*        lifecycleScope.launchWhenCreated {
-            viewModel.listOfSavedIngredients.apply {  Log.i("flow", "flow: ${this.value?.get(0)?.name}")}.collectLatest(){
-                    list -> localIngredientAdapter.submitList(list)
-            }
-
-            viewModel.networkResultStateFlow.apply {  Log.i("flow", "flow: ${this.value?.get(0)?.name}")}.collectLatest(){
-                list -> networkIngredientAdapter.submitList(list)}
-        }*/
         lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.networkResultStateFlow.collectLatest() { list ->
+                    networkIngredientAdapter.submitList(
+                        list
+                    )
+                }
+            }
+        }
+        lifecycleScope.launchWhenStarted {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.listOfSavedIngredients.collectLatest() { list ->
+                    localIngredientAdapter.submitList(list)
+                }
+            }
+        }
+ /*       lifecycleScope.launchWhenCreated {
 
-                viewModel.networkResultStateFlow.flowWithLifecycle(lifecycle)
+                viewModel.networkResultStateFlow
                     .collect { list -> networkIngredientAdapter.submitList(list) }
 
-
         }
-lifecycleScope.launch {
-    viewModel.listOfSavedIngredients.flowWithLifecycle(lifecycle).collect(){
+lifecycleScope.launchWhenCreated {
+    viewModel.listOfSavedIngredients.collect(){
             list -> localIngredientAdapter.submitList(list)
     }
-}
+}*/
         binding.searchIngredientButton.setOnClickListener {
             //networkIngredientAdapter.currentList.clear()
             if (binding.searchIngredient.text.isEmpty())
