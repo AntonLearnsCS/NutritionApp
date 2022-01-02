@@ -24,21 +24,6 @@ import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 
 class IngredientListOverview : Fragment() {
 
-    override fun onDestroy() {
-        super.onDestroy()
-        Log.i("callback", "onDestroyCalled")
-    }
-
-    override fun onPause() {
-        super.onPause()
-        Log.i("callback", "onPauseCalled")
-    }
-
-    override fun onStop() {
-        super.onStop()
-        Log.i("callback","onStopCalled")
-    }
-
     private val localIngredientAdapter =
         com.example.nutritionapp.ingredientlist.localIngredientAdapter(
             com.example.nutritionapp.ingredientlist.localIngredientAdapter.LocalIngredientListener { ingredientItem ->
@@ -107,21 +92,21 @@ class IngredientListOverview : Fragment() {
         //source: https://developer.android.com/topic/libraries/architecture/coroutines
         // Create a new coroutine in the lifecycleScope
         lifecycleScope.launch {
-            repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.networkResultStateFlow.collectLatest() { list ->
-                    networkIngredientAdapter.submitList(
-                        list
-                    )
-                }
-            }
-        }
-        lifecycleScope.launchWhenStarted {
+            repeatOnLifecycle(Lifecycle.State.STARTED){
+            viewModel.networkResultStateFlow.collectLatest() { list ->
+                networkIngredientAdapter.submitList(
+                    list
+                )
+            }}
+
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.listOfSavedIngredients.collectLatest() { list ->
                     localIngredientAdapter.submitList(list)
                 }
             }
         }
+
+
  /*       lifecycleScope.launchWhenCreated {
 
                 viewModel.networkResultStateFlow
@@ -135,11 +120,12 @@ lifecycleScope.launchWhenCreated {
 }*/
         binding.searchIngredientButton.setOnClickListener {
             //networkIngredientAdapter.currentList.clear()
-            if (binding.searchIngredient.text.isEmpty())
-            {
-                viewModel.displayToast("Enter ingredient to search")
+            wrapEspressoIdlingResource {
+                if (binding.searchIngredient.text.isEmpty()) {
+                    viewModel.displayToast("Enter ingredient to search")
+                }
+                viewModel.loadIngredientListByNetwork()
             }
-            viewModel.loadIngredientListByNetwork()
         }
 
         binding.searchRecipe.setOnClickListener {
