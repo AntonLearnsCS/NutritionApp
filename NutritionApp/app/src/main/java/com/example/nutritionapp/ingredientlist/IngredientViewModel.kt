@@ -54,11 +54,10 @@ class IngredientViewModel(
         _navigatorFlag.value = boolean
     }
 
-    private val _viewVisibilityFlag = MutableLiveData<Boolean>(false)
-    val viewVisibilityFlag: LiveData<Boolean>
+    private val _viewVisibilityFlag = MutableStateFlow<Boolean>(false)
+    val viewVisibilityFlag: StateFlow<Boolean>
         get() = _viewVisibilityFlag
 
-    val testStateFlow = MutableStateFlow("default")
 
     private val _mutableLiveDataList: MutableLiveData<List<IngredientDataClass>> = MutableLiveData()
     val mutableLiveDataList: MutableLiveData<List<IngredientDataClass>>
@@ -68,8 +67,6 @@ class IngredientViewModel(
     val networkResultStateFlow : StateFlow<List<IngredientDataClass>?>
     get() = _networkResultStateFlow
 
-
-    val testFlagStateFlow = MutableStateFlow(true)
 
 
     private val _listOfSavedIngredients = MutableStateFlow<List<IngredientDataClass>?>(null)

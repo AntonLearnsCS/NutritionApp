@@ -92,13 +92,15 @@ class IngredientListOverview : Fragment() {
         //source: https://developer.android.com/topic/libraries/architecture/coroutines
         // Create a new coroutine in the lifecycleScope
         lifecycleScope.launch {
-            repeatOnLifecycle(Lifecycle.State.STARTED){
-            viewModel.networkResultStateFlow.collectLatest() { list ->
-                networkIngredientAdapter.submitList(
-                    list
-                )
-            }}
-
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.networkResultStateFlow.collectLatest() { list ->
+                    networkIngredientAdapter.submitList(
+                        list
+                    )
+                }
+            }
+        }
+        lifecycleScope.launch{
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.listOfSavedIngredients.collectLatest() { list ->
                     localIngredientAdapter.submitList(list)
@@ -107,17 +109,6 @@ class IngredientListOverview : Fragment() {
         }
 
 
- /*       lifecycleScope.launchWhenCreated {
-
-                viewModel.networkResultStateFlow
-                    .collect { list -> networkIngredientAdapter.submitList(list) }
-
-        }
-lifecycleScope.launchWhenCreated {
-    viewModel.listOfSavedIngredients.collect(){
-            list -> localIngredientAdapter.submitList(list)
-    }
-}*/
         binding.searchIngredientButton.setOnClickListener {
             //networkIngredientAdapter.currentList.clear()
             wrapEspressoIdlingResource {

@@ -17,18 +17,6 @@
         android:layout_height="match_parent"
         android:theme="@style/AppTheme">
 
-        <TextView
-            android:id="@+id/textView2"
-            android:layout_width="77dp"
-            android:layout_height="74dp"
-            android:text="k"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.072"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.66" />
-
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recycler_view_local"
             android:layout_width="wrap_content"
@@ -72,6 +60,7 @@
             android:layout_marginTop="5dp"
             android:hint="@string/search_ingredient"
             android:inputType="text"
+            android:minHeight="48dp"
             android:text="@={ingredientViewModel.searchItem}"
             app:layout_constraintBottom_toTopOf="@+id/recycler_view_network"
             app:layout_constraintEnd_toEndOf="parent"
@@ -93,7 +82,6 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/searchIngredientButton"
             app:layout_constraintVertical_bias="0.262">
-
         </ProgressBar>
 
         <TextView
@@ -144,15 +132,18 @@
             app:layout_constraintTop_toBottomOf="@+id/searchIngredientButton"
             app:layout_constraintVertical_bias="0.0"
             app:srcCompat="@drawable/food_shopping_cart" />
-
-        <!-- <TextView
-             android:id="@+id/textView2"
-             android:layout_width="wrap_content"
-             android:layout_height="wrap_content"
-             android:text="@{String.valueOf(ingredientViewModel.testFlagStateFlow)}"
-             app:layout_constraintBottom_toBottomOf="parent"
-             app:layout_constraintStart_toStartOf="parent"
-             app:layout_constraintTop_toTopOf="parent" />-->
+<!--
+        <TextView
+            android:id="@+id/textView3"
+            android:layout_width="77dp"
+            android:layout_height="79dp"
+            android:text="@{String.valueOf(ingredientViewModel.testFlagStateFlow)}"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.092"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.69" />-->
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

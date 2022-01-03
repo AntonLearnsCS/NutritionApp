@@ -15,8 +15,10 @@ import com.example.nutritionapp.network.mNutritionApi
 import com.example.nutritionapp.util.Result
 
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.runBlockingTest
 import org.hamcrest.MatcherAssert.assertThat
+import org.hamcrest.Matchers.not
 import org.hamcrest.core.Is.`is`
 import org.junit.Before
 import org.junit.Rule
@@ -64,4 +66,15 @@ class IngredientListViewModelTest {
         assertThat(recipeNotification.recipeName, `is`(recipeNotificationResult.data.recipeName))
     }
 
+    @Test
+    fun networkResultStateFlow_Collect() = runBlocking {
+        //given a mutable stateflow
+        val viewModel = IngredientViewModel(ApplicationProvider.getApplicationContext(), MockRepository, nutritionApi)
+        val testStateFow = viewModel._listOfRecipesLiveData.value
+        //when the value is changed
+        assertThat(testStateFow?.size, `is`(0))
+        viewModel.getLocalIngredientList()
+        //then size is no longer 0
+        assertThat(testStateFow?.size, `is`(not(0)))
+    }
 }
