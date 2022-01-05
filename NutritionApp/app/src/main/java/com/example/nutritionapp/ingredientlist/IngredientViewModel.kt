@@ -67,8 +67,6 @@ class IngredientViewModel(
     val networkResultStateFlow : StateFlow<List<IngredientDataClass>?>
     get() = _networkResultStateFlow
 
-
-
     private val _listOfSavedIngredients = MutableStateFlow<List<IngredientDataClass>?>(null)
     val listOfSavedIngredients: StateFlow<List<IngredientDataClass>?>
     get() = _listOfSavedIngredients
@@ -305,7 +303,7 @@ class IngredientViewModel(
 
                         Toast.makeText(
                             app,
-                            "networkRequestSuccess",
+                            "Success",
                             Toast.LENGTH_SHORT
                         ).show()
 
@@ -372,7 +370,6 @@ class IngredientViewModel(
 
                 //iterates over each sub recipe i.e recipe for cake and recipe for frosting
                 if (!networkResult.isNullOrEmpty()) {
-
                     for (i in networkResult) {
                         //adds title of sub recipes i.e frosting recipe in a cake recipe
                         if (i.name?.length!! > 0)

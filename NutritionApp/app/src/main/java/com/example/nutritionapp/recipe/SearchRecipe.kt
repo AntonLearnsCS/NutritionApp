@@ -18,6 +18,7 @@ import com.example.nutritionapp.databinding.RecipeLayoutBinding
 import com.example.nutritionapp.ingredientlist.IngredientViewModel
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
+import timber.log.Timber
 
 class SearchRecipe : Fragment() {
 private lateinit var binding : RecipeLayoutBinding
@@ -25,9 +26,9 @@ private lateinit var binding : RecipeLayoutBinding
  //val viewModel by lazy { ViewModelProvider(this).get(IngredientViewModel::class.java)}
 
 private val adapter = recipeAdapter(recipeAdapter.RecipeIngredientListener { recipe ->
-        Log.i("test","Recipe selected name: ${recipe.title}")
-        viewModel.setNavigateToRecipe(recipe)
-        viewModel.setNavigateToRecipeFlag(true)
+    Timber.i("Recipe selected name: " + recipe.title)
+    viewModel.setNavigateToRecipe(recipe)
+    viewModel.setNavigateToRecipeFlag(true)
     //need a seperate flag
 })
 

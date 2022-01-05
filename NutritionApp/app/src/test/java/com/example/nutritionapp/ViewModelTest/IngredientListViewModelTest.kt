@@ -13,18 +13,23 @@ import com.example.nutritionapp.database.IngredientDataClass
 import com.example.nutritionapp.maps.RecipeNotificationClassDomain
 import com.example.nutritionapp.network.mNutritionApi
 import com.example.nutritionapp.util.Result
+import junit.framework.Assert.assertEquals
 
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.runBlockingTest
 import org.hamcrest.MatcherAssert.assertThat
+//import org.hamcrest.Matchers.`is`
 import org.hamcrest.Matchers.not
-import org.hamcrest.core.Is.`is`
+//import org.hamcrest.core.Is.`is`
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.annotation.Config
+
+import org.hamcrest.Matchers.*
+
 
 
 //Note: Robolectric - Running tests on Android API 29 now strictly requires a Java9 runtime or newer
@@ -66,15 +71,14 @@ class IngredientListViewModelTest {
         assertThat(recipeNotification.recipeName, `is`(recipeNotificationResult.data.recipeName))
     }
 
+    @Config(sdk = [Build.VERSION_CODES.Q])
     @Test
     fun networkResultStateFlow_Collect() = runBlocking {
         //given a mutable stateflow
         val viewModel = IngredientViewModel(ApplicationProvider.getApplicationContext(), MockRepository, nutritionApi)
-        val testStateFow = viewModel._listOfRecipesLiveData.value
-        //when the value is changed
-        assertThat(testStateFow?.size, `is`(0))
-        viewModel.getLocalIngredientList()
-        //then size is no longer 0
-        assertThat(testStateFow?.size, `is`(not(0)))
+        //when stateflow is declared
+        val testStateFow = viewModel.networkResultStateFlow.value
+        //then initially set to null
+        assertThat(testStateFow?.get(0), `is`(nullValue()))
     }
 }
