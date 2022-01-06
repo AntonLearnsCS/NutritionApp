@@ -5,6 +5,7 @@
 <string name="no_data">No Data</string>
 <string name="reminder_title">Reminder Title</string>
 <string name="reminder_desc">Description</string>
+    <string name="recipeSearchContentDescription">Shows the ingredients to be used when searching for recipes</string>
 <string name="reminder_location">Reminder Location</string>
 <string name="save">Save</string>
     <string name="appbar_scrolling_view_behavior" translatable="false">com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior</string>
@@ -73,5 +74,7 @@
     <string name="nutrition_app">Nutrition App</string>
     <string name="helping_you_make_that_perfect_dish">Helping you make that perfect dish!</string>
     <string name="image_of_a_cartoon_shopping_cart">image of a cartoon shopping cart</string>
+    <string name="diet_filters">Diet filters</string>
+    <string name="allergy_filters">allergy filters</string>
 
 </resources>

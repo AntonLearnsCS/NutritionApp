@@ -17,12 +17,14 @@ import com.example.nutritionapp.database.dto.IngredientDataClassDTO
 import com.example.nutritionapp.maps.RecipeNotificationClassDomain
 import com.example.nutritionapp.network.*
 import com.example.nutritionapp.recipe.*
+import com.example.nutritionapp.recipe.intolerancespinnerclasses.IntoleraceDataType
 import com.example.nutritionapp.util.Result
 import com.example.nutritionapp.util.wrapEspressoIdlingResource
 import com.google.android.gms.maps.model.LatLng
 import kotlinx.coroutines.*
 import java.net.URLEncoder
 import kotlinx.coroutines.flow.*
+import timber.log.Timber
 
 /*
 To get context inside a ViewModel we can either extend AndroidViewModel. Do not use ApplicationProvider in production code, only in tests
@@ -160,13 +162,17 @@ class IngredientViewModel(
     fun setSearchRecipeEditTextClear() {
         foodInText.clear()
     }
+
     //Two-way data binding
-    val listOfIngredientsString = MutableLiveData<String>()
+    val ingredientToBeAddedAsChip = MutableLiveData<String>()
 
     private var _navigateToRecipeFlag = MutableLiveData(false)
     val navigateToRecipeFlag: LiveData<Boolean>
         get() = _navigateToRecipeFlag
 
+    fun setNavigateToRecipeFlag(boolean: Boolean) {
+        _navigateToRecipeFlag.value = boolean
+    }
 
     private val _navigateToRecipe = MutableLiveData<RecipeIngredientResult>()
     val navigateToRecipe: LiveData<RecipeIngredientResult>
@@ -180,11 +186,17 @@ class IngredientViewModel(
         _navigateToRecipe.value = null
     }
 
-    fun setNavigateToRecipeFlag(boolean: Boolean) {
-        _navigateToRecipeFlag.value = boolean
-    }
 
 
+    val arrayOfRecipeFilterOptions = arrayListOf<String>("none","pescetarian", "lacto vegetarian", "ovo vegetarian", "vegan", "vegetarian")
+
+    val arrayOfIntolerance = arrayListOf<IntoleraceDataType>(IntoleraceDataType("Food Allergens:"),IntoleraceDataType("dairy"), IntoleraceDataType("egg"), IntoleraceDataType("gluten"),
+        IntoleraceDataType("peanut"), IntoleraceDataType("sesame"), IntoleraceDataType("seafood"),
+        IntoleraceDataType("shellfish"), IntoleraceDataType("soy"), IntoleraceDataType("sulfite"),
+        IntoleraceDataType("tree nut"), IntoleraceDataType("wheat"))
+
+    val selectedFilter = MutableStateFlow("")
+    var selectedIntolerance : String = ""
     //input is list of names i.e {"Snapple Apple flavored drink 4oz","Mott's Apple pudding 3oz"}
     @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
     fun detectFoodInText(listName: List<String>) {
@@ -214,7 +226,9 @@ class IngredientViewModel(
                 }
 
                 if (!foodInText.isEmpty()) {
-                    listOfIngredientsString.value = foodInText.joinToString(separator = ",")
+
+                    //listOfIngredientsString.value = foodInText.joinToString(separator = ",")
+
                     _navigatorFlag.value = true
                 }
                 _viewVisibilityFlag.value = false
@@ -224,29 +238,36 @@ class IngredientViewModel(
 
     @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
     fun findRecipeByIngredients() {
-        val listOfRecipes = mutableListOf<RecipeIngredientResult>()
         wrapEspressoIdlingResource {
             viewModelScope.launch {
                 _viewVisibilityFlag.value = true
                 try {
+                    Log.i("test","selectedFilter ${selectedFilter.value}")
+                    Log.i("test","intolerance: ${selectedIntolerance}")
+                    Log.i("test","foodInText: ${foodInText.joinToString(separator = ",").replace("[","")
+                        .replace("]","")}")
+                    val tempSelectedFilter = selectedFilter.value
+                    val tempFoodInText =  foodInText.joinToString(separator = ",").replace("[","")
+                        .replace("]","")
                     val resultWrapper: List<RecipeIngredientResult> =
-                        nutritionApi.nutritionService.findByIngredients(
-                            listOfIngredientsString.value!!
-                        )
-                    Log.i("testRecipeById", "recipe list size: ${resultWrapper.size}")
-                    Log.i("testRecipeById", "recipe[0]: ${resultWrapper[0].title}")
-                    for (i in resultWrapper) {
+                        nutritionApi.nutritionService.findByIngredients(tempSelectedFilter,selectedIntolerance,
+                        tempFoodInText).results
+
+                    Log.i("test","size test: ${resultWrapper.size}")
+                    Log.i("test","[0]: ${resultWrapper[0].title}")
+                    Timber.i("recipe list size: " + resultWrapper.size)
+                    Timber.i("recipe[0]: " + resultWrapper[0].title)
+                    /*for (i in resultWrapper) {
                         listOfRecipes.add(i)
-                    }
-
-                    _listOfRecipesLiveData.value = listOfRecipes
-
+                    }*/
+                    _listOfRecipesLiveData.value = resultWrapper
                 } catch (e: java.lang.Exception) {
                     if (!isOnline(app)) {
                         displayToast("Not connected to internet")
                     }
-
-                    Log.i("Exception", "$e")
+                    displayToast("Cannot find recipes with given ingredients")
+                    Log.i("test",e.toString())
+                    Timber.i(e)
                 }
                 _viewVisibilityFlag.value = false
             }
@@ -332,7 +353,6 @@ class IngredientViewModel(
     }
 
     fun saveRecipeNotification(recipeNotificationClassDomain: RecipeNotificationClassDomain) {
-
         viewModelScope.launch {
             ingredientRepository.saveNotificationRecipe(
                 RecipeNotificationClassDomain(
@@ -365,7 +385,7 @@ class IngredientViewModel(
                 //Q: Why is this working but not the previous network request format?
                 val networkResult: List<RecipeInstruction>? =
                     _navigateToRecipe.value?.id?.let {
-                        nutritionApi.nutritionService.getRecipeInstructions(it, false)
+                        nutritionApi.nutritionService.getRecipeInstructions(it.toString(), false)
                     }
 
                 //iterates over each sub recipe i.e recipe for cake and recipe for frosting

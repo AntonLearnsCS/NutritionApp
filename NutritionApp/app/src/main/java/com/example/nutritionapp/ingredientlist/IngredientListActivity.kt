@@ -11,19 +11,29 @@ import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContentProviderCompat.requireContext
+import androidx.navigation.NavController
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.NavigationUI
+import androidx.navigation.ui.setupActionBarWithNavController
 import com.example.nutritionapp.R
 import com.example.nutritionapp.authentication.AuthenticationActivity
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class IngredientListActivity : AppCompatActivity() {
+    private lateinit var navController : NavController
     val viewModel by viewModel<IngredientViewModel>()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.ingredient_list_activity_layout) }
+        setContentView(R.layout.ingredient_list_activity_layout)
+         navController = findNavController(R.id.nav_host_fragment)
+        setupActionBarWithNavController(navController)
+    }
+
+    override fun onSupportNavigateUp(): Boolean {
+        return navController.navigateUp()
+    }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         val inflater: MenuInflater = menuInflater

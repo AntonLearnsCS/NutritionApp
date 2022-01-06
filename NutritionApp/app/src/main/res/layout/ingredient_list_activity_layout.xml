@@ -24,4 +24,5 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     app:defaultNavHost="true"
+    android:windowSoftInputMode="adjustPan|adjustResize"
     app:navGraph="@navigation/nav_graph" />

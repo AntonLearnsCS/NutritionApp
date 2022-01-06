@@ -39,13 +39,14 @@ class SearchRecipeTest {
     @Before
     fun init()
     {
+        val test = listOf<String>("hello","goodbye")
     }
 
     @Test
     fun searchRecipe_UI_Displays() : Unit = runBlocking{
         val mList = listOf("Apple","Carrot","Blueberry")
         //given - a SearchRecipe fragment and a Recipe
-        val recipeExample = RecipeIngredientResult(1,"Title","imageUrl",2,3,4)
+        val recipeExample = RecipeIngredientResult("1","Title","imageUrl","JPEG")
         val scenario = launchFragmentInContainer<SearchRecipe>()
 
         val navController = mock(NavController::class.java)

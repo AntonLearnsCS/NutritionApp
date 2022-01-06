@@ -259,9 +259,9 @@ Q: Could be causing UI to hang?
         onView(withId(R.id.search_recipe)).perform(click())
 
         delay(3000)
-        assertThat(mGetText(withId(R.id.ingredient_list)), `is`(not(nullValue())))
-        assertThat(mGetText(withId(R.id.ingredient_list)), containsString("apple"))
-        assertThat(checkForDuplicatesViewAction(withId(R.id.ingredient_list), R.id.ingredient_list), `is`(false))
+        assertThat(mGetText(withId(R.id.add_ingredient_chip)), `is`(not(nullValue())))
+        assertThat(mGetText(withId(R.id.add_ingredient_chip)), containsString("apple"))
+        assertThat(checkForDuplicatesViewAction(withId(R.id.add_ingredient_chip), R.id.add_ingredient_chip), `is`(false))
 
         //onView(withId(R.id.ingredient_list)).check(matches(checkForDuplicates()))
 

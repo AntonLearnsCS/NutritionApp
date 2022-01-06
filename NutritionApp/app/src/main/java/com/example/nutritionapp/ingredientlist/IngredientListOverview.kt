@@ -8,6 +8,7 @@ import androidx.annotation.RequiresApi
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.*
+import androidx.navigation.NavController
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.NavigationUI
@@ -32,6 +33,7 @@ class IngredientListOverview : Fragment() {
                 )
             })
 
+
     private val networkIngredientAdapter =
         networkIngredientAdapter(com.example.nutritionapp.ingredientlist.networkIngredientAdapter
             .NetworkIngredientListener { ingredientItem ->
@@ -49,7 +51,6 @@ class IngredientListOverview : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         super.onCreate(savedInstanceState)
-
         //load the reminders list on the ui
         wrapEspressoIdlingResource { viewModel.getLocalIngredientList() }
 
@@ -138,6 +139,7 @@ class IngredientListOverview : Fragment() {
                 viewModel.navigatorFlag.observe(viewLifecycleOwner, Observer { flag ->
                     if (flag) {
                         viewModel.setNavigatorFlag(false)
+                        viewModel.foodInText.drop(viewModel.foodInText.size)
                         findNavController().navigate(
                             IngredientListOverviewDirections.actionIngredientListOverviewToSearchRecipe(
                             )

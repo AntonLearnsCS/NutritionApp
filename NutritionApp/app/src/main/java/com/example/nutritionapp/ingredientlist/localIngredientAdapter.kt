@@ -46,7 +46,6 @@ class localIngredientAdapter(val onClickListener: LocalIngredientListener) : Lis
             parent,
             false
         )
-
         return ViewHolder(view, onClickListener)
     }
 

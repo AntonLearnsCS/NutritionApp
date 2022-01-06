@@ -50,7 +50,8 @@
 
         <activity android:name=".notification.NotificationDescriptionActivity"/>
 
-        <activity android:name=".ingredientlist.IngredientListActivity" />
+        <activity android:name=".ingredientlist.IngredientListActivity"
+            android:windowSoftInputMode="adjustPan|adjustResize"/>
 
         <receiver
             android:name=".geofence.GeofenceBroadcastReceiver"

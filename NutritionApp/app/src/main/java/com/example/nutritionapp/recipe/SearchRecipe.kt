@@ -6,6 +6,8 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.AdapterView
+import android.widget.ArrayAdapter
 import androidx.activity.OnBackPressedCallback
 import androidx.annotation.RequiresApi
 import androidx.databinding.DataBindingUtil
@@ -16,7 +18,8 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.nutritionapp.R
 import com.example.nutritionapp.databinding.RecipeLayoutBinding
 import com.example.nutritionapp.ingredientlist.IngredientViewModel
-import org.koin.android.ext.android.inject
+import com.example.nutritionapp.recipe.intolerancespinnerclasses.IntoleranceAdapter
+import com.google.android.material.chip.Chip
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 import timber.log.Timber
 
@@ -49,12 +52,94 @@ val viewModel by sharedViewModel<IngredientViewModel>()
 
         binding.viewModel = viewModel
 
+        val intoleranceAdapter = IntoleranceAdapter(requireContext(),R.layout.intolerance_option_item, R.id.intolerance_name, viewModel.arrayOfIntolerance)
+
         binding.searchRecipeButton.setOnClickListener {
-            viewModel.findRecipeByIngredients()}
+
+            viewModel.selectedIntolerance = intoleranceAdapter.selectedIntoleranceList.joinToString()
+                .replace("[","").replace("]","")
+
+            Timber.i("searchRecipeButton clicked")
+            viewModel.findRecipeByIngredients()
+        }
 
         binding.recipeRecyclerView.layoutManager = LinearLayoutManager(context)
 
         binding.recipeRecyclerView.adapter = adapter
+
+        //for creating the chips from the selected ingredients
+        if (!viewModel.foodInText.isEmpty()) {
+            for (i in viewModel.foodInText) {
+                val mChip = Chip(binding.chipGroupView.context)
+                mChip.text = i
+                //mChip.explicitStyle = R.color.chip_color
+                    mChip.isClickable = true
+                    mChip.isCheckable = true
+                    mChip.isCloseIconVisible = true
+
+                mChip.setOnCloseIconClickListener {
+                    //redundant line directly below since context is chipViewGroup?
+                    binding.chipGroupView.removeView(it)
+                    viewModel.foodInText.remove(mChip.text)
+                }
+                binding.chipGroupView.addView(mChip)
+            }
+        }
+        //adds new chips
+        binding.addChipButton.setOnClickListener {
+            if (viewModel.ingredientToBeAddedAsChip.value.isNullOrEmpty() == false) {
+
+                    val mChip = Chip(binding.chipGroupView.context)
+                    mChip.text = viewModel.ingredientToBeAddedAsChip.value
+                    //mChip.explicitStyle = R.color.chip_color
+                    //mChip.isClickable = true
+                    mChip.isCheckable = true
+                    mChip.isCloseIconVisible = true
+                    val addIngredient = viewModel.ingredientToBeAddedAsChip.value
+                    viewModel.foodInText.add(addIngredient!!)
+                    mChip.setOnCloseIconClickListener {
+                        binding.chipGroupView.removeView(it)
+                        viewModel.foodInText.remove(mChip.text)
+                    }
+                    binding.chipGroupView.addView(mChip)
+                }
+        }
+
+        binding.recipeOptionsSpinner.adapter = ArrayAdapter(this.requireContext(),R.layout.support_simple_spinner_dropdown_item,viewModel.arrayOfRecipeFilterOptions)
+
+        //implementation from: https://www.youtube.com/watch?v=D5l7MNlqA3M&ab_channel=CodeAndroid
+        binding.recipeOptionsSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener{
+            override fun onItemSelected(
+                parent: AdapterView<*>?,
+                view: View?,
+                position: Int,
+                id: Long
+            ) {
+                viewModel.selectedFilter.value = viewModel.arrayOfRecipeFilterOptions[position]
+            }
+
+            override fun onNothingSelected(parent: AdapterView<*>?) {
+            }
+
+        }
+
+        binding.intoleranceOptionsSpiner.adapter = intoleranceAdapter//ArrayAdapter(this.requireContext(),R.layout.support_simple_spinner_dropdown_item, R.id.intolerance_name, viewModel.arrayOfIntolerance)
+
+        binding.intoleranceOptionsSpiner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener{
+            override fun onItemSelected(
+                parent: AdapterView<*>?,
+                view: View?,
+                position: Int,
+                id: Long
+            ) {
+
+            }
+
+            override fun onNothingSelected(parent: AdapterView<*>?) {
+                TODO("Not yet implemented")
+            }
+
+        }
 
         viewModel.listOfRecipesLiveData?.observe(viewLifecycleOwner, Observer{
             adapter.submitList(it)
@@ -62,18 +147,23 @@ val viewModel by sharedViewModel<IngredientViewModel>()
 
         viewModel.navigateToRecipeFlag.observe(viewLifecycleOwner, Observer {
             if (it) {
-                    viewModel.getRecipeInstructions()
+                viewModel.getRecipeInstructions()
                 //Placing the navigation step outside of the flag results in the destination fragment's viewModel
                 // not having the updated value.
                 //Resolved: https://knowledge.udacity.com/questions/737289
-                Log.i("test","food in text size: ${viewModel.foodInText.size}")
+                Timber.i("food in text size: " + viewModel.foodInText.size)
                 //Once getRecipeInstructions() is complete it will set mFlag = true so that navigation happens only after the liveData in getRecipeInstructions is updated
                 viewModel.mFlag.observe(viewLifecycleOwner, Observer {
+                    viewModel.setNavigateToRecipeFlag(false)
+
                     if (it) {
+                        Log.i("test","arg: ${viewModel.navigateToRecipe.value}")
                         findNavController().navigate(
                             SearchRecipeDirections.actionSearchRecipeToRecipeDetail(
-                                viewModel.navigateToRecipe.value!!))
-                        viewModel.setNavigateToRecipeFlag(false)
+                                viewModel.navigateToRecipe.value!!
+                            )
+                        )
+                        viewModel.mFlag.value = false
                     }
                 })
             }
@@ -101,5 +191,12 @@ val viewModel by sharedViewModel<IngredientViewModel>()
     override fun onDestroy() {
         super.onDestroy()
         viewModel.setMissingIngredientsNull()
+        viewModel.selectedIntolerance = ""
+        viewModel.selectedFilter.value = ""
+
+        for (item in viewModel.arrayOfIntolerance)
+        {
+            item.isChecked = false
+        }
     }
 }

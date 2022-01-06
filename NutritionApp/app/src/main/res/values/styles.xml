@@ -1,6 +1,6 @@
 <resources>
     <!-- Base application theme. -->
-    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+    <style name="AppTheme" parent="Theme.MaterialComponents.Light">
         <!-- Customize your theme here. -->
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
@@ -24,6 +24,10 @@
         <item name="android:textSize">24sp</item>
         <item name="android:textColor">#000000</item>
         <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="chipFilterStyle" parent="Widget.MaterialComponents.Chip.Filter">
+        <item name="chipBackgroundColor"> @color/chip_color</item>
     </style>
 
 </resources>

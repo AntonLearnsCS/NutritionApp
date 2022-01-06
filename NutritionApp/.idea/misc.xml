@@ -3,9 +3,17 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
-        <entry key="..\:/Users/Anton/Downloads/NutritionAppFolder/NutritionApp/app/src/main/res/layout/ingredient_list_recyclerview.xml" value="0.1" />
-        <entry key="..\:/Users/Anton/Downloads/NutritionAppFolder/NutritionApp/app/src/main/res/layout/recipe_layout.xml" value="0.1" />
+        <entry key="..\:/Users/Anton/Downloads/NutritionAppFolder/NutritionApp/app/src/main/res/layout/activity_authentication_layout.xml" value="0.1" />
+        <entry key="..\:/Users/Anton/Downloads/NutritionAppFolder/NutritionApp/app/src/main/res/layout/ingredient_item_local.xml" value="0.1" />
+        <entry key="..\:/Users/Anton/Downloads/NutritionAppFolder/NutritionApp/app/src/main/res/layout/ingredient_list_activity_layout.xml" value="0.1" />
+        <entry key="..\:/Users/Anton/Downloads/NutritionAppFolder/NutritionApp/app/src/main/res/layout/ingredient_list_recyclerview.xml" value="0.25" />
+        <entry key="..\:/Users/Anton/Downloads/NutritionAppFolder/NutritionApp/app/src/main/res/layout/intolerance_option_item.xml" value="0.22" />
+        <entry key="..\:/Users/Anton/Downloads/NutritionAppFolder/NutritionApp/app/src/main/res/layout/map_grocery_reminder.xml" value="0.1" />
+        <entry key="..\:/Users/Anton/Downloads/NutritionAppFolder/NutritionApp/app/src/main/res/layout/recipe_detail.xml" value="0.1" />
+        <entry key="..\:/Users/Anton/Downloads/NutritionAppFolder/NutritionApp/app/src/main/res/layout/recipe_layout.xml" value="0.18" />
+        <entry key="..\:/Users/Anton/Downloads/NutritionAppFolder/NutritionApp/app/src/main/res/layout/recipe_layout_item.xml" value="0.1" />
         <entry key="..\:/Users/Anton/Downloads/NutritionAppFolder/NutritionApp/app/src/main/res/layout/recipe_of_day_fragment.xml" value="0.1" />
+        <entry key="..\:/Users/Anton/Downloads/NutritionAppFolder/NutritionApp/app/src/main/res/menu/logout_menu.xml" value="0.20416666666666666" />
         <entry key="..\:/Users/Anton/Downloads/NutritionAppFolder/NutritionApp/app/src/main/res/menu/overflow_menu.xml" value="0.1" />
       </map>
     </option>

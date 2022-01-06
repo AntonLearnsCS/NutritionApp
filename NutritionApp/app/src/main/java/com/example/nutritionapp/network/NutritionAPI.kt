@@ -5,6 +5,7 @@ import androidx.annotation.VisibleForTesting
 import com.example.nutritionapp.ingredientlist.selectedProductName
 import com.example.nutritionapp.recipe.PostRequestResultWrapper
 import com.example.nutritionapp.recipe.RecipeIngredientResult
+import com.example.nutritionapp.recipe.RecipeIngredientResultWrapper
 import com.example.nutritionapp.recipe.RecipeInstruction
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
@@ -96,7 +97,7 @@ source: https://stackoverflow.com/questions/42491733/passing-api-key-in-retrofit
                 .addHeader(
                     "x-rapidapi-key",
                     "743dd97869msh559abee3f899bd4p131dd1jsn866e00036c54"
-                )//Error: HTTP 401 Unauthorized
+                )//Error: HTTP 401 Unauthorize
                 .build()
 
             return chain.proceed(newRequest)
@@ -134,12 +135,17 @@ source: https://stackoverflow.com/questions/42491733/passing-api-key-in-retrofit
         @GET("food/products/search")
         suspend fun getIngredients(@Query("query") type: String): wrapperIngredientListNetworkDataClass
 
+        //diet={diet}&intolerance={intolerance}&includeIngredients={includeIngredients}")
+        @GET("recipes/complexSearch")
+        suspend fun findByIngredients(@Query("diet") diet : String, @Query("intolerances") intolerance : String,
+                                      @Query("includeIngredients") includeIngredients : String): RecipeIngredientResultWrapper
+
         @GET("recipes/findByIngredients")
-        suspend fun findByIngredients(@Query("ingredients") list: String): List<RecipeIngredientResult>
+        suspend fun findByIngredientsOriginal(@Query("ingredients") ingredients : String) : List<RecipeIngredientResult>
 
         //run as blocking function by omitting suspend modifier
         @GET("recipes/{id}/analyzedInstructions")
-        suspend fun getRecipeInstructions(@Path("id") id : Long, @Query("stepBreakdown") boolean: Boolean) : List<RecipeInstruction>
+        suspend fun getRecipeInstructions(@Path("id") id : String, @Query("stepBreakdown") boolean: Boolean) : List<RecipeInstruction>
 
         @POST("food/detect")
         suspend fun detectFoodInText(): PostRequestResultWrapper

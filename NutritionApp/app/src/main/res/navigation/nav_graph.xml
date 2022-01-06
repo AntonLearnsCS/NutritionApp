@@ -38,12 +38,12 @@
         android:id="@+id/recipeDetail"
         android:name="com.example.nutritionapp.recipe.recipedetail.RecipeDetail"
         android:label="RecipeDetail" >
-        <argument
-            android:name="Recipe"
-            app:argType="com.example.nutritionapp.recipe.RecipeIngredientResult" />
         <action
             android:id="@+id/action_recipeDetail_to_mapGroceryReminder"
             app:destination="@id/mapGroceryReminder" />
+        <argument
+            android:name="recipe"
+            app:argType="com.example.nutritionapp.recipe.RecipeIngredientResult" />
     </fragment>
     <fragment
         android:id="@+id/mapFragment"

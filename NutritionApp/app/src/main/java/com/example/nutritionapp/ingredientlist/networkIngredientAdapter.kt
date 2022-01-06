@@ -25,7 +25,6 @@ class networkIngredientAdapter (val clickListener : NetworkIngredientListener) :
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-
         val ingredientItem = getItem(position)
         holder.bind(ingredientItem,clickListener)
     }
