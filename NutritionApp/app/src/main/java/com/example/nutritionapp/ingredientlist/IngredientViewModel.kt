@@ -188,7 +188,7 @@ class IngredientViewModel(
 
 
 
-    val arrayOfRecipeFilterOptions = arrayListOf<String>("none","pescetarian", "lacto vegetarian", "ovo vegetarian", "vegan", "vegetarian")
+    val arrayOfRecipeFilterOptions = arrayListOf<String>("special diets","pescetarian", "lacto vegetarian", "ovo vegetarian", "vegan", "vegetarian")
 
     val arrayOfIntolerance = arrayListOf<IntoleraceDataType>(IntoleraceDataType("Food Allergens:"),IntoleraceDataType("dairy"), IntoleraceDataType("egg"), IntoleraceDataType("gluten"),
         IntoleraceDataType("peanut"), IntoleraceDataType("sesame"), IntoleraceDataType("seafood"),
