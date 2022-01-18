@@ -138,7 +138,7 @@ source: https://stackoverflow.com/questions/42491733/passing-api-key-in-retrofit
         //diet={diet}&intolerance={intolerance}&includeIngredients={includeIngredients}")
         @GET("recipes/complexSearch")
         suspend fun findByIngredients(@Query("diet") diet : String, @Query("intolerances") intolerance : String,
-                                      @Query("includeIngredients") includeIngredients : String): RecipeIngredientResultWrapper
+                                      @Query("includeIngredients") includeIngredients : String, @Query("instructionsRequired") instructionsRequired : Boolean): RecipeIngredientResultWrapper
 
         @GET("recipes/findByIngredients")
         suspend fun findByIngredientsOriginal(@Query("ingredients") ingredients : String) : List<RecipeIngredientResult>

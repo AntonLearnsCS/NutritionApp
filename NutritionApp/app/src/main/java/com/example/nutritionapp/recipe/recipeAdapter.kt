@@ -1,5 +1,6 @@
 package com.example.nutritionapp.recipe
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.annotation.LayoutRes
@@ -9,7 +10,7 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.example.nutritionapp.R
 import com.example.nutritionapp.databinding.RecipeLayoutItemBinding
-
+import timber.log.Timber
 
 
 class recipeAdapter(val onClickListener: RecipeIngredientListener) : ListAdapter<RecipeIngredientResult, recipeAdapter.ViewHolder>(
@@ -67,6 +68,8 @@ class recipeAdapter(val onClickListener: RecipeIngredientListener) : ListAdapter
     class RecipeIngredientListener(val clickListener: (recipe: RecipeIngredientResult) -> Unit) {
         //it's a bit strange b/c usually we use the parameter inside the class but here we are using the body of the class
         //to define the value of the parameter
-        fun onClick(recipe: RecipeIngredientResult) = clickListener(recipe)
+        fun onClick(recipe: RecipeIngredientResult){
+            Log.i("test","id: ${recipe.id}")
+            clickListener(recipe)}
     }
 }

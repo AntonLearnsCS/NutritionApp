@@ -21,7 +21,7 @@
         <TextView
             android:id="@+id/recipe_name"
             android:layout_width="289dp"
-            android:layout_height="wrap_content"
+            android:layout_height="85dp"
             android:layout_marginStart="16dp"
             android:text="@{recipe.title}"
             android:textSize="15sp"

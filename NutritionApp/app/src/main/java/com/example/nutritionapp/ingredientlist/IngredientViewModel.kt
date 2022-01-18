@@ -251,7 +251,7 @@ class IngredientViewModel(
                         .replace("]","")
                     val resultWrapper: List<RecipeIngredientResult> =
                         nutritionApi.nutritionService.findByIngredients(tempSelectedFilter,selectedIntolerance,
-                        tempFoodInText).results
+                        tempFoodInText, true).results
 
                     Log.i("test","size test: ${resultWrapper.size}")
                     Log.i("test","[0]: ${resultWrapper[0].title}")
