@@ -22,7 +22,6 @@
             android:id="@+id/recipe_name"
             android:layout_width="289dp"
             android:layout_height="85dp"
-            android:layout_marginStart="16dp"
             android:text="@{recipe.title}"
             android:textSize="15sp"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -40,16 +39,16 @@
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toEndOf="@+id/imageView"
             app:layout_constraintTop_toTopOf="parent" />
-
-      <ImageView
+-->
+        <ImageView
             android:id="@+id/imageView"
-            android:layout_width="49dp"
-            android:layout_height="80dp"
+            displayImage="@{recipe.image}"
+            android:layout_width="116dp"
+            android:layout_height="89dp"
             app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/recipe_name"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.0"
-            app:srcCompat="@drawable/thumbs_up_icon" />
-    -->
+            app:layout_constraintVertical_bias="0.0" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

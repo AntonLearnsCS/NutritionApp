@@ -21,14 +21,14 @@
             android:id="@+id/appBarLayout"
             android:layout_width="match_parent"
             android:backgroundTint="@color/white"
-            android:layout_height="200dp">
+            android:layout_height="300dp">
 
             <androidx.constraintlayout.motion.widget.MotionLayout
                 android:id="@+id/motion_layout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:layoutDescription="@xml/motion_scene_recipe_detail"
-                android:minHeight="80dp"
+                android:minHeight="100dp"
                 app:layout_scrollFlags="scroll|enterAlways|exitUntilCollapsed">
 
                 <ImageView
@@ -47,8 +47,8 @@
 
                 <ImageView
                     android:id="@+id/shopping_cart"
-                    android:layout_width="100dp"
-                    android:layout_height="100dp"
+                    android:layout_width="150dp"
+                    android:layout_height="150dp"
                     android:scaleType="fitXY"
                     android:contentDescription="@string/shopping_cart_image"
                     android:src="@drawable/food_shopping_cart"
@@ -82,18 +82,15 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
 
-                <TextView
-                    android:id="@+id/missing_ingredients"
+                <com.google.android.material.chip.ChipGroup
+                    android:id="@+id/recipeDetailChipGroup"
                     android:layout_width="match_parent"
-                    android:lineSpacingExtra="20dp"
                     android:layout_height="wrap_content"
-                    android:textSize="20sp"
+                    app:layout_constraintBottom_toTopOf="@+id/find_groceries"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:listMissingIngredients="@{viewModel.missingIngredients}">
-                </TextView>
+                    app:layout_constraintStart_toStartOf="parent">
 
+                </com.google.android.material.chip.ChipGroup>
                 <TextView
                     android:id="@+id/recipe_steps"
                     android:layout_width="match_parent"
@@ -109,12 +106,12 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
-                    android:text="Find groceries"
                     android:layout_marginBottom="8dp"
+                    android:text="Find groceries"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintHorizontal_bias="0.498"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/missing_ingredients" />
+                    app:layout_constraintTop_toBottomOf="@+id/recipeDetailChipGroup" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 

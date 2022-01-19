@@ -13,6 +13,7 @@ import com.example.nutritionapp.databinding.RecipeDetailBinding
 import com.example.nutritionapp.ingredientlist.IngredientViewModel
 import com.example.nutritionapp.recipe.RecipeIngredientResult
 import com.google.android.material.appbar.AppBarLayout
+import com.google.android.material.chip.Chip
 import org.koin.android.ext.android.bind
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
@@ -36,6 +37,24 @@ class RecipeDetail : Fragment() {
             findNavController().navigate(RecipeDetailDirections.actionRecipeDetailToMapGroceryReminder(args))
         }
         coordinateMotion()
+        viewModel.missingIngredients.value.apply {
+            if (!isNullOrEmpty())
+            {
+                for (item in this)
+                {
+
+                    val mChip = Chip(binding.recipeDetailChipGroup.context)
+                    mChip.text = item
+                    //mChip.explicitStyle = R.color.chip_color
+                    mChip.isClickable = false
+                    mChip.isCheckable = false
+                    mChip.isCloseIconVisible = false
+
+                    binding.recipeDetailChipGroup.addView(mChip)
+                }
+            }
+        }
+
         return binding.root
     }
 

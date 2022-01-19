@@ -161,6 +161,7 @@ class IngredientViewModel(
 
     fun setSearchRecipeEditTextClear() {
         foodInText.clear()
+
     }
 
     //Two-way data binding
@@ -410,8 +411,7 @@ class IngredientViewModel(
                     _listOfStepsLiveData.value = listOfSteps
                     val removeDuplicates = listOfIngredientNameInInstruction.toSet().toList()
                     _missingIngredients.value = removeDuplicates.minus(
-                        foodInText
-                    )
+                        foodInText)
                     mFlag.value = true
                 }
             }
