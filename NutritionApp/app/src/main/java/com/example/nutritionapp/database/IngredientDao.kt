@@ -7,6 +7,7 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import com.example.nutritionapp.maps.RecipeNotificationClassDTO
+import com.example.nutritionapp.menu.GeofenceReferenceData
 import com.example.nutritionapp.recipeofday.RecipeOfDay
 
 @Dao
@@ -98,6 +99,12 @@ interface IngredientDao {
 
     @Insert
     suspend fun saveRecipeOfDay(rod : RecipeOfDay)
+
+    @Insert
+    suspend fun saveGeofenceReferenceData(data : GeofenceReferenceData)
+
+    @Query("SELECT * FROM GeofenceReferenceData WHERE id = :key")
+    suspend fun returnGeofenceReferenceData(key : String) : GeofenceReferenceData
 }
 
 

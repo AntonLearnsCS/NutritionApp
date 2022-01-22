@@ -3,6 +3,7 @@ import com.example.nutritionapp.util.Result
 import com.example.nutritionapp.database.dto.IngredientDataClassDTO
 import com.example.nutritionapp.maps.RecipeNotificationClassDTO
 import com.example.nutritionapp.maps.RecipeNotificationClassDomain
+import com.example.nutritionapp.menu.GeofenceReferenceData
 
 interface IngredientDataSourceInterface {
 
@@ -17,4 +18,8 @@ interface IngredientDataSourceInterface {
     suspend fun getNotificationRecipeById (key: String) : Result<RecipeNotificationClassDomain>?
     suspend fun saveNotificationRecipe (recipeDomain : RecipeNotificationClassDomain)
     suspend fun clearNotificationRecipe()
+    suspend fun getAllNotificationRecipe() : Result<List<RecipeNotificationClassDTO>>
+
+    suspend fun saveGeofenceReference( data : GeofenceReferenceData)
+    suspend fun returnGeofenceReference(key : String) : Result<GeofenceReferenceData>
 }

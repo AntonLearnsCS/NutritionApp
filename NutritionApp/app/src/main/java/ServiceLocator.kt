@@ -6,6 +6,7 @@ import androidx.sqlite.db.SupportSQLiteDatabase
 import com.example.nutritionapp.database.IngredientDataSourceInterface
 import com.example.nutritionapp.database.IngredientDatabase
 import com.example.nutritionapp.database.IngredientRepository
+import com.example.nutritionapp.database.MIGRATION_10_11
 import com.example.nutritionapp.network.mNutritionApi
 import kotlinx.coroutines.runBlocking
 val MIGRATION_9_10: Migration = object : Migration(9, 10) {
@@ -56,7 +57,8 @@ object ServiceLocator {
         val result = Room.databaseBuilder(
             context.applicationContext,
             IngredientDatabase::class.java, "Ingredient.db"
-        ).addMigrations(MIGRATION_9_10).build()
+        ).addMigrations(MIGRATION_9_10).addMigrations(MIGRATION_10_11).build()
+
         database = result
         return result
     }

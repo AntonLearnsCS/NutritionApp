@@ -21,6 +21,7 @@ import androidx.room.migration.Migration
 import androidx.sqlite.db.SupportSQLiteDatabase
 import com.example.nutritionapp.database.dto.IngredientDataClassDTO
 import com.example.nutritionapp.maps.RecipeNotificationClassDTO
+import com.example.nutritionapp.menu.GeofenceReferenceData
 import com.example.nutritionapp.recipeofday.RecipeOfDay
 val MIGRATION_9_10: Migration = object : Migration(9, 10) {
     override fun migrate(database: SupportSQLiteDatabase) {
@@ -28,7 +29,13 @@ val MIGRATION_9_10: Migration = object : Migration(9, 10) {
         database.execSQL("CREATE TABLE IF NOT EXISTS `RecipeOfDay` (`id` INTEGER NOT NULL, `image` TEXT NOT NULL, PRIMARY KEY(`id`))")//"CREATE TABLE IF NOT EXISTS `RecipeOfDay` (`id` INTEGER NOT NULL, `image` TEXT NOT NULL)")
     }
 }
-@Database(entities = [IngredientDataClassDTO::class, RecipeNotificationClassDTO::class, RecipeOfDay::class], version = 10, exportSchema = false)
+val MIGRATION_10_11: Migration = object : Migration(10, 11) {
+    override fun migrate(database: SupportSQLiteDatabase) {
+        // https://developer.android.com/reference/android/arch/persistence/room/ColumnInfo
+        database.execSQL("CREATE TABLE IF NOT EXISTS `GeofenceReferenceData` (`id` TEXT NOT NULL, `recipeName` TEXT NOT NULL, `missingIngredients` TEXT NOT NULL, PRIMARY KEY(`id`))")
+    }
+}
+@Database(entities = [IngredientDataClassDTO::class, RecipeNotificationClassDTO::class, RecipeOfDay::class, GeofenceReferenceData::class], version = 11, exportSchema = false)
 abstract class IngredientDatabase : RoomDatabase() {
 
     /**
@@ -90,7 +97,7 @@ abstract class IngredientDatabase : RoomDatabase() {
                         // Migration is not part of this lesson. You can learn more about
                         // migration with Room in this blog post:
                         // https://medium.com/androiddevelopers/understanding-migrations-with-room-f01e04b07929
-                        .addMigrations(MIGRATION_9_10)
+                        .addMigrations(MIGRATION_10_11)
                         .build()
                     // Assign INSTANCE to the newly created database.
                     INSTANCE = instance

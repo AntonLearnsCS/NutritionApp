@@ -69,4 +69,8 @@
         android:id="@+id/aboutFragment"
         android:name="com.example.nutritionapp.aboutFragment"
         android:label="aboutFragment" />
+    <fragment
+        android:id="@+id/listOfActiveGeofence"
+        android:name="com.example.nutritionapp.menu.ListOfActiveGeofence"
+        android:label="ListOfActiveGeofence" />
 </navigation>

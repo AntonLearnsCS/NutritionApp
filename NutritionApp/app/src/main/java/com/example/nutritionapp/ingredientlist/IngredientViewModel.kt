@@ -3,7 +3,9 @@ package com.example.nutritionapp.ingredientlist
 //import androidx.test.core.app.ApplicationProvider
 
 import android.app.Application
+import android.app.PendingIntent
 import android.content.Context
+import android.content.Intent
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import android.os.Build
@@ -15,6 +17,7 @@ import com.example.nutritionapp.database.IngredientDataClass
 import com.example.nutritionapp.database.IngredientDataSourceInterface
 import com.example.nutritionapp.database.dto.IngredientDataClassDTO
 import com.example.nutritionapp.maps.RecipeNotificationClassDomain
+import com.example.nutritionapp.menu.GeofenceReferenceData
 import com.example.nutritionapp.network.*
 import com.example.nutritionapp.recipe.*
 import com.example.nutritionapp.recipe.intolerancespinnerclasses.IntoleraceDataType
@@ -105,7 +108,34 @@ class IngredientViewModel(
 
     private val _saveRecipeNotificationFlag = MutableLiveData(false)
 
+    fun saveGeofenceReferenceData ( data : GeofenceReferenceData)
+    {
+        wrapEspressoIdlingResource {
+            viewModelScope.launch {
+                ingredientRepository.saveGeofenceReference(data)
+            }
+        }
+    }
+    val selectedGeofenceReferenceData = MutableLiveData<GeofenceReferenceData>()
 
+    fun getGeofenceReferenceData( key : String)
+    {
+        wrapEspressoIdlingResource {
+            viewModelScope.launch {
+                val result = ingredientRepository.returnGeofenceReference(key)
+
+                ingredientRepository.getIngredients()
+
+                when (result) {
+                    is Result.Success<*> -> {
+                        selectedGeofenceReferenceData.value = result.data as GeofenceReferenceData
+                    }}
+            }
+        }
+    }
+
+    val listOfPendingIntent = mutableListOf<PendingIntent?>()
+    val listOfIntent = mutableListOf<Intent?>()
     //--------------------------------------------------------ingredientDetail Fragment ---------------------------------------------------
     val selectedIngredient = MutableLiveData<IngredientDataClass>()
 
@@ -198,6 +228,31 @@ class IngredientViewModel(
 
     val selectedFilter = MutableStateFlow("")
     var selectedIntolerance : String = ""
+
+    //---------------------------------------------ListOfActiveGeofences-----------------------------
+    val listOfRecipeNotification = mutableListOf<RecipeNotificationClassDomain>()
+    fun getAllRecipeNotification()
+    {
+        wrapEspressoIdlingResource {
+            viewModelScope.launch {
+                val result = ingredientRepository.getAllNotificationRecipe()
+                when (result)
+                {
+                    is Result.Success<*> -> {
+                        listOfRecipeNotification.addAll((result.data as List<RecipeNotificationClassDomain>).map { result ->
+                            //map the reminder data from the DB to the be ready to be displayed on the UI
+                            RecipeNotificationClassDomain(
+                               recipeName = result.recipeName,
+                                missingIngredients = result.missingIngredients,
+                                mId = result.mId
+                            )
+                        })
+                    }
+                }
+            }
+        }
+    }
+    //-----------------------------------------------------------------------------------------------
     //input is list of names i.e {"Snapple Apple flavored drink 4oz","Mott's Apple pudding 3oz"}
     @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
     fun detectFoodInText(listName: List<String>) {

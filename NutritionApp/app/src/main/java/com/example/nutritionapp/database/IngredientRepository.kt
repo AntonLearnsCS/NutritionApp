@@ -5,6 +5,7 @@ import com.example.nutritionapp.util.Result
 import com.example.nutritionapp.database.dto.IngredientDataClassDTO
 import com.example.nutritionapp.maps.RecipeNotificationClassDTO
 import com.example.nutritionapp.maps.RecipeNotificationClassDomain
+import com.example.nutritionapp.menu.GeofenceReferenceData
 import com.example.nutritionapp.util.wrapEspressoIdlingResource
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
@@ -94,6 +95,41 @@ class IngredientRepository(private val dao: IngredientDao,
             withContext(IOdispatcher)
             {
                 dao.clearRecipeEntity()
+            }
+        }
+    }
+
+    override suspend fun getAllNotificationRecipe(): Result<List<RecipeNotificationClassDTO>> {
+        wrapEspressoIdlingResource {
+            return withContext(IOdispatcher)
+            {
+                val result : List<RecipeNotificationClassDTO>? = dao.getAllRecipeNotification()
+                if (result.isNullOrEmpty())
+                    return@withContext Result.Error("No recipes found")
+                else
+                    return@withContext Result.Success(result)
+            }
+        }
+    }
+
+    override suspend fun saveGeofenceReference(data: GeofenceReferenceData) {
+        wrapEspressoIdlingResource {
+            withContext(IOdispatcher)
+            {
+                dao.saveGeofenceReferenceData(data)
+            }
+        }
+    }
+
+    override suspend fun returnGeofenceReference(key: String): Result<GeofenceReferenceData> {
+        wrapEspressoIdlingResource {
+            return withContext(IOdispatcher)
+            {
+                val geofenceReferenceData = dao.returnGeofenceReferenceData(key)
+                if (geofenceReferenceData != null)
+                    return@withContext Result.Success(geofenceReferenceData)
+                else
+                    return@withContext Result.Error("No geofence reference found")
             }
         }
     }

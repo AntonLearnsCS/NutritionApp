@@ -167,7 +167,7 @@ private lateinit var binding : MapGroceryReminderBinding
                 recipeNotificationClassDTO = RecipeNotificationClassDTO("Recipe", binding.missingIngredients.text.toString())
             }
 
-            intent.putExtra("RecipeNotificationClass", recipeNotificationClassDTO)
+
 
             //set to null so that user can go to Maps from menu and have empty list instead of pre-filled list
             _viewModel.setMissingIngredientsNull()
@@ -274,9 +274,7 @@ private lateinit var binding : MapGroceryReminderBinding
             ) != PackageManager.PERMISSION_GRANTED) )
          {
             Log.i("test","foreground permission not granted in addGeofence()")
-
-        }
-
+         }
 
         //Toast.makeText(contxt,"Permission Granted",Toast.LENGTH_SHORT).show()
 

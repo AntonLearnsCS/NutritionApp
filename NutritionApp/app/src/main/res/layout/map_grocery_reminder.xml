@@ -18,23 +18,23 @@
             android:id="@+id/select_location"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginTop="196dp"
             android:text="Find grocery"
-            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.498"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/missingIngredients" />
 
         <EditText
             android:id="@+id/missingIngredients"
+            listMissingIngredients="@{viewModel.missingIngredients}"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="204dp"
+            android:layout_marginTop="16dp"
             android:ems="10"
-            listMissingIngredients="@{viewModel.missingIngredients}"
-            android:inputType="textMultiLine"
             android:hint="Missing Ingredients"
+            android:inputType="textMultiLine"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.497"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
@@ -42,9 +42,11 @@
             android:id="@+id/save_reminder"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
             android:text="Save Reminder"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.498"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/select_location" />
 
