@@ -160,14 +160,14 @@ private lateinit var binding : MapGroceryReminderBinding
         binding.saveReminder.setOnClickListener {
 
             if (recipeIngredientResult != null) {
-                recipeNotificationClassDTO = RecipeNotificationClassDTO(recipeIngredientResult!!.title, _viewModel.missingIngredients.value.toString())
+                recipeNotificationClassDTO = RecipeNotificationClassDTO(recipeIngredientResult!!.title, _viewModel.missingIngredients.value.toString(),
+                recipeIngredientResult!!.image)
             }
             else
             {
-                recipeNotificationClassDTO = RecipeNotificationClassDTO("Recipe", binding.missingIngredients.text.toString())
+                //when user does not select a recipe to set a reminder
+                recipeNotificationClassDTO = RecipeNotificationClassDTO("Recipe", binding.missingIngredients.text.toString(),"")
             }
-
-
 
             //set to null so that user can go to Maps from menu and have empty list instead of pre-filled list
             _viewModel.setMissingIngredientsNull()
@@ -175,7 +175,7 @@ private lateinit var binding : MapGroceryReminderBinding
             if(recipeNotificationClassDTO != null)
             {
             _viewModel.saveRecipeNotification(RecipeNotificationClassDomain(recipeName = recipeNotificationClassDTO!!.recipeName,
-            missingIngredients = recipeNotificationClassDTO!!.missingIngredients, mId = recipeNotificationClassDTO!!.mId))
+            missingIngredients = recipeNotificationClassDTO!!.missingIngredients, image= recipeNotificationClassDTO!!.image, mId = recipeNotificationClassDTO!!.mId))
             }
 
             checkPermission()

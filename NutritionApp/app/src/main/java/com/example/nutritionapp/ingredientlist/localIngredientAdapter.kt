@@ -54,7 +54,6 @@ class localIngredientAdapter(val onClickListener: LocalIngredientListener) : Lis
             holder.bind(ingredientItem)
 
         holder.binding.checkbox.setOnClickListener{
-
             if ((holder.binding).checkbox.isChecked()) {
                 mList.add(ingredientItem)
             } else {

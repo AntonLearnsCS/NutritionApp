@@ -76,5 +76,6 @@
     <string name="image_of_a_cartoon_shopping_cart">image of a cartoon shopping cart</string>
     <string name="diet_filters">Diet filters</string>
     <string name="allergy_filters">allergy filters</string>
+    <string name="image_of_recipe">Image of recipe</string>
 
 </resources>

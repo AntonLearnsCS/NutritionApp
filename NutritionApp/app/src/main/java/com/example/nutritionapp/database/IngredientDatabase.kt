@@ -35,7 +35,13 @@ val MIGRATION_10_11: Migration = object : Migration(10, 11) {
         database.execSQL("CREATE TABLE IF NOT EXISTS `GeofenceReferenceData` (`id` TEXT NOT NULL, `recipeName` TEXT NOT NULL, `missingIngredients` TEXT NOT NULL, PRIMARY KEY(`id`))")
     }
 }
-@Database(entities = [IngredientDataClassDTO::class, RecipeNotificationClassDTO::class, RecipeOfDay::class, GeofenceReferenceData::class], version = 11, exportSchema = false)
+val MIGRATION_11_12: Migration = object : Migration(11, 12) {
+    override fun migrate(database: SupportSQLiteDatabase) {
+        // https://developer.android.com/reference/android/arch/persistence/room/ColumnInfo
+        database.execSQL("ALTER TABLE `RecipeEntity` ADD COLUMN `image` TEXT")
+    }
+}
+@Database(entities = [IngredientDataClassDTO::class, RecipeNotificationClassDTO::class, RecipeOfDay::class, GeofenceReferenceData::class], version = 12, exportSchema = false)
 abstract class IngredientDatabase : RoomDatabase() {
 
     /**
@@ -98,6 +104,7 @@ abstract class IngredientDatabase : RoomDatabase() {
                         // migration with Room in this blog post:
                         // https://medium.com/androiddevelopers/understanding-migrations-with-room-f01e04b07929
                         .addMigrations(MIGRATION_10_11)
+                        .addMigrations(MIGRATION_11_12)
                         .build()
                     // Assign INSTANCE to the newly created database.
                     INSTANCE = instance

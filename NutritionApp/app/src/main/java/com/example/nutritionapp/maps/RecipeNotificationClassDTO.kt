@@ -7,9 +7,12 @@ import java.io.Serializable
 import java.util.*
 
 @Entity (tableName = "RecipeEntity")
-data class RecipeNotificationClassDTO(@ColumnInfo(name = "recipeName")var recipeName :String,
-                                      @ColumnInfo(name = "missingIngredients") var missingIngredients : String,
-                                      @PrimaryKey @ColumnInfo(name = "mId") var mId: String = UUID.randomUUID().toString()) : Serializable
+data class RecipeNotificationClassDTO(var recipeName :String,
+                                      var missingIngredients : String,
+                                      var image : String?,
+                                      @PrimaryKey
+                                      var mId: String = UUID.randomUUID().toString()) : Serializable
 
 data class RecipeNotificationClassDomain(var recipeName :String, var missingIngredients : String,
+                                         var image: String?,
                                          var mId: String) : Serializable

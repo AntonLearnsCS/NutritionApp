@@ -15,6 +15,12 @@ val MIGRATION_9_10: Migration = object : Migration(9, 10) {
         database.execSQL("CREATE TABLE IF NOT EXISTS `RecipeOfDay` (`id` INTEGER NOT NULL, `image` TEXT NOT NULL, PRIMARY KEY(`id`))")
     }
 }
+val MIGRATION_11_12: Migration = object : Migration(11, 12) {
+    override fun migrate(database: SupportSQLiteDatabase) {
+        // https://developer.android.com/reference/android/arch/persistence/room/ColumnInfo
+        database.execSQL("ALTER TABLE `RecipeEntity` ADD COLUMN `image` TEXT")
+    }
+}
 //We use a ServiceLocator in order to return an instance of a repository and other dependencies
 object ServiceLocator {
 
@@ -57,7 +63,8 @@ object ServiceLocator {
         val result = Room.databaseBuilder(
             context.applicationContext,
             IngredientDatabase::class.java, "Ingredient.db"
-        ).addMigrations(MIGRATION_9_10).addMigrations(MIGRATION_10_11).build()
+        ).addMigrations(MIGRATION_9_10).addMigrations(MIGRATION_10_11).addMigrations(MIGRATION_11_12)
+            .build()
 
         database = result
         return result

@@ -16,6 +16,7 @@ import androidx.lifecycle.*
 import com.example.nutritionapp.database.IngredientDataClass
 import com.example.nutritionapp.database.IngredientDataSourceInterface
 import com.example.nutritionapp.database.dto.IngredientDataClassDTO
+import com.example.nutritionapp.maps.RecipeNotificationClassDTO
 import com.example.nutritionapp.maps.RecipeNotificationClassDomain
 import com.example.nutritionapp.menu.GeofenceReferenceData
 import com.example.nutritionapp.network.*
@@ -171,7 +172,9 @@ class IngredientViewModel(
     fun setMissingIngredientsNull() {
         _missingIngredients.value = null
     }
-
+    fun setMissingIngredients( missingIngredients : List<String>){
+        _missingIngredients.value = missingIngredients
+    }
     //--------------------------------------------------------SearchRecipe Fragment--------------------------------------------------------
     //Q: Why does "val listOfRecipesLiveData = MutableLiveData<List<RecipeIngredientResult>>(listOfRecipes)" result in RecyclerView
     //being empty?
@@ -230,25 +233,29 @@ class IngredientViewModel(
     var selectedIntolerance : String = ""
 
     //---------------------------------------------ListOfActiveGeofences-----------------------------
-    val listOfRecipeNotification = mutableListOf<RecipeNotificationClassDomain>()
+    val listOfRecipeNotification = MutableLiveData<List<RecipeNotificationClassDomain>>()
+    val allRecipeNotificationFlag = MutableLiveData<Boolean>(false)
+    val selectedActiveGeofence = MutableLiveData<RecipeIngredientResult>()
     fun getAllRecipeNotification()
     {
         wrapEspressoIdlingResource {
             viewModelScope.launch {
-                val result = ingredientRepository.getAllNotificationRecipe()
+                val result : Result<List<RecipeNotificationClassDTO>> = ingredientRepository.getAllNotificationRecipe()
                 when (result)
                 {
                     is Result.Success<*> -> {
-                        listOfRecipeNotification.addAll((result.data as List<RecipeNotificationClassDomain>).map { result ->
+                        listOfRecipeNotification.value = ((result.data as List<RecipeNotificationClassDTO>).map { mResult ->
                             //map the reminder data from the DB to the be ready to be displayed on the UI
                             RecipeNotificationClassDomain(
-                               recipeName = result.recipeName,
-                                missingIngredients = result.missingIngredients,
-                                mId = result.mId
+                                recipeName = mResult.recipeName,
+                                missingIngredients = mResult.missingIngredients,
+                                image = mResult.image,
+                                mId = mResult.mId
                             )
                         })
                     }
                 }
+                allRecipeNotificationFlag.value = true
             }
         }
     }
@@ -413,7 +420,7 @@ class IngredientViewModel(
             ingredientRepository.saveNotificationRecipe(
                 RecipeNotificationClassDomain(
                     recipeName = recipeNotificationClassDomain.recipeName,
-                    missingIngredients = recipeNotificationClassDomain.missingIngredients,
+                    missingIngredients = recipeNotificationClassDomain.missingIngredients, image = recipeNotificationClassDomain.image,
                     mId = recipeNotificationClassDomain.mId
                 )
             )

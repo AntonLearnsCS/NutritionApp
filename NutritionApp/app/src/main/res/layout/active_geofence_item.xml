@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+        <variable
+            name="recipe"
+            type="com.example.nutritionapp.maps.RecipeNotificationClassDomain" />
+        <variable
+            name="item_listener"
+            type="com.example.nutritionapp.menu.ActiveGeofenceListener" />
+        <variable
+            name="remove_listener"
+            type="com.example.nutritionapp.menu.ActiveGeofenceRemoveButton" />
+    </data>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:clickable="true"
+        android:onClick="@{() -> item_listener.onClick(recipe)}"
+        android:focusable="true">
+
+        <TextView
+            android:id="@+id/recipe_name_geofence"
+            android:layout_width="264dp"
+            android:layout_height="82dp"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="@{recipe.recipeName}" />
+
+        <Button
+            android:id="@+id/button"
+            android:layout_width="13dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@drawable/food_shopping_cart"
+            android:onClick="@{() -> remove_listener.onClick(recipe)}" />
+    </LinearLayout>
+</layout>
