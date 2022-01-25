@@ -41,7 +41,7 @@ val MIGRATION_11_12: Migration = object : Migration(11, 12) {
         database.execSQL("ALTER TABLE `RecipeEntity` ADD COLUMN `image` TEXT")
     }
 }
-@Database(entities = [IngredientDataClassDTO::class, RecipeNotificationClassDTO::class, RecipeOfDay::class, GeofenceReferenceData::class], version = 12, exportSchema = false)
+@Database(entities = [IngredientDataClassDTO::class, RecipeNotificationClassDTO::class, RecipeOfDay::class, GeofenceReferenceData::class], version = 1, exportSchema = false)
 abstract class IngredientDatabase : RoomDatabase() {
 
     /**
@@ -103,8 +103,7 @@ abstract class IngredientDatabase : RoomDatabase() {
                         // Migration is not part of this lesson. You can learn more about
                         // migration with Room in this blog post:
                         // https://medium.com/androiddevelopers/understanding-migrations-with-room-f01e04b07929
-                        .addMigrations(MIGRATION_10_11)
-                        .addMigrations(MIGRATION_11_12)
+                        .fallbackToDestructiveMigration()
                         .build()
                     // Assign INSTANCE to the newly created database.
                     INSTANCE = instance

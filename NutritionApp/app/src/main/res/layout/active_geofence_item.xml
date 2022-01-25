@@ -18,9 +18,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:clickable="true"
-        android:onClick="@{() -> item_listener.onClick(recipe)}"
-        android:focusable="true">
+        >
 
         <TextView
             android:id="@+id/recipe_name_geofence"
@@ -28,6 +26,9 @@
             android:layout_height="82dp"
             android:layout_weight="1"
             android:gravity="center"
+            android:clickable="true"
+            android:focusable="true"
+            android:onClick="@{() -> item_listener.onClick(recipe)}"
             android:text="@{recipe.recipeName}" />
 
         <Button

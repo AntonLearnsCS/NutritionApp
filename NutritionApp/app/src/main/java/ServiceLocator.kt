@@ -63,7 +63,7 @@ object ServiceLocator {
         val result = Room.databaseBuilder(
             context.applicationContext,
             IngredientDatabase::class.java, "Ingredient.db"
-        ).addMigrations(MIGRATION_9_10).addMigrations(MIGRATION_10_11).addMigrations(MIGRATION_11_12)
+        ).fallbackToDestructiveMigration()
             .build()
 
         database = result

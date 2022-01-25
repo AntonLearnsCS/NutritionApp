@@ -8,6 +8,7 @@ import com.example.nutritionapp.util.Result
 import com.example.nutritionapp.database.dto.IngredientDataClassDTO
 import com.example.nutritionapp.maps.RecipeNotificationClassDTO
 import com.example.nutritionapp.maps.RecipeNotificationClassDomain
+import com.example.nutritionapp.menu.GeofenceReferenceData
 import com.example.nutritionapp.util.wrapEspressoIdlingResource
 import java.util.LinkedHashMap
 
@@ -77,6 +78,18 @@ class fakeIngredientRepository() :
         }
     }
 
+    override suspend fun getAllNotificationRecipe(): Result<List<RecipeNotificationClassDTO>> {
+        TODO("Not yet implemented")
+    }
+
+    override suspend fun saveGeofenceReference(data: GeofenceReferenceData) {
+        TODO("Not yet implemented")
+    }
+
+    override suspend fun returnGeofenceReference(key: String): Result<GeofenceReferenceData> {
+        TODO("Not yet implemented")
+    }
+
     override suspend fun deleteTaskIngredient(id: Int) {
         wrapEspressoIdlingResource {
             ingredientServiceData.remove(id.toString())
@@ -87,14 +100,14 @@ class fakeIngredientRepository() :
         wrapEspressoIdlingResource {
             val tempResult = notificationServiceDataDTO[key]
             return Result.Success(RecipeNotificationClassDomain(recipeName = tempResult!!.recipeName, missingIngredients = tempResult!!.missingIngredients,
-            mId = notificationServiceDataDTO[key]!!.mId))
+                image = "", id = notificationServiceDataDTO[key]!!.id))
         }
     }
 
     override suspend fun saveNotificationRecipe(recipeDomain: RecipeNotificationClassDomain) {
         wrapEspressoIdlingResource {
-            notificationServiceDataDTO[recipeDomain.mId] = RecipeNotificationClassDTO(recipeName = recipeDomain.recipeName,
-            missingIngredients = recipeDomain.missingIngredients, mId = recipeDomain.mId)
+            notificationServiceDataDTO[recipeDomain.id.toString()] = RecipeNotificationClassDTO(recipeName = recipeDomain.recipeName,
+            missingIngredients = recipeDomain.missingIngredients, image = "",id = recipeDomain.id)
         }
     }
 }

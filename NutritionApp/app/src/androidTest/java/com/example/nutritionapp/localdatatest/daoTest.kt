@@ -90,16 +90,16 @@ class daoTest {
     @Test
     @ExperimentalCoroutinesApi
     fun testDao_ClearRecipeNotification_ResultIsNull() = runBlockingTest{
-        val ingredientItem = RecipeNotificationClassDTO("name","none","someId")
-        val ingredientItem1 = RecipeNotificationClassDTO("name1","none1","someId1")
+        val ingredientItem = RecipeNotificationClassDTO("name","none","someId",1)
+        val ingredientItem1 = RecipeNotificationClassDTO("name1","none1","someId1",2)
 
         //given - a saved ingredient item
         database.IngredientDatabaseDao.saveNotificationRecipe(ingredientItem)
         database.IngredientDatabaseDao.saveNotificationRecipe(ingredientItem1)
 
         //when - ingredient item is deleted and database is cleared
-        database.IngredientDatabaseDao.deleteRecipeNotificationById(ingredientItem.mId)
-        val expectEmpty = database.IngredientDatabaseDao.getNotificationRecipeById(ingredientItem.mId)
+        database.IngredientDatabaseDao.deleteRecipeNotificationById(ingredientItem.id.toString())
+        val expectEmpty = database.IngredientDatabaseDao.getNotificationRecipeById(ingredientItem.id.toString())
         database.IngredientDatabaseDao.clearRecipeEntity()
         assertThat(expectEmpty, `is`(nullValue()))
         val expectEmptyList = database.IngredientDatabaseDao.getAllRecipeNotification()

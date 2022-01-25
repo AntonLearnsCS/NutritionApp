@@ -161,12 +161,12 @@ private lateinit var binding : MapGroceryReminderBinding
 
             if (recipeIngredientResult != null) {
                 recipeNotificationClassDTO = RecipeNotificationClassDTO(recipeIngredientResult!!.title, _viewModel.missingIngredients.value.toString(),
-                recipeIngredientResult!!.image)
+                recipeIngredientResult!!.image, recipeIngredientResult!!.id)
             }
             else
             {
                 //when user does not select a recipe to set a reminder
-                recipeNotificationClassDTO = RecipeNotificationClassDTO("Recipe", binding.missingIngredients.text.toString(),"")
+                recipeNotificationClassDTO = RecipeNotificationClassDTO("Recipe", binding.missingIngredients.text.toString(),"",recipeIngredientResult!!.id)
             }
 
             //set to null so that user can go to Maps from menu and have empty list instead of pre-filled list
@@ -175,7 +175,7 @@ private lateinit var binding : MapGroceryReminderBinding
             if(recipeNotificationClassDTO != null)
             {
             _viewModel.saveRecipeNotification(RecipeNotificationClassDomain(recipeName = recipeNotificationClassDTO!!.recipeName,
-            missingIngredients = recipeNotificationClassDTO!!.missingIngredients, image= recipeNotificationClassDTO!!.image, mId = recipeNotificationClassDTO!!.mId))
+            missingIngredients = recipeNotificationClassDTO!!.missingIngredients, image= recipeNotificationClassDTO!!.image, id = recipeNotificationClassDTO!!.id))
             }
 
             checkPermission()
@@ -246,7 +246,7 @@ private lateinit var binding : MapGroceryReminderBinding
             latLng?.longitude?.let { it1 ->
                 Geofence.Builder()
                     // Set the request ID, string to identify the geofence. Depends on whether we are selecting a recipe or a non-recipe
-                    .setRequestId(recipeNotificationClassDTO?.mId) //reminderDataItem.id)//_viewModel.latLng.value?.latitude.toString())
+                    .setRequestId(recipeNotificationClassDTO?.id.toString()) //reminderDataItem.id)//_viewModel.latLng.value?.latitude.toString())
                     // Set the circular region of this geofence.
                     .setCircularRegion(
                         it,

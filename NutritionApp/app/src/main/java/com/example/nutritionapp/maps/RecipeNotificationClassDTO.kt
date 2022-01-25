@@ -11,8 +11,8 @@ data class RecipeNotificationClassDTO(var recipeName :String,
                                       var missingIngredients : String,
                                       var image : String?,
                                       @PrimaryKey
-                                      var mId: String = UUID.randomUUID().toString()) : Serializable
+                                      var id: Int) : Serializable
 
 data class RecipeNotificationClassDomain(var recipeName :String, var missingIngredients : String,
                                          var image: String?,
-                                         var mId: String) : Serializable
+                                         var id: Int) : Serializable

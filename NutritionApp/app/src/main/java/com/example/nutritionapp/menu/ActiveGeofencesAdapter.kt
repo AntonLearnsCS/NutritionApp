@@ -16,7 +16,7 @@ import com.example.nutritionapp.databinding.IngredientItemBinding
 import com.example.nutritionapp.databinding.ListOfActiveGeofenceBinding
 import com.example.nutritionapp.maps.RecipeNotificationClassDomain
 
-class ActiveGeofencesAdapter(val listener: ActiveGeofenceListener, val removeButton: ActiveGeofenceRemoveButton) : ListAdapter<RecipeNotificationClassDomain, geofenceViewHolder>(ActiveGeofenceDiffCallback()) {
+class ActiveGeofencesAdapter(var listener: ActiveGeofenceListener, val removeButton: ActiveGeofenceRemoveButton) : ListAdapter<RecipeNotificationClassDomain, geofenceViewHolder>(ActiveGeofenceDiffCallback()) {
 
     //Q: Is this the best way to perform a callback on a removed an item from a listAdapter?
     val geofenceToRemove = mutableListOf<RecipeNotificationClassDomain>()
@@ -28,7 +28,7 @@ class ActiveGeofencesAdapter(val listener: ActiveGeofenceListener, val removeBut
             geofenceViewHolder.LAYOUT,
             parent,
             false)
-        return geofenceViewHolder(view)
+        return geofenceViewHolder(view, listener, removeButton)
     }
 
     override fun onBindViewHolder(holder: geofenceViewHolder, position: Int) {
@@ -41,14 +41,19 @@ class ActiveGeofencesAdapter(val listener: ActiveGeofenceListener, val removeBut
             currentList.removeAt(position)
             this.submitList(currentList)
         }
+
     }
 }
 
-class geofenceViewHolder(val binding : ActiveGeofenceItemBinding) : RecyclerView.ViewHolder(binding.root)
+class geofenceViewHolder(val binding : ActiveGeofenceItemBinding,
+val clickListener : ActiveGeofenceListener,
+val removeListener : ActiveGeofenceRemoveButton) : RecyclerView.ViewHolder(binding.root)
 {
     fun bind ( recipeNotificationClassDomain: RecipeNotificationClassDomain)
     {
         binding.recipe = recipeNotificationClassDomain
+        binding.itemListener = clickListener
+        binding.removeListener = removeListener
     }
     companion object {
         @LayoutRes
@@ -62,7 +67,7 @@ class ActiveGeofenceDiffCallback :
         oldItem: RecipeNotificationClassDomain,
         newItem: RecipeNotificationClassDomain
     ): Boolean {
-        return oldItem.mId == newItem.mId
+        return oldItem.id == newItem.id
     }
 
     override fun areContentsTheSame(

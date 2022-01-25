@@ -43,21 +43,42 @@ val viewModel by sharedViewModel<IngredientViewModel>()
 
         listOfActiveGeofenceBinding = DataBindingUtil.inflate(inflater, R.layout.list_of_active_geofence,container, false)
 //        Log.i("geofenceList","value: ${viewModel.listOfIntent[0]?.extras?.get("RecipeNotificationClass")}")
-        val adapter = ActiveGeofencesAdapter( ActiveGeofenceListener { activeGeofenceItem ->
+        val adapter = ActiveGeofencesAdapter(ActiveGeofenceListener { activeGeofenceItem ->
             viewModel.setMissingIngredients(activeGeofenceItem.missingIngredients.split(",")
                 .map{it.trim()})
+
+            val recipeIngredientResult = RecipeIngredientResult(activeGeofenceItem.id,activeGeofenceItem.recipeName,
+                activeGeofenceItem.image ?: "https://www.ecosia.org/images?q=image%20not%20found%20image#id=D0EC9C87026051CB60DE02C9D3264B5AD547EDB2", "JPEG")
+
+            //sets arg for navigation from this fragment to recipeDetail
+            viewModel.setNavigateToRecipe(recipeIngredientResult)
+
+            //gets the recipe instructions for the selected active geofence recipe
+            viewModel.getRecipeInstructions()
+
+            //nested flag, "mFlag" is true when getRecipeInstructions() is finished running
+            viewModel.mFlag.observe(viewLifecycleOwner, Observer { flag ->
+                if (flag)
+                {
+                    Log.i("test","selectedActiveGeofence: id: ${viewModel.navigateToRecipe.value!!.id}")
+                    findNavController().navigate(ListOfActiveGeofenceDirections
+                        .actionListOfActiveGeofenceToRecipeDetail(viewModel.navigateToRecipe.value!!))
+                }
+            })
+
+            //viewModel.setSelectedActiveGeofence(recipeIngredientResult)
+
+            Log.i("test","geofence item: ${activeGeofenceItem.recipeName}")
             //reusing the same navigation mechanism from searchRecipe to recipeDetail
             viewModel.setNavigateToRecipeFlag(true)
-            viewModel.selectedActiveGeofence.value = RecipeIngredientResult(activeGeofenceItem.mId.toInt(),activeGeofenceItem.recipeName,
-                activeGeofenceItem.image!!, "JPEG")
             //since there is no user input of ingredients at this fragment
             viewModel.foodInText.clear()
 
         }, ActiveGeofenceRemoveButton { geofence ->
-            val tempList = mutableListOf<String>(geofence.mId)
+            val tempList = mutableListOf<String>(geofence.id.toString())
             geofencingClient.removeGeofences(tempList)?.run {
                 addOnSuccessListener {
-                    Toast.makeText(contxt, "removed geofence", Toast.LENGTH_SHORT)
+                    Toast.makeText(contxt, "removed reminder", Toast.LENGTH_SHORT)
                         .show()
                 }
                 addOnFailureListener {
@@ -74,13 +95,7 @@ val viewModel by sharedViewModel<IngredientViewModel>()
 
         listOfActiveGeofenceBinding.activeGeofenceRecyclerview.adapter = adapter
 
-        viewModel.navigateToRecipeFlag.observe(viewLifecycleOwner, Observer { flag ->
-            if (flag)
-            {
-                findNavController().navigate(ListOfActiveGeofenceDirections
-                    .actionListOfActiveGeofenceToRecipeDetail(viewModel.selectedActiveGeofence.value!!))
-            }
-        })
+
 
         return listOfActiveGeofenceBinding.root
     }
@@ -92,6 +107,6 @@ val viewModel by sharedViewModel<IngredientViewModel>()
 
     private fun removeGeofences() {
         val requestId = viewModel.listOfIntent[0]?.extras?.get("RecipeNotificationClass") as RecipeNotificationClassDTO
-        val myList = mutableListOf<String>(requestId.mId)
+        val myList = mutableListOf<Int>(requestId.id)
     }
 }

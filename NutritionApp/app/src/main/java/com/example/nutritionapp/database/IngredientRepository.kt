@@ -152,7 +152,7 @@ class IngredientRepository(private val dao: IngredientDao,
                     return@withContext Result.Success(RecipeNotificationClassDomain(
                         recipeName = result.recipeName,
                         missingIngredients = result.missingIngredients, image = result.image,
-                        mId = result.mId
+                        id = result.id
                     ))
                 }
                 else
@@ -166,6 +166,6 @@ wrapEspressoIdlingResource {
     withContext(IOdispatcher)
     {
         dao.saveNotificationRecipe(RecipeNotificationClassDTO(recipeName = recipeDomain.recipeName, missingIngredients = recipeDomain.missingIngredients,
-            image = recipeDomain.image, mId = recipeDomain.mId) )
+            image = recipeDomain.image, id = recipeDomain.id) )
     } }}
 }

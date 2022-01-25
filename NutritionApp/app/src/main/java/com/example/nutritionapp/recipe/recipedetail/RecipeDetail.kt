@@ -30,7 +30,7 @@ class RecipeDetail : Fragment() {
         binding = DataBindingUtil.inflate(inflater, R.layout.recipe_detail,container,false)
         binding.viewModel = viewModel
         binding.lifecycleOwner = viewLifecycleOwner
-        val args  = RecipeDetailArgs.fromBundle(requireArguments()).recipe
+        val args : RecipeIngredientResult  = RecipeDetailArgs.fromBundle(requireArguments()).recipe
         binding.recipe = args
 
         binding.findGroceries.setOnClickListener {

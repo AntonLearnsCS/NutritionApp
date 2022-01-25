@@ -82,7 +82,7 @@ interface IngredientDao {
 
 
 
-    @Query("SELECT * from RecipeEntity WHERE mId = :key")
+    @Query("SELECT * from RecipeEntity WHERE id = :key")
     suspend fun getNotificationRecipeById(key: String): RecipeNotificationClassDTO?
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
@@ -91,7 +91,7 @@ interface IngredientDao {
     @Query("SELECT * FROM RecipeEntity")
     suspend fun getAllRecipeNotification() : List<RecipeNotificationClassDTO>?
 
-    @Query("DELETE FROM RecipeEntity WHERE mId = :key")
+    @Query("DELETE FROM RecipeEntity WHERE id = :key")
     suspend fun deleteRecipeNotificationById(key : String)
 
     @Query("SELECT * FROM RecipeOfDay")

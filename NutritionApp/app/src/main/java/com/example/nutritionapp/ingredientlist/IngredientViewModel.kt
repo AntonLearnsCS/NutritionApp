@@ -235,7 +235,7 @@ class IngredientViewModel(
     //---------------------------------------------ListOfActiveGeofences-----------------------------
     val listOfRecipeNotification = MutableLiveData<List<RecipeNotificationClassDomain>>()
     val allRecipeNotificationFlag = MutableLiveData<Boolean>(false)
-    val selectedActiveGeofence = MutableLiveData<RecipeIngredientResult>()
+
     fun getAllRecipeNotification()
     {
         wrapEspressoIdlingResource {
@@ -250,7 +250,7 @@ class IngredientViewModel(
                                 recipeName = mResult.recipeName,
                                 missingIngredients = mResult.missingIngredients,
                                 image = mResult.image,
-                                mId = mResult.mId
+                                id = mResult.id
                             )
                         })
                     }
@@ -421,7 +421,7 @@ class IngredientViewModel(
                 RecipeNotificationClassDomain(
                     recipeName = recipeNotificationClassDomain.recipeName,
                     missingIngredients = recipeNotificationClassDomain.missingIngredients, image = recipeNotificationClassDomain.image,
-                    mId = recipeNotificationClassDomain.mId
+                    id = recipeNotificationClassDomain.id
                 )
             )
             _saveRecipeNotificationFlag.value = true
