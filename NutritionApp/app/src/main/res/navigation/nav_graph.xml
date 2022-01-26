@@ -71,10 +71,14 @@
         android:label="aboutFragment" />
     <fragment
         android:id="@+id/listOfActiveGeofence"
-        android:name="com.example.nutritionapp.menu.ListOfActiveGeofence"
+        android:name="com.example.nutritionapp.menu.geofences_favorites_tabs.ListOfActiveGeofence"
         android:label="ListOfActiveGeofence" >
         <action
             android:id="@+id/action_listOfActiveGeofence_to_recipeDetail"
             app:destination="@id/recipeDetail" />
     </fragment>
+    <fragment
+        android:id="@+id/tabLayoutFragment"
+        android:name="com.example.nutritionapp.menu.geofences_favorites_tabs.TabLayoutFragment"
+        android:label="TabLayoutFragment" />
 </navigation>

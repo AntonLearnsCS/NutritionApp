@@ -5,6 +5,8 @@
       <map>
         <entry key="..\:/Users/Anton/Downloads/NutritionAppFolder/NutritionApp/app/src/main/res/layout/active_geofence_item.xml" value="0.12" />
         <entry key="..\:/Users/Anton/Downloads/NutritionAppFolder/NutritionApp/app/src/main/res/layout/activity_authentication_layout.xml" value="0.1" />
+        <entry key="..\:/Users/Anton/Downloads/NutritionAppFolder/NutritionApp/app/src/main/res/layout/favorite_recipe_item.xml" value="0.11730072463768115" />
+        <entry key="..\:/Users/Anton/Downloads/NutritionAppFolder/NutritionApp/app/src/main/res/layout/favorite_recipes_fragment.xml" value="0.11730072463768115" />
         <entry key="..\:/Users/Anton/Downloads/NutritionAppFolder/NutritionApp/app/src/main/res/layout/ingredient_detail.xml" value="0.10989583333333333" />
         <entry key="..\:/Users/Anton/Downloads/NutritionAppFolder/NutritionApp/app/src/main/res/layout/ingredient_item_local.xml" value="0.1" />
         <entry key="..\:/Users/Anton/Downloads/NutritionAppFolder/NutritionApp/app/src/main/res/layout/ingredient_list_activity_layout.xml" value="0.1" />
@@ -13,12 +15,13 @@
         <entry key="..\:/Users/Anton/Downloads/NutritionAppFolder/NutritionApp/app/src/main/res/layout/list_of_active_geofence.xml" value="0.13229166666666667" />
         <entry key="..\:/Users/Anton/Downloads/NutritionAppFolder/NutritionApp/app/src/main/res/layout/map.xml" value="0.1" />
         <entry key="..\:/Users/Anton/Downloads/NutritionAppFolder/NutritionApp/app/src/main/res/layout/map_grocery_reminder.xml" value="0.15" />
-        <entry key="..\:/Users/Anton/Downloads/NutritionAppFolder/NutritionApp/app/src/main/res/layout/recipe_detail.xml" value="0.15" />
+        <entry key="..\:/Users/Anton/Downloads/NutritionAppFolder/NutritionApp/app/src/main/res/layout/recipe_detail.xml" value="0.25" />
         <entry key="..\:/Users/Anton/Downloads/NutritionAppFolder/NutritionApp/app/src/main/res/layout/recipe_layout.xml" value="0.18" />
         <entry key="..\:/Users/Anton/Downloads/NutritionAppFolder/NutritionApp/app/src/main/res/layout/recipe_layout_item.xml" value="0.15" />
         <entry key="..\:/Users/Anton/Downloads/NutritionAppFolder/NutritionApp/app/src/main/res/layout/recipe_of_day_fragment.xml" value="0.1" />
+        <entry key="..\:/Users/Anton/Downloads/NutritionAppFolder/NutritionApp/app/src/main/res/layout/tab_layout_fragment.xml" value="0.18" />
         <entry key="..\:/Users/Anton/Downloads/NutritionAppFolder/NutritionApp/app/src/main/res/menu/logout_menu.xml" value="0.20416666666666666" />
-        <entry key="..\:/Users/Anton/Downloads/NutritionAppFolder/NutritionApp/app/src/main/res/menu/overflow_menu.xml" value="0.1" />
+        <entry key="..\:/Users/Anton/Downloads/NutritionAppFolder/NutritionApp/app/src/main/res/menu/overflow_menu.xml" value="0.11822916666666666" />
       </map>
     </option>
   </component>
@@ -27,5 +30,12 @@
   </component>
   <component name="ProjectType">
     <option name="id" value="Android" />
+  </component>
+  <component name="VisualizationToolProject">
+    <option name="state">
+      <ProjectState>
+        <option name="scale" value="0.11730072463768115" />
+      </ProjectState>
+    </option>
   </component>
 </project>

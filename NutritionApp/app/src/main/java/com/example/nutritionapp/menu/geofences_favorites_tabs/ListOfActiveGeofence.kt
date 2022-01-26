@@ -1,4 +1,4 @@
-package com.example.nutritionapp.menu
+package com.example.nutritionapp.menu.geofences_favorites_tabs
 
 import android.content.Context
 import android.os.Bundle
@@ -13,10 +13,8 @@ import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import com.example.nutritionapp.R
 import com.example.nutritionapp.databinding.ListOfActiveGeofenceBinding
-import com.example.nutritionapp.generated.callback.OnClickListener
 import com.example.nutritionapp.ingredientlist.IngredientViewModel
 import com.example.nutritionapp.maps.RecipeNotificationClassDTO
-import com.example.nutritionapp.maps.RecipeNotificationClassDomain
 import com.example.nutritionapp.recipe.RecipeIngredientResult
 import com.google.android.gms.location.GeofencingClient
 import com.google.android.gms.location.LocationServices

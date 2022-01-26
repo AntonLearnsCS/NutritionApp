@@ -4,6 +4,7 @@ import com.example.nutritionapp.database.dto.IngredientDataClassDTO
 import com.example.nutritionapp.maps.RecipeNotificationClassDTO
 import com.example.nutritionapp.maps.RecipeNotificationClassDomain
 import com.example.nutritionapp.menu.GeofenceReferenceData
+import com.example.nutritionapp.recipe.RecipeIngredientResult
 
 interface IngredientDataSourceInterface {
 
@@ -22,4 +23,7 @@ interface IngredientDataSourceInterface {
 
     suspend fun saveGeofenceReference( data : GeofenceReferenceData)
     suspend fun returnGeofenceReference(key : String) : Result<GeofenceReferenceData>
+
+    suspend fun saveRecipeIngredientResult( data : RecipeIngredientResult)
+    suspend fun getRecipeIngredientResultList() : Result<List<RecipeIngredientResult>>
 }

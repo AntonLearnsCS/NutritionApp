@@ -105,6 +105,8 @@ interface IngredientDao {
 
     @Query("SELECT * FROM GeofenceReferenceData WHERE id = :key")
     suspend fun returnGeofenceReferenceData(key : String) : GeofenceReferenceData
+
+
 }
 
 

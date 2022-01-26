@@ -13,7 +13,7 @@
         android:title="@string/about"
         />
     <item
-        android:id="@+id/listOfActiveGeofence"
-        android:title="Active Reminders"
+        android:id="@+id/tabLayoutFragment"
+        android:title="Reminders &amp; Favorites"
         />
 </menu>

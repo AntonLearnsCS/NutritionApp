@@ -1,4 +1,4 @@
-package com.example.nutritionapp.menu
+package com.example.nutritionapp.menu.geofences_favorites_tabs
 
 import android.util.Log
 import android.view.LayoutInflater
@@ -85,7 +85,6 @@ class ActiveGeofenceListener(val clickListener: (activeGeofenceItem: RecipeNotif
     }
 }
 class ActiveGeofenceRemoveButton(val clickListener: (activeGeofenceItem: RecipeNotificationClassDomain) -> Unit) {
-    //it's a bit strange b/c usually we use the parameter inside the class but here we are using the body of the class
-    //to define the value of the parameter
+
     fun onClick(activeGeofenceItem: RecipeNotificationClassDomain) = clickListener(activeGeofenceItem)
 }

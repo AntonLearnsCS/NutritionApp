@@ -10,6 +10,7 @@ data class RecipeIngredientResultWrapper(val results : List<RecipeIngredientResu
 val number : Int,
 val totalResults: Int)
 data class RecipeIngredientResult (val id : Int, val title : String, val image : String, val imageType : String) : Serializable
+
 /*"id":268411
 "usedIngredientCount":2
 "missedIngredientCount":1

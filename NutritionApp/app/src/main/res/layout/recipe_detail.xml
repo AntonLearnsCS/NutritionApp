@@ -82,6 +82,18 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
 
+                <ImageButton
+                    android:id="@+id/bookmark_image_button"
+                    android:layout_width="52dp"
+                    android:layout_height="33dp"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginBottom="20dp"
+                    app:layout_constraintBottom_toTopOf="@+id/recipe_steps"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.494"
+                    app:layout_constraintStart_toEndOf="@+id/find_groceries"
+                    app:layout_constraintTop_toTopOf="@+id/find_groceries" />
+
                 <com.google.android.material.chip.ChipGroup
                     android:id="@+id/recipeDetailChipGroup"
                     android:layout_width="match_parent"
@@ -91,6 +103,7 @@
                     app:layout_constraintStart_toStartOf="parent">
 
                 </com.google.android.material.chip.ChipGroup>
+
                 <TextView
                     android:id="@+id/recipe_steps"
                     android:layout_width="match_parent"
@@ -106,7 +119,6 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
-                    android:layout_marginBottom="8dp"
                     android:text="Find groceries"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintHorizontal_bias="0.498"

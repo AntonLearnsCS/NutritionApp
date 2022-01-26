@@ -69,6 +69,10 @@ class RecipeDetail : Fragment() {
 
     override fun onDestroy() {
         super.onDestroy()
+        if (binding.bookmarkImageButton.isPressed)
+        {
+
+        }
         //if user presses back button or basically does not set a reminder
         viewModel.setNavigateToRecipeNull()
     }

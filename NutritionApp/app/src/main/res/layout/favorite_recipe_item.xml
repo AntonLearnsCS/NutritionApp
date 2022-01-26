@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+<layout xmlns:android="http://schemas.android.com/apk/res/android">
 
     <data>
         <variable
@@ -21,7 +20,7 @@
         >
 
         <TextView
-            android:id="@+id/recipe_name_geofence"
+            android:id="@+id/recipe_name_favorite_textview"
             android:layout_width="264dp"
             android:layout_height="82dp"
             android:layout_weight="1"
@@ -31,12 +30,11 @@
             android:onClick="@{() -> item_listener.onClick(recipe)}"
             android:text="@{recipe.recipeName}" />
 
-        <Button
-            android:id="@+id/button"
-            android:layout_width="13dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:background="@drawable/food_shopping_cart"
-            android:onClick="@{() -> remove_listener.onClick(recipe)}" />
+        <ImageView
+            android:id="@+id/bookmark_icon_image"
+            android:layout_width="73dp"
+            android:layout_height="match_parent"
+
+            android:background="@drawable/ic_baseline_bookmark_border_24" />
     </LinearLayout>
-</layout>
+    </layout>
