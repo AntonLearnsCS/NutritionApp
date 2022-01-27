@@ -15,7 +15,8 @@ import com.example.nutritionapp.R
 import com.example.nutritionapp.databinding.ListOfActiveGeofenceBinding
 import com.example.nutritionapp.ingredientlist.IngredientViewModel
 import com.example.nutritionapp.maps.RecipeNotificationClassDTO
-import com.example.nutritionapp.recipe.RecipeIngredientResult
+import com.example.nutritionapp.recipe.RecipeIngredientResultDomain
+import com.example.nutritionapp.recipe.RecipeIngredientResultNetwork
 import com.google.android.gms.location.GeofencingClient
 import com.google.android.gms.location.LocationServices
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
@@ -45,7 +46,7 @@ val viewModel by sharedViewModel<IngredientViewModel>()
             viewModel.setMissingIngredients(activeGeofenceItem.missingIngredients.split(",")
                 .map{it.trim()})
 
-            val recipeIngredientResult = RecipeIngredientResult(activeGeofenceItem.id,activeGeofenceItem.recipeName,
+            val recipeIngredientResult = RecipeIngredientResultDomain(activeGeofenceItem.id,activeGeofenceItem.recipeName,
                 activeGeofenceItem.image ?: "https://www.ecosia.org/images?q=image%20not%20found%20image#id=D0EC9C87026051CB60DE02C9D3264B5AD547EDB2", "JPEG")
 
             //sets arg for navigation from this fragment to recipeDetail
@@ -58,9 +59,9 @@ val viewModel by sharedViewModel<IngredientViewModel>()
             viewModel.mFlag.observe(viewLifecycleOwner, Observer { flag ->
                 if (flag)
                 {
-                    Log.i("test","selectedActiveGeofence: id: ${viewModel.navigateToRecipe.value!!.id}")
+                    Log.i("test","selectedActiveGeofence: id: ${viewModel.navigateToRecipeNetwork.value!!.id}")
                     findNavController().navigate(ListOfActiveGeofenceDirections
-                        .actionListOfActiveGeofenceToRecipeDetail(viewModel.navigateToRecipe.value!!))
+                        .actionListOfActiveGeofenceToRecipeDetail(viewModel.navigateToRecipeNetwork.value!!))
                 }
             })
 

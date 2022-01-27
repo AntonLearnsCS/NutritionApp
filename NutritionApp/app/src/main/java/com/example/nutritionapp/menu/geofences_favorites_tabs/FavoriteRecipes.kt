@@ -5,7 +5,6 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
@@ -13,7 +12,9 @@ import androidx.navigation.fragment.findNavController
 import com.example.nutritionapp.R
 import com.example.nutritionapp.databinding.FavoriteRecipesFragmentBinding
 import com.example.nutritionapp.ingredientlist.IngredientViewModel
-import com.example.nutritionapp.recipe.RecipeIngredientResult
+import com.example.nutritionapp.maps.RecipeNotificationClassDomain
+import com.example.nutritionapp.recipe.RecipeIngredientResultDomain
+import com.example.nutritionapp.recipe.RecipeIngredientResultNetwork
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 
 class FavoriteRecipes : Fragment() {
@@ -29,7 +30,7 @@ class FavoriteRecipes : Fragment() {
 
         val adapter = FavoriteRecipesAdapter(com.example.nutritionapp.menu.geofences_favorites_tabs.ActiveGeofenceListener { activeGeofenceItem ->
 
-            val recipeIngredientResult = RecipeIngredientResult(activeGeofenceItem.id,activeGeofenceItem.recipeName,
+            val recipeIngredientResult = RecipeIngredientResultDomain(activeGeofenceItem.id,activeGeofenceItem.recipeName,
                 activeGeofenceItem.image ?: "https://www.ecosia.org/images?q=image%20not%20found%20image#id=D0EC9C87026051CB60DE02C9D3264B5AD547EDB2", "JPEG")
 
             //sets arg for navigation from this fragment to recipeDetail
@@ -38,14 +39,15 @@ class FavoriteRecipes : Fragment() {
             //gets the recipe instructions for the selected active geofence recipe
             viewModel.getRecipeInstructions()
 
+
             //nested flag, "mFlag" is true when getRecipeInstructions() is finished running
             viewModel.mFlag.observe(viewLifecycleOwner, Observer { flag ->
                 if (flag)
                 {
-                    Log.i("test","selectedActiveGeofence: id: ${viewModel.navigateToRecipe.value!!.id}")
+                    Log.i("test","selectedActiveGeofence: id: ${viewModel.navigateToRecipeNetwork.value!!.id}")
                     findNavController().navigate(
                         ListOfActiveGeofenceDirections
-                        .actionListOfActiveGeofenceToRecipeDetail(viewModel.navigateToRecipe.value!!))
+                        .actionListOfActiveGeofenceToRecipeDetail(viewModel.navigateToRecipeNetwork.value!!))
                 }
             })
 
@@ -59,7 +61,13 @@ class FavoriteRecipes : Fragment() {
 
         }, ActiveGeofenceRemoveButton { geofence ->
             val tempList = mutableListOf<String>(geofence.id.toString())
+        })
 
+        Log.i("test","listOfRecipeIngredientResult: ${viewModel.listOfRecipeIngredientResult.value}")
+        viewModel.listOfRecipeIngredientResult.observe(viewLifecycleOwner, Observer {
+            adapter.submitList(it.map { RecipeNotificationClassDomain(id = it.id, image = it.image, recipeName = it.title,
+                missingIngredients = ""
+            ) })
         })
 
         binding.favoriteRecipesRecyclerview.adapter = adapter

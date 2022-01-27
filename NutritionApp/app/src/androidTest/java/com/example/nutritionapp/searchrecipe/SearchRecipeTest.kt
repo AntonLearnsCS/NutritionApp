@@ -7,14 +7,13 @@ import androidx.navigation.Navigation
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
-import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.filters.MediumTest
 import com.example.nutritionapp.R
 import com.example.nutritionapp.ingredientlist.IngredientViewModel
 import com.example.nutritionapp.localdatatest.fakeIngredientRepository
 import com.example.nutritionapp.network.mNutritionApi
-import com.example.nutritionapp.recipe.RecipeIngredientResult
+import com.example.nutritionapp.recipe.RecipeIngredientResultNetwork
 import com.example.nutritionapp.recipe.SearchRecipe
 import com.example.nutritionapp.recipe.SearchRecipeDirections
 import kotlinx.coroutines.delay
@@ -46,7 +45,7 @@ class SearchRecipeTest {
     fun searchRecipe_UI_Displays() : Unit = runBlocking{
         val mList = listOf("Apple","Carrot","Blueberry")
         //given - a SearchRecipe fragment and a Recipe
-        val recipeExample = RecipeIngredientResult("1","Title","imageUrl","JPEG")
+        val recipeExample = RecipeIngredientResultNetwork("1","Title","imageUrl","JPEG")
         val scenario = launchFragmentInContainer<SearchRecipe>()
 
         val navController = mock(NavController::class.java)

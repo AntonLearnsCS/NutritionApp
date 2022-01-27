@@ -22,7 +22,8 @@ import androidx.sqlite.db.SupportSQLiteDatabase
 import com.example.nutritionapp.database.dto.IngredientDataClassDTO
 import com.example.nutritionapp.maps.RecipeNotificationClassDTO
 import com.example.nutritionapp.menu.GeofenceReferenceData
-import com.example.nutritionapp.recipe.RecipeIngredientResult
+import com.example.nutritionapp.recipe.RecipeIngredientResultDTO
+import com.example.nutritionapp.recipe.RecipeIngredientResultNetwork
 import com.example.nutritionapp.recipeofday.RecipeOfDay
 val MIGRATION_9_10: Migration = object : Migration(9, 10) {
     override fun migrate(database: SupportSQLiteDatabase) {
@@ -42,7 +43,7 @@ val MIGRATION_11_12: Migration = object : Migration(11, 12) {
         database.execSQL("ALTER TABLE `RecipeEntity` ADD COLUMN `image` TEXT")
     }
 }
-@Database(entities = [IngredientDataClassDTO::class, RecipeNotificationClassDTO::class, RecipeOfDay::class, GeofenceReferenceData::class, RecipeIngredientResult::class], version = 1, exportSchema = false)
+@Database(entities = [IngredientDataClassDTO::class, RecipeNotificationClassDTO::class, RecipeOfDay::class, GeofenceReferenceData::class, RecipeIngredientResultDTO::class], version = 2, exportSchema = false)
 abstract class IngredientDatabase : RoomDatabase() {
 
     /**

@@ -10,10 +10,9 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.example.nutritionapp.R
 import com.example.nutritionapp.databinding.RecipeLayoutItemBinding
-import timber.log.Timber
 
 
-class recipeAdapter(val onClickListener: RecipeIngredientListener) : ListAdapter<RecipeIngredientResult, recipeAdapter.ViewHolder>(
+class recipeAdapter(val onClickListener: RecipeIngredientListener) : ListAdapter<RecipeIngredientResultDomain, recipeAdapter.ViewHolder>(
     LocalIngredienttDiffCallback()
 )
 {
@@ -37,7 +36,7 @@ class recipeAdapter(val onClickListener: RecipeIngredientListener) : ListAdapter
         val clickListener: RecipeIngredientListener
     ) : RecyclerView.ViewHolder(binding.root)
     {
-        fun bind(item: RecipeIngredientResult)
+        fun bind(item: RecipeIngredientResultDomain)
         {
             binding.clickListener = clickListener
             binding.recipe = item
@@ -49,27 +48,27 @@ class recipeAdapter(val onClickListener: RecipeIngredientListener) : ListAdapter
     }
 
     class LocalIngredienttDiffCallback :
-        DiffUtil.ItemCallback<RecipeIngredientResult>() {
+        DiffUtil.ItemCallback<RecipeIngredientResultDomain>() {
         override fun areItemsTheSame(
-            oldItem: RecipeIngredientResult,
-            newItem: RecipeIngredientResult
+            oldItem: RecipeIngredientResultDomain,
+            newItem: RecipeIngredientResultDomain
         ): Boolean {
             return oldItem.id == newItem.id
         }
 
         override fun areContentsTheSame(
-            oldItem: RecipeIngredientResult,
-            newItem: RecipeIngredientResult
+            oldItem: RecipeIngredientResultDomain,
+            newItem: RecipeIngredientResultDomain
         ): Boolean {
             return oldItem == newItem
         }
     }
     //Note: There are multiple ways to implement onClick Listener for recyclerViews, this is just one of them
-    class RecipeIngredientListener(val clickListener: (recipe: RecipeIngredientResult) -> Unit) {
+    class RecipeIngredientListener(val clickListener: (recipeDomain: RecipeIngredientResultDomain) -> Unit) {
         //it's a bit strange b/c usually we use the parameter inside the class but here we are using the body of the class
         //to define the value of the parameter
-        fun onClick(recipe: RecipeIngredientResult){
-            Log.i("test","id: ${recipe.id}")
-            clickListener(recipe)}
+        fun onClick(recipeDomain: RecipeIngredientResultDomain){
+            Log.i("test","id: ${recipeDomain.id}")
+            clickListener(recipeDomain)}
     }
 }

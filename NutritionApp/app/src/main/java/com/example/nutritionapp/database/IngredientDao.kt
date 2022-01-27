@@ -8,6 +8,7 @@ import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import com.example.nutritionapp.maps.RecipeNotificationClassDTO
 import com.example.nutritionapp.menu.GeofenceReferenceData
+import com.example.nutritionapp.recipe.RecipeIngredientResultDTO
 import com.example.nutritionapp.recipeofday.RecipeOfDay
 
 @Dao
@@ -106,6 +107,11 @@ interface IngredientDao {
     @Query("SELECT * FROM GeofenceReferenceData WHERE id = :key")
     suspend fun returnGeofenceReferenceData(key : String) : GeofenceReferenceData
 
+    @Insert (onConflict = OnConflictStrategy.REPLACE)
+    suspend fun saveIngredientResult( data : RecipeIngredientResultDTO)
+
+    @Query("SELECT * FROM RecipeIngredientResultDTO")
+    suspend fun getAllRecipeIngredientResult() : List<RecipeIngredientResultDTO>
 
 }
 

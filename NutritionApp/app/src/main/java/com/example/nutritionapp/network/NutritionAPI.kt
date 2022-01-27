@@ -1,18 +1,15 @@
 package com.example.nutritionapp.network
 
 import android.util.Log
-import androidx.annotation.VisibleForTesting
 import com.example.nutritionapp.ingredientlist.selectedProductName
 import com.example.nutritionapp.recipe.PostRequestResultWrapper
-import com.example.nutritionapp.recipe.RecipeIngredientResult
+import com.example.nutritionapp.recipe.RecipeIngredientResultNetwork
 import com.example.nutritionapp.recipe.RecipeIngredientResultWrapper
 import com.example.nutritionapp.recipe.RecipeInstruction
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import okhttp3.*
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
-import okhttp3.logging.HttpLoggingInterceptor
-import retrofit2.Call
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
 import retrofit2.http.*
@@ -141,7 +138,7 @@ source: https://stackoverflow.com/questions/42491733/passing-api-key-in-retrofit
                                       @Query("includeIngredients") includeIngredients : String, @Query("instructionsRequired") instructionsRequired : Boolean): RecipeIngredientResultWrapper
 
         @GET("recipes/findByIngredients")
-        suspend fun findByIngredientsOriginal(@Query("ingredients") ingredients : String) : List<RecipeIngredientResult>
+        suspend fun findByIngredientsOriginal(@Query("ingredients") ingredients : String) : List<RecipeIngredientResultNetwork>
 
         //run as blocking function by omitting suspend modifier
         @GET("recipes/{id}/analyzedInstructions")

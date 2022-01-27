@@ -23,7 +23,7 @@ class FavoriteRecipesAdapter(var listener: ActiveGeofenceListener, val removeBut
 
         val view : FavoriteRecipeItemBinding = DataBindingUtil.inflate(
             LayoutInflater.from(parent.context),
-            geofenceViewHolder.LAYOUT,
+            favoriteRecipeViewHolder.LAYOUT,
             parent,
             false)
         return favoriteRecipeViewHolder(view, listener, removeButton)
@@ -31,7 +31,7 @@ class FavoriteRecipesAdapter(var listener: ActiveGeofenceListener, val removeBut
 
     override fun onBindViewHolder(holder: favoriteRecipeViewHolder, position: Int) {
         holder.bind(getItem(position))
-        //source: https://stackoverflow.com/questions/62808768/how-to-add-remove-the-listadapter-items-in-android
+        //source: htftps://stackoverflow.com/questions/62808768/how-to-add-remove-the-listadapter-items-in-android
         holder.binding.bookmarkIconImage.setOnClickListener {
             geofenceToRemove.add(getItem(position))
 
@@ -56,7 +56,7 @@ class favoriteRecipeViewHolder(val binding : FavoriteRecipeItemBinding,
     }
     companion object {
         @LayoutRes
-        val LAYOUT = R.layout.active_geofence_item
+        val LAYOUT = R.layout.favorite_recipe_item
     }
 }
 /*

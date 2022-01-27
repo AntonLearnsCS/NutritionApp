@@ -4,7 +4,9 @@ import com.example.nutritionapp.database.dto.IngredientDataClassDTO
 import com.example.nutritionapp.maps.RecipeNotificationClassDTO
 import com.example.nutritionapp.maps.RecipeNotificationClassDomain
 import com.example.nutritionapp.menu.GeofenceReferenceData
-import com.example.nutritionapp.recipe.RecipeIngredientResult
+import com.example.nutritionapp.recipe.RecipeIngredientResultDTO
+import com.example.nutritionapp.recipe.RecipeIngredientResultDomain
+import com.example.nutritionapp.recipe.RecipeIngredientResultNetwork
 
 interface IngredientDataSourceInterface {
 
@@ -17,13 +19,13 @@ interface IngredientDataSourceInterface {
     suspend fun deleteTaskIngredient(id: Int)
 
     suspend fun getNotificationRecipeById (key: String) : Result<RecipeNotificationClassDomain>?
-    suspend fun saveNotificationRecipe (recipeDomain : RecipeNotificationClassDomain)
+    suspend fun saveNotificationRecipe (recipeDomain : RecipeNotificationClassDTO)
     suspend fun clearNotificationRecipe()
     suspend fun getAllNotificationRecipe() : Result<List<RecipeNotificationClassDTO>>
 
     suspend fun saveGeofenceReference( data : GeofenceReferenceData)
     suspend fun returnGeofenceReference(key : String) : Result<GeofenceReferenceData>
 
-    suspend fun saveRecipeIngredientResult( data : RecipeIngredientResult)
-    suspend fun getRecipeIngredientResultList() : Result<List<RecipeIngredientResult>>
+    suspend fun saveRecipeIngredientResult( data : RecipeIngredientResultDomain)
+    suspend fun getRecipeIngredientResultList() : Result<List<RecipeIngredientResultDTO>>
 }

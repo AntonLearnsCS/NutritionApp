@@ -169,11 +169,42 @@ class IngredientViewModel(
     val listOfStepsLiveData: LiveData<List<String>>
         get() = _listOfStepsLiveData
 
+    private val _listOfRecipeIngredientResult = MutableLiveData<List<RecipeIngredientResultDomain>>()
+    val listOfRecipeIngredientResult: LiveData<List<RecipeIngredientResultDomain>>
+        get() = _listOfRecipeIngredientResult
+
     fun setMissingIngredientsNull() {
         _missingIngredients.value = null
     }
     fun setMissingIngredients( missingIngredients : List<String>){
         _missingIngredients.value = missingIngredients
+    }
+
+    fun saveRecipeIngredientResult (recipeIngredientResultDomain: RecipeIngredientResultDomain){
+        wrapEspressoIdlingResource {
+            Log.i("test","saveRecipe called!")
+            viewModelScope.launch {
+                ingredientRepository.saveRecipeIngredientResult(recipeIngredientResultDomain)
+            }
+        }
+    }
+
+    fun getAllRecipeIngredientResult(){
+        wrapEspressoIdlingResource {
+            viewModelScope.launch {
+               val result = ingredientRepository.getRecipeIngredientResultList()
+
+                when(result)
+                {
+                    is Result.Success<*> ->{
+                        _listOfRecipeIngredientResult.value = ((result.data as List<RecipeIngredientResultDTO>).map {
+                            RecipeIngredientResultDomain(it.id,it.title,it.image,it.imageType)
+                        })
+                    }
+                }
+            }
+        }
+        Log.i("test","listOfResults: ${_listOfRecipeIngredientResult.value}")
     }
     //--------------------------------------------------------SearchRecipe Fragment--------------------------------------------------------
     //Q: Why does "val listOfRecipesLiveData = MutableLiveData<List<RecipeIngredientResult>>(listOfRecipes)" result in RecyclerView
@@ -186,8 +217,8 @@ class IngredientViewModel(
     //A work around is offered at source: https://stackoverflow.com/questions/61834480/livedata-is-not-triggered-when-list-item-is-getting-updated
 
 
-    val _listOfRecipesLiveData = MutableLiveData<List<RecipeIngredientResult>>()
-    val listOfRecipesLiveData: LiveData<List<RecipeIngredientResult>>
+    val _listOfRecipesLiveData = MutableLiveData<List<RecipeIngredientResultDomain>>()
+    val listOfRecipesLiveData: LiveData<List<RecipeIngredientResultDomain>>
         get() = _listOfRecipesLiveData
 
     val searchRecipeEditTextFlag = MutableLiveData(false)
@@ -208,12 +239,12 @@ class IngredientViewModel(
         _navigateToRecipeFlag.value = boolean
     }
 
-    private val _navigateToRecipe = MutableLiveData<RecipeIngredientResult>()
-    val navigateToRecipe: LiveData<RecipeIngredientResult>
+    private val _navigateToRecipe = MutableLiveData<RecipeIngredientResultDomain>()
+    val navigateToRecipeNetwork: LiveData<RecipeIngredientResultDomain>
         get() = _navigateToRecipe
 
-    fun setNavigateToRecipe(recipe: RecipeIngredientResult) {
-        _navigateToRecipe.value = recipe
+    fun setNavigateToRecipe(recipeNetwork: RecipeIngredientResultDomain) {
+        _navigateToRecipe.value = recipeNetwork
     }
 
     fun setNavigateToRecipeNull() {
@@ -260,6 +291,10 @@ class IngredientViewModel(
         }
     }
     //-----------------------------------------------------------------------------------------------
+
+
+
+
     //input is list of names i.e {"Snapple Apple flavored drink 4oz","Mott's Apple pudding 3oz"}
     @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
     fun detectFoodInText(listName: List<String>) {
@@ -305,25 +340,20 @@ class IngredientViewModel(
             viewModelScope.launch {
                 _viewVisibilityFlag.value = true
                 try {
-                    Log.i("test","selectedFilter ${selectedFilter.value}")
-                    Log.i("test","intolerance: ${selectedIntolerance}")
-                    Log.i("test","foodInText: ${foodInText.joinToString(separator = ",").replace("[","")
-                        .replace("]","")}")
+
                     val tempSelectedFilter = selectedFilter.value
                     val tempFoodInText =  foodInText.joinToString(separator = ",").replace("[","")
                         .replace("]","")
-                    val resultWrapper: List<RecipeIngredientResult> =
-                        nutritionApi.nutritionService.findByIngredients(tempSelectedFilter,selectedIntolerance,
-                        tempFoodInText, true).results
+                    Log.i("test","tempFoodInText: ${tempFoodInText}")
+                        val temp = nutritionApi.nutritionService.findByIngredients(tempSelectedFilter,selectedIntolerance,
+                        tempFoodInText, true)
+                    val resultNetworkWrapper: List<RecipeIngredientResultNetwork> = temp.resultNetworks
 
-                    Log.i("test","size test: ${resultWrapper.size}")
-                    Log.i("test","[0]: ${resultWrapper[0].title}")
-                    Timber.i("recipe list size: " + resultWrapper.size)
-                    Timber.i("recipe[0]: " + resultWrapper[0].title)
-                    /*for (i in resultWrapper) {
-                        listOfRecipes.add(i)
-                    }*/
-                    _listOfRecipesLiveData.value = resultWrapper
+                    Log.i("test","size test: ${resultNetworkWrapper.size}")
+                    Log.i("test","[0]: ${resultNetworkWrapper[0].title}")
+
+
+                    _listOfRecipesLiveData.value = resultNetworkWrapper.map { RecipeIngredientResultDomain(it.id, it.title, it.image, it.imageType) }
                 } catch (e: java.lang.Exception) {
                     if (!isOnline(app)) {
                         displayToast("Not connected to internet")
@@ -415,14 +445,9 @@ class IngredientViewModel(
         ).show()
     }
 
-    fun saveRecipeNotification(recipeNotificationClassDomain: RecipeNotificationClassDomain) {
+    fun saveRecipeNotification(recipeNotificationClassDomain: RecipeNotificationClassDTO) {
         viewModelScope.launch {
-            ingredientRepository.saveNotificationRecipe(
-                RecipeNotificationClassDomain(
-                    recipeName = recipeNotificationClassDomain.recipeName,
-                    missingIngredients = recipeNotificationClassDomain.missingIngredients, image = recipeNotificationClassDomain.image,
-                    id = recipeNotificationClassDomain.id
-                )
+            ingredientRepository.saveNotificationRecipe(recipeNotificationClassDomain
             )
             _saveRecipeNotificationFlag.value = true
         }

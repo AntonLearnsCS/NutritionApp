@@ -6,6 +6,8 @@ import com.example.nutritionapp.database.dto.IngredientDataClassDTO
 import com.example.nutritionapp.maps.RecipeNotificationClassDTO
 import com.example.nutritionapp.maps.RecipeNotificationClassDomain
 import com.example.nutritionapp.menu.GeofenceReferenceData
+import com.example.nutritionapp.recipe.RecipeIngredientResultDTO
+import com.example.nutritionapp.recipe.RecipeIngredientResultDomain
 import com.example.nutritionapp.util.wrapEspressoIdlingResource
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
@@ -134,6 +136,30 @@ class IngredientRepository(private val dao: IngredientDao,
         }
     }
 
+    override suspend fun saveRecipeIngredientResult(data: RecipeIngredientResultDomain) {
+        wrapEspressoIdlingResource {
+            return withContext(IOdispatcher){
+                dao.saveIngredientResult(RecipeIngredientResultDTO(id = data.id,title = data.title,
+                image = data.image, imageType = data.imageType))
+            }
+        }
+    }
+
+    override suspend fun getRecipeIngredientResultList(): Result<List<RecipeIngredientResultDTO>> {
+        wrapEspressoIdlingResource {
+            return withContext(IOdispatcher)
+            {
+                val result = dao.getAllRecipeIngredientResult()
+                if (result.isNullOrEmpty())
+                {
+                    return@withContext Result.Error("No recipes found")
+                }
+                else
+                    return@withContext Result.Success(result)
+            }
+        }
+    }
+
     override suspend fun deleteTaskIngredient(id: Int) {
         wrapEspressoIdlingResource {
             withContext(IOdispatcher)
@@ -161,11 +187,10 @@ class IngredientRepository(private val dao: IngredientDao,
         }
     }
 
-    override suspend fun saveNotificationRecipe(recipeDomain: RecipeNotificationClassDomain) {
+    override suspend fun saveNotificationRecipe(recipeDomain: RecipeNotificationClassDTO) {
 wrapEspressoIdlingResource {
     withContext(IOdispatcher)
     {
-        dao.saveNotificationRecipe(RecipeNotificationClassDTO(recipeName = recipeDomain.recipeName, missingIngredients = recipeDomain.missingIngredients,
-            image = recipeDomain.image, id = recipeDomain.id) )
+        dao.saveNotificationRecipe(recipeDomain)
     } }}
 }

@@ -6,7 +6,7 @@
     <data>
         <variable
             name="recipe"
-            type="com.example.nutritionapp.recipe.RecipeIngredientResult" />
+            type="com.example.nutritionapp.recipe.RecipeIngredientResultDomain" />
 
         <variable
             name="clickListener"

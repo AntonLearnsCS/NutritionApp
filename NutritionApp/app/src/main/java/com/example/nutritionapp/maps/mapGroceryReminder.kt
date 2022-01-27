@@ -29,7 +29,8 @@ import com.example.nutritionapp.R
 import com.example.nutritionapp.databinding.MapGroceryReminderBinding
 import com.example.nutritionapp.geofence.GeofenceBroadcastReceiver
 import com.example.nutritionapp.ingredientlist.IngredientViewModel
-import com.example.nutritionapp.recipe.RecipeIngredientResult
+import com.example.nutritionapp.recipe.RecipeIngredientResultDomain
+import com.example.nutritionapp.recipe.RecipeIngredientResultNetwork
 import com.google.android.gms.common.api.ResolvableApiException
 import com.google.android.gms.location.*
 import com.google.android.gms.maps.model.LatLng
@@ -57,7 +58,7 @@ private lateinit var binding : MapGroceryReminderBinding
     private var latLng: LatLng? = LatLng(33.0, -118.1)
     private lateinit var geofencingClient: GeofencingClient
     private var intent = Intent()
-    private var recipeIngredientResult : RecipeIngredientResult? = null
+    private var recipeIngredientResultDomain : RecipeIngredientResultDomain? = null
 
     private val geofencePendingIntent: PendingIntent by lazy {
         intent = Intent(contxt, GeofenceBroadcastReceiver::class.java)
@@ -89,7 +90,7 @@ private lateinit var binding : MapGroceryReminderBinding
 
         binding.viewModel = _viewModel
 
-        recipeIngredientResult = mapGroceryReminderArgs.fromBundle(requireArguments()).recipeIngredientResult
+        recipeIngredientResultDomain = mapGroceryReminderArgs.fromBundle(requireArguments()).recipe
 
         geofencingClient = LocationServices.getGeofencingClient(contxt)
 
@@ -159,14 +160,14 @@ private lateinit var binding : MapGroceryReminderBinding
 
         binding.saveReminder.setOnClickListener {
 
-            if (recipeIngredientResult != null) {
-                recipeNotificationClassDTO = RecipeNotificationClassDTO(recipeIngredientResult!!.title, _viewModel.missingIngredients.value.toString(),
-                recipeIngredientResult!!.image, recipeIngredientResult!!.id)
+            if (recipeIngredientResultDomain != null) {
+                recipeNotificationClassDTO = RecipeNotificationClassDTO(recipeIngredientResultDomain!!.title, _viewModel.missingIngredients.value.toString(),
+                recipeIngredientResultDomain!!.image, recipeIngredientResultDomain!!.id)
             }
             else
             {
                 //when user does not select a recipe to set a reminder
-                recipeNotificationClassDTO = RecipeNotificationClassDTO("Recipe", binding.missingIngredients.text.toString(),"",recipeIngredientResult!!.id)
+                recipeNotificationClassDTO = RecipeNotificationClassDTO("Recipe", binding.missingIngredients.text.toString(),"",recipeIngredientResultDomain!!.id)
             }
 
             //set to null so that user can go to Maps from menu and have empty list instead of pre-filled list
@@ -174,8 +175,7 @@ private lateinit var binding : MapGroceryReminderBinding
 
             if(recipeNotificationClassDTO != null)
             {
-            _viewModel.saveRecipeNotification(RecipeNotificationClassDomain(recipeName = recipeNotificationClassDTO!!.recipeName,
-            missingIngredients = recipeNotificationClassDTO!!.missingIngredients, image= recipeNotificationClassDTO!!.image, id = recipeNotificationClassDTO!!.id))
+            _viewModel.saveRecipeNotification(recipeNotificationClassDTO!!)
             }
 
             checkPermission()

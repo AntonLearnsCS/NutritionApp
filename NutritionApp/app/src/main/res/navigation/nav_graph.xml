@@ -43,7 +43,7 @@
             app:destination="@id/mapGroceryReminder" />
         <argument
             android:name="recipe"
-            app:argType="com.example.nutritionapp.recipe.RecipeIngredientResult" />
+            app:argType="com.example.nutritionapp.recipe.RecipeIngredientResultDomain" />
     </fragment>
     <fragment
         android:id="@+id/mapFragment"
@@ -60,10 +60,8 @@
             android:id="@+id/action_mapGroceryReminder_to_ingredientListOverview"
             app:destination="@id/ingredientListOverview" />
         <argument
-            android:name="recipeIngredientResult"
-            app:argType="com.example.nutritionapp.recipe.RecipeIngredientResult"
-            app:nullable="true"
-            android:defaultValue="@null" />
+            android:name="recipe"
+            app:argType="com.example.nutritionapp.recipe.RecipeIngredientResultDomain" />
     </fragment>
     <fragment
         android:id="@+id/aboutFragment"

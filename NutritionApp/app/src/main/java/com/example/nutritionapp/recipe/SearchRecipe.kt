@@ -87,6 +87,7 @@ val viewModel by sharedViewModel<IngredientViewModel>()
         }
         //adds new chips
         binding.addChipButton.setOnClickListener {
+
             if (viewModel.ingredientToBeAddedAsChip.value.isNullOrEmpty() == false) {
 
                     val mChip = Chip(binding.chipGroupView.context)
@@ -103,6 +104,7 @@ val viewModel by sharedViewModel<IngredientViewModel>()
                     }
                     binding.chipGroupView.addView(mChip)
                 }
+            Log.i("test","foodInText: ${viewModel.foodInText}")
         }
 
         binding.recipeOptionsSpinner.adapter = ArrayAdapter(this.requireContext(),R.layout.support_simple_spinner_dropdown_item,viewModel.arrayOfRecipeFilterOptions)
@@ -157,10 +159,10 @@ val viewModel by sharedViewModel<IngredientViewModel>()
                     viewModel.setNavigateToRecipeFlag(false)
 
                     if (it) {
-                        Log.i("test","arg: ${viewModel.navigateToRecipe.value}")
+                        Log.i("test","arg: ${viewModel.navigateToRecipeNetwork.value}")
                         findNavController().navigate(
                             SearchRecipeDirections.actionSearchRecipeToRecipeDetail(
-                                viewModel.navigateToRecipe.value!!
+                                viewModel.navigateToRecipeNetwork.value!!
                             )
                         )
                         viewModel.mFlag.value = false
