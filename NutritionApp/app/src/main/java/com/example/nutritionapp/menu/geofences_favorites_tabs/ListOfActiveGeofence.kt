@@ -16,7 +16,6 @@ import com.example.nutritionapp.databinding.ListOfActiveGeofenceBinding
 import com.example.nutritionapp.ingredientlist.IngredientViewModel
 import com.example.nutritionapp.maps.RecipeNotificationClassDTO
 import com.example.nutritionapp.recipe.RecipeIngredientResultDomain
-import com.example.nutritionapp.recipe.RecipeIngredientResultNetwork
 import com.google.android.gms.location.GeofencingClient
 import com.google.android.gms.location.LocationServices
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
@@ -59,17 +58,16 @@ val viewModel by sharedViewModel<IngredientViewModel>()
             viewModel.mFlag.observe(viewLifecycleOwner, Observer { flag ->
                 if (flag)
                 {
-                    Log.i("test","selectedActiveGeofence: id: ${viewModel.navigateToRecipeNetwork.value!!.id}")
-                    findNavController().navigate(ListOfActiveGeofenceDirections
-                        .actionListOfActiveGeofenceToRecipeDetail(viewModel.navigateToRecipeNetwork.value!!))
+                    Log.i("test","selectedActiveGeofence: id: ${viewModel.navigateToRecipe.value!!.id}")
+                    findNavController().navigate(TabLayoutFragmentDirections.actionTabLayoutFragmentToRecipeDetail
+                        (viewModel.navigateToRecipe.value!!))
                 }
             })
 
             //viewModel.setSelectedActiveGeofence(recipeIngredientResult)
 
             Log.i("test","geofence item: ${activeGeofenceItem.recipeName}")
-            //reusing the same navigation mechanism from searchRecipe to recipeDetail
-            viewModel.setNavigateToRecipeFlag(true)
+
             //since there is no user input of ingredients at this fragment
             viewModel.foodInText.clear()
 

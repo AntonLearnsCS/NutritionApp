@@ -14,18 +14,19 @@ import com.example.nutritionapp.databinding.FavoriteRecipesFragmentBinding
 import com.example.nutritionapp.ingredientlist.IngredientViewModel
 import com.example.nutritionapp.maps.RecipeNotificationClassDomain
 import com.example.nutritionapp.recipe.RecipeIngredientResultDomain
-import com.example.nutritionapp.recipe.RecipeIngredientResultNetwork
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 
 class FavoriteRecipes : Fragment() {
     private val viewModel by sharedViewModel<IngredientViewModel>()
     private lateinit var binding: FavoriteRecipesFragmentBinding
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         binding = DataBindingUtil.inflate(inflater, R.layout.favorite_recipes_fragment, container, false)
+        viewModel.getAllRecipeIngredientResult()
 
 
         val adapter = FavoriteRecipesAdapter(com.example.nutritionapp.menu.geofences_favorites_tabs.ActiveGeofenceListener { activeGeofenceItem ->
@@ -36,7 +37,7 @@ class FavoriteRecipes : Fragment() {
             //sets arg for navigation from this fragment to recipeDetail
             viewModel.setNavigateToRecipe(recipeIngredientResult)
 
-            //gets the recipe instructions for the selected active geofence recipe
+            //gets the recipe instructions for the selected favorite recipe
             viewModel.getRecipeInstructions()
 
 
@@ -44,18 +45,16 @@ class FavoriteRecipes : Fragment() {
             viewModel.mFlag.observe(viewLifecycleOwner, Observer { flag ->
                 if (flag)
                 {
-                    Log.i("test","selectedActiveGeofence: id: ${viewModel.navigateToRecipeNetwork.value!!.id}")
+                    Log.i("test","selectedActiveGeofence: id: ${viewModel.navigateToRecipe.value!!.id}")
                     findNavController().navigate(
-                        ListOfActiveGeofenceDirections
-                        .actionListOfActiveGeofenceToRecipeDetail(viewModel.navigateToRecipeNetwork.value!!))
+                       TabLayoutFragmentDirections.actionTabLayoutFragmentToRecipeDetail(viewModel.navigateToRecipe.value!!))
                 }
             })
 
             //viewModel.setSelectedActiveGeofence(recipeIngredientResult)
 
             Log.i("test","geofence item: ${activeGeofenceItem.recipeName}")
-            //reusing the same navigation mechanism from searchRecipe to recipeDetail
-            viewModel.setNavigateToRecipeFlag(true)
+
             //since there is no user input of ingredients at this fragment
             viewModel.foodInText.clear()
 

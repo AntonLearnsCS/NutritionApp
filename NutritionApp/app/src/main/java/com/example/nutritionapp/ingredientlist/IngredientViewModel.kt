@@ -240,7 +240,7 @@ class IngredientViewModel(
     }
 
     private val _navigateToRecipe = MutableLiveData<RecipeIngredientResultDomain>()
-    val navigateToRecipeNetwork: LiveData<RecipeIngredientResultDomain>
+    val navigateToRecipe: LiveData<RecipeIngredientResultDomain>
         get() = _navigateToRecipe
 
     fun setNavigateToRecipe(recipeNetwork: RecipeIngredientResultDomain) {
@@ -454,6 +454,7 @@ class IngredientViewModel(
     }
 
     val mFlag = MutableLiveData(false)
+    fun setmFlag(boolean: Boolean) = {mFlag.value = boolean}
     fun getRecipeInstructions() {
         val listOfIngredientNameInInstruction = mutableListOf<String>()
 

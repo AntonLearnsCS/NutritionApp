@@ -78,5 +78,17 @@
     <fragment
         android:id="@+id/tabLayoutFragment"
         android:name="com.example.nutritionapp.menu.geofences_favorites_tabs.TabLayoutFragment"
-        android:label="TabLayoutFragment" />
+        android:label="TabLayoutFragment" >
+        <action
+            android:id="@+id/action_tabLayoutFragment_to_recipeDetail"
+            app:destination="@id/recipeDetail" />
+    </fragment>
+    <fragment
+        android:id="@+id/favoriteRecipes"
+        android:name="com.example.nutritionapp.menu.geofences_favorites_tabs.FavoriteRecipes"
+        android:label="FavoriteRecipes" >
+        <action
+            android:id="@+id/action_favoriteRecipes_to_recipeDetail"
+            app:destination="@id/recipeDetail" />
+    </fragment>
 </navigation>

@@ -13,6 +13,7 @@ import androidx.navigation.fragment.findNavController
 import com.example.nutritionapp.R
 import com.example.nutritionapp.databinding.RecipeDetailBinding
 import com.example.nutritionapp.ingredientlist.IngredientViewModel
+import com.example.nutritionapp.menu.geofences_favorites_tabs.TabLayoutFragmentDirections
 import com.example.nutritionapp.recipe.RecipeIngredientResultDomain
 import com.example.nutritionapp.recipe.RecipeIngredientResultNetwork
 import com.google.android.material.appbar.AppBarLayout

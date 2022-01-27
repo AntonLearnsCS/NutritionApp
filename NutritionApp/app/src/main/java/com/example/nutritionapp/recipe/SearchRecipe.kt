@@ -28,12 +28,7 @@ private lateinit var binding : RecipeLayoutBinding
 //viewModel is being initialized before the detectFoodText is done running in the background
  //val viewModel by lazy { ViewModelProvider(this).get(IngredientViewModel::class.java)}
 
-private val adapter = recipeAdapter(recipeAdapter.RecipeIngredientListener { recipe ->
-    Timber.i("Recipe selected name: " + recipe.title)
-    viewModel.setNavigateToRecipe(recipe)
-    viewModel.setNavigateToRecipeFlag(true)
-    //need a seperate flag
-})
+
 
 val viewModel by sharedViewModel<IngredientViewModel>()
 
@@ -62,6 +57,32 @@ val viewModel by sharedViewModel<IngredientViewModel>()
             Timber.i("searchRecipeButton clicked")
             viewModel.findRecipeByIngredients()
         }
+
+        val adapter = recipeAdapter(recipeAdapter.RecipeIngredientListener { recipe ->
+            Timber.i("Recipe selected name: " + recipe.title)
+            viewModel.setNavigateToRecipe(recipe)
+            viewModel.setNavigateToRecipeFlag(true)
+
+            viewModel.getRecipeInstructions()
+            //Placing the navigation step outside of the flag results in the destination fragment's viewModel
+            // not having the updated value.
+            //Resolved: https://knowledge.udacity.com/questions/737289
+            Timber.i("food in text size: " + viewModel.foodInText.size)
+            //Once getRecipeInstructions() is complete it will set mFlag = true so that navigation happens only after the liveData in getRecipeInstructions is updated
+            viewModel.mFlag.observe(viewLifecycleOwner, Observer {
+                viewModel.setNavigateToRecipeFlag(false)
+
+                if (it) {
+                    Log.i("test","arg: ${viewModel.navigateToRecipe.value}")
+                    findNavController().navigate(
+                        SearchRecipeDirections.actionSearchRecipeToRecipeDetail(
+                            viewModel.navigateToRecipe.value!!
+                        )
+                    )
+                    viewModel.mFlag.value = false
+                }
+            })
+        })
 
         binding.recipeRecyclerView.layoutManager = LinearLayoutManager(context)
 
@@ -149,25 +170,7 @@ val viewModel by sharedViewModel<IngredientViewModel>()
 
         viewModel.navigateToRecipeFlag.observe(viewLifecycleOwner, Observer {
             if (it) {
-                viewModel.getRecipeInstructions()
-                //Placing the navigation step outside of the flag results in the destination fragment's viewModel
-                // not having the updated value.
-                //Resolved: https://knowledge.udacity.com/questions/737289
-                Timber.i("food in text size: " + viewModel.foodInText.size)
-                //Once getRecipeInstructions() is complete it will set mFlag = true so that navigation happens only after the liveData in getRecipeInstructions is updated
-                viewModel.mFlag.observe(viewLifecycleOwner, Observer {
-                    viewModel.setNavigateToRecipeFlag(false)
 
-                    if (it) {
-                        Log.i("test","arg: ${viewModel.navigateToRecipeNetwork.value}")
-                        findNavController().navigate(
-                            SearchRecipeDirections.actionSearchRecipeToRecipeDetail(
-                                viewModel.navigateToRecipeNetwork.value!!
-                            )
-                        )
-                        viewModel.mFlag.value = false
-                    }
-                })
             }
         }
         )
